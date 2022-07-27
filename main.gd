@@ -7,10 +7,11 @@ func _init():
 	var main = Main.new()
 	var path : String = "res://main.gd"
 	var path2 : String = "res://main.py"
-	var content : String = main.read(path)
-	var out : String = main.transpile(content)
+	var _self : String = ""
+	var content : String = main.read(_self, path)
+	var out : String = main.transpile(_self, content)
 	print(out)
-	main.save(path2, out)
+	main.save(_self, path2, out)
 	quit()
 
 class Main:
@@ -19,19 +20,20 @@ class Main:
 	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
+	var sys_imp : bool = true
 	
-	func transpile(content : String):
-		types.sort()
+	func transpile(_self : String, content : String):
+		self.types.sort()
 		var t = ""
 		for line in content.split("\n"):
-			t += analyze(line)
+			t += self.analyze(_self, line)
 		
-		if left_def:
+		if self.left_def:
 			t += "def left(s, amount):"
 			t += "\n"
 			t += "	return s[:amount]"
 			t += "\n"
-		if right_def:
+		if self.right_def:
 			t += "def right(s, amount):"
 			t += "\n"
 			t += "	return s[len(s)-amount:]"
@@ -49,20 +51,20 @@ class Main:
 		t += "\n"
 		return t
 
-	func read(path : String):
+	func read(_self : String, path : String):
 		var file : File = File.new()
 		file.open(path, File.READ)
 		var string : String = file.get_as_text()
 		file.close()
 		return string
 
-	func save(path : String, content : String):
+	func save(_self : String, path : String, content : String):
 		var file : File = File.new()
 		file.open(path, File.WRITE)
 		file.store_string(content)
 		file.close()
 		
-	func analyze(l : String):
+	func analyze(_self : String, l : String):
 		var out : String = ""
 		var string_prev : Array = l.split("\"" + "\\" + "\"" + "\"")
 		var c : int = 0
@@ -79,7 +81,7 @@ class Main:
 				elif c ^ 1 != c + 1:
 					out += "\"" + string[i] + "\""
 				else:
-					out += translate(string[i])
+					out += self.translate(_self, string[i])
 				c+=1
 		if out.length() > 0:
 			var res : String = "res"
@@ -90,8 +92,151 @@ class Main:
 				out += ":"
 			out += "\n"
 		return out
+	
+	func dict(_self : String, arg : String):
+		var e : String = ""
+		if arg.length()==0:
+			return e
+		if arg in self.op:
+			e += arg
+			e += " "
+			return e
+		while (arg.begins_with("	")):
+			e += "	"
+			arg = arg.right(arg.length()-1)
+		if arg == "-s":
+			return e
+		if arg in self.types:
+			return e
+		if arg == "var":
+			return e
+		if arg == "Node":
+			return e
+		if arg == "SceneTree":
+			return e
+		if arg == "func":
+			e += "def"
+			e += " "
+			return e
+		if arg == "true":
+			e += "True"
+			e += " "
+			return e
+		if arg == "false":
+			e += "False"
+			e += " "
+			return e
+		if arg == ":":
+			return e
+		if arg == "extends":
+			return e
+		if arg == "File":
+			return e
+		if arg == "quit()":
+			e += "sys.exit()"
+			e += " "
+			self.sys_imp = true
+			return e
+		if arg == "#!/usr/bin/godot":
+			e += "#!/usr/bin/env python"
+			if self.sys_imp:
+				e += "\n"
+				e += "import sys"
+			e += " "
+			return e
+		if arg == "File.new()":
+			e += "\""
+			e += "\""
+			e += " "
+			return e
+		var con : bool = false
+		while arg.contains(".size()"):
+			arg = arg.replace(".size()", ")")
+			if arg.contains("("):
+				arg = arg.replace("(", "(len(")
+			else:
+				arg = "len(" + arg
+			con = true
+		while arg.contains(".length()"):
+			arg = arg.replace(".length()", ")")
+			if arg.contains("("):
+				arg = arg.replace("(", "(len(")
+			else:
+				arg = "len(" + arg
+			con = true
+		while arg.contains(".right("):
+			arg = arg.replace(".right(", ", ")
+			arg = "right(" + arg
+			self.right_def = true
+			con = true
+		while arg.contains(".left("):
+			arg = arg.replace(".left(", ", ")
+			arg = "left(" + arg
+			self.left_def = true
+			con = true
+		while arg.contains(".open"):
+			arg = arg.replace(".open", " = open")
+			con = true
+		while arg.contains(".begins_with"):
+			arg = arg.replace(".begins_with", ".startswith")
+			con = true
+		while arg.contains(".ends_with"):
+			arg = arg.replace(".ends_with", ".endswith")
+			con = true
+		while arg.contains(".contains"):
+			arg = arg.replace(".contains", ".find")
+			arg = "0 <= " + arg
+			con = true
+		while arg.contains("File.READ"):
+			var r : String = ""
+			r += "\""
+			r += "r"
+			r += "\""
+			arg = arg.replace("File.READ", r)
+			con = true
+		while arg.contains("File.WRITE"):
+			var w : String = ""
+			w += "\""
+			w += "w"
+			w += "\""
+			arg = arg.replace("File.WRITE", w)
+			con = true
+		while arg.contains(".get_as_text"):
+			arg = arg.replace(".get_as_text", ".read")
+			con = true
+		while arg.contains(".store_string"):
+			arg = arg.replace(".store_string", ".write")
+			con = true
+		while (arg.contains(".new()")):
+			arg = arg.replace(".new()", "()")
+			con = true
+		while (arg.contains("_self,")):
+			arg = arg.replace("_self,", "")
+			con = true
+		while (arg.contains("_self")):
+			arg = arg.replace("_self", "self")
+			con = true
+		var found : bool = false
+		for type in self.types:
+			while arg.begins_with(type):
+				found = true
+				arg = arg.replace(type, "")
+				break
+		if found:
+			e += arg
+			e += " "
+			return e
+		if con:
+			e += arg
+			e += " "
+			return e
+		if self.debug:
+			print("DEBUG: " + arg)
+		e += arg
+		e += " "
+		return e
 
-	func translate(e : String):
+	func translate(_self : String, e : String):
 		if (e == ","):
 			return ","
 		if (e == ""):
@@ -99,131 +244,7 @@ class Main:
 		var args : Array = e.split(" ")
 		e = ""
 		for arg in args:
-			if arg.length()==0:
-				continue
-			if arg in op:
-				e += arg
-				e += " "
-				continue
-			while (arg.begins_with("	")):
-				e += "	"
-				arg = arg.right(arg.length()-1)
-			if arg == "#!/usr/bin/godot":
-				e += "#!/usr/bin/env python"
-				e += " "
-				continue
-			if arg == "-s":
-				continue
-			if arg in types:
-				continue
-			if arg == "var":
-				continue
-			if arg == "Node":
-				continue
-			if arg == "SceneTree":
-				continue
-			if arg == "func":
-				e += "def"
-				e += " "
-				continue
-			if arg == "true":
-				e += "True"
-				e += " "
-				continue
-			if arg == "false":
-				e += "False"
-				e += " "
-				continue
-			if arg == ":":
-				continue
-			if arg == "extends":
-				continue
-			if arg == "File":
-				continue
-			if arg == "File.new()":
-				e += "\""
-				e += "\""
-				e += " "
-				continue
-			var con : bool = false
-			while arg.contains(".size()"):
-				arg = arg.replace(".size()", ")")
-				if arg.contains("("):
-					arg = arg.replace("(", "(len(")
-				else:
-					arg = "len(" + arg
-				con = true
-			while arg.contains(".length()"):
-				arg = arg.replace(".length()", ")")
-				if arg.contains("("):
-					arg = arg.replace("(", "(len(")
-				else:
-					arg = "len(" + arg
-				con = true
-			while arg.contains(".right("):
-				arg = arg.replace(".right(", ", ")
-				arg = "right(" + arg
-				self.right_def = true
-				con = true
-			while arg.contains(".left("):
-				arg = arg.replace(".left(", ", ")
-				arg = "left(" + arg
-				self.left_def = true
-				con = true
-			while arg.contains(".open"):
-				arg = arg.replace(".open", " = open")
-				con = true
-			while arg.contains(".begins_with"):
-				arg = arg.replace(".begins_with", ".startswith")
-				con = true
-			while arg.contains(".ends_with"):
-				arg = arg.replace(".ends_with", ".endswith")
-				con = true
-			while arg.contains(".contains"):
-				arg = arg.replace(".contains", ".find")
-				arg = "0 <= " + arg
-				con = true
-			while arg.contains("File.READ"):
-				var r : String = ""
-				r += "\""
-				r += "r"
-				r += "\""
-				arg = arg.replace("File.READ", r)
-				con = true
-			while arg.contains("File.WRITE"):
-				var w : String = ""
-				w += "\""
-				w += "w"
-				w += "\""
-				arg = arg.replace("File.WRITE", w)
-				con = true
-			while arg.contains(".get_as_text"):
-				arg = arg.replace(".get_as_text", ".read")
-				con = true
-			while arg.contains(".store_string"):
-				arg = arg.replace(".store_string", ".write")
-				con = true
-			while (arg.contains(".new()")):
-				arg = arg.replace(".new()", "()")
-				con = true
-			var found : bool = false
-			for type in types:
-				while arg.begins_with(type):
-					found = true
-					arg = arg.replace(type, "")
-					break
-			if found:
-				e += arg
-				e += " "
-				continue
-			if con:
-				e += arg
-				e += " "
-				continue
-			if debug:
-				print("DEBUG: " + arg)
-			e += arg
-			e += " "
+			e += self.dict(_self, arg)
 		while e.contains("	"):
 			e = e.replace("	", "   ")
 		return e
