@@ -1,71 +1,229 @@
-extends Node
+#!/usr/bin/godot -s
 
-var types : Array = [ "var", "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
+extends SceneTree
 
-func _ready():
+
+func _init():
+	var main = Main.new()
 	var path : String = "res://main.gd"
-	var content : String = read(path)
-	var out : String = transpile(content)
+	var path2 : String = "res://main.py"
+	var content : String = main.read(path)
+	var out : String = main.transpile(content)
 	print(out)
-func transpile(content : String):
-	types.sort_custom(Callable(self, "customComparison"))
-	var translated = ""
-	for line in content.split("\n"):
-		translated += analyze(line) + "\n"
-	return translated
-func customComparison(a, b):
-	return a.length() > b.length()
-func read(path : String):
-	var file : File = File.new()
-	file.open(path, File.READ)
-	return file.get_as_text()
-func analyze(l : String):
-	var out : String = ""
-	var string_prev : Array = l.split("\"" + "\\" + "\"" + "\"")
-	var c : int = 0
-	for ii in range(0, string_prev.size()):
-		var string : Array = string_prev[ii].split("\"")
-		if ii > 0:
-			out += "\"" + "\\" + "\"" + "\""
-		for i in range(0, string.size()):
+	main.save(path2, out)
+	quit()
+
+class Main:
+	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
+	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
+	var debug : bool = true
+	var right_def : bool = false
+	var left_def : bool = false
+	
+	func transpile(content : String):
+		types.sort()
+		var t = ""
+		for line in content.split("\n"):
+			t += analyze(line)
+		
+		if left_def:
+			t += "def left(s, amount):"
+			t += "\n"
+			t += "	return s[:amount]"
+			t += "\n"
+		if right_def:
+			t += "def right(s, amount):"
+			t += "\n"
+			t += "	return s[len(s)-amount:]"
+			t += "\n"
+		
+		t += "i"
+		t += "f"
+		t += " __name__=="
+		t += "\""
+		t += "__main__"
+		t += "\""
+		t += ":"
+		t += "\n"
+		t += "	_init()"
+		t += "\n"
+		return t
+
+	func read(path : String):
+		var file : File = File.new()
+		file.open(path, File.READ)
+		var string : String = file.get_as_text()
+		file.close()
+		return string
+
+	func save(path : String, content : String):
+		var file : File = File.new()
+		file.open(path, File.WRITE)
+		file.store_string(content)
+		file.close()
+		
+	func analyze(l : String):
+		var out : String = ""
+		var string_prev : Array = l.split("\"" + "\\" + "\"" + "\"")
+		var c : int = 0
+		for ii in range(0, string_prev.size()):
+			var string : Array = string_prev[ii].split("\"")
 			if ii > 0:
-				if string[i] == "\\" + "\\":
+				out += "\"" + "\\" + "\"" + "\""
+			for i in range(0, string.size()):
+				if ii > 0:
+					if string[i] == "\\" + "\\":
+						out += "\"" + string[i] + "\""
+					else:
+						out += string[i]
+				elif c ^ 1 != c + 1:
 					out += "\"" + string[i] + "\""
 				else:
-					out += string[i]
-			elif c ^ 1 != c + 1:
-				out += "\"" + string[i] + "\""
-			else :
-				out += translate(string[i])
-			c+=1
-	return out
-func translate(e : String):
-	var old_args : Array = e.split(" ")
-	e = ""
-	var args : Array = e.split(" ")
-	for arg in old_args:
-		if arg.length()>0:
-			args.append(arg)
-	if args.size() > 0:
-		for i in range(0, args.size()):
-			if args[i] != "":
-				if args[i] == "extends":
-					args[i] = "import"
-				elif args[i] == "func":
-					args[i] = "def"
-				for type in types:
-					if args[i].contains(":" + type):
-						args[i] = args[i].replace(":" + type, "")
-					elif args[i].contains(type + ")"):
-						args[i] = args[i].replace(type + ")", ")")
-					elif args[i] == type:
-						args[i] = ""
-					elif args[i] == ":" and i < args.size()-1:
-						args[i] = ""
-				if args[i].length() > 0 and i > 0 and !args[i].begins_with(")"):
-					e += " " + args[i]
+					out += translate(string[i])
+				c+=1
+		if out.length() > 0:
+			var res : String = "res"
+			res += "://"
+			while out.contains(res):
+				out = out.replace(res, "")
+			while out.contains("if") and out.ends_with("\""):
+				out += ":"
+			out += "\n"
+		return out
+
+	func translate(e : String):
+		if (e == ","):
+			return ","
+		if (e == ""):
+			return ""
+		var args : Array = e.split(" ")
+		e = ""
+		for arg in args:
+			if arg.length()==0:
+				continue
+			if arg in op:
+				e += arg
+				e += " "
+				continue
+			while (arg.begins_with("	")):
+				e += "	"
+				arg = arg.right(arg.length()-1)
+			if arg == "#!/usr/bin/godot":
+				e += "#!/usr/bin/env python"
+				e += " "
+				continue
+			if arg == "-s":
+				continue
+			if arg in types:
+				continue
+			if arg == "var":
+				continue
+			if arg == "Node":
+				continue
+			if arg == "SceneTree":
+				continue
+			if arg == "func":
+				e += "def"
+				e += " "
+				continue
+			if arg == "true":
+				e += "True"
+				e += " "
+				continue
+			if arg == "false":
+				e += "False"
+				e += " "
+				continue
+			if arg == ":":
+				continue
+			if arg == "extends":
+				continue
+			if arg == "File":
+				continue
+			if arg == "File.new()":
+				e += "\""
+				e += "\""
+				e += " "
+				continue
+			var con : bool = false
+			while arg.contains(".size()"):
+				arg = arg.replace(".size()", ")")
+				if arg.contains("("):
+					arg = arg.replace("(", "(len(")
 				else:
-					e += args[i]
-		if old_args[old_args.size()-1] == "":
+					arg = "len(" + arg
+				con = true
+			while arg.contains(".length()"):
+				arg = arg.replace(".length()", ")")
+				if arg.contains("("):
+					arg = arg.replace("(", "(len(")
+				else:
+					arg = "len(" + arg
+				con = true
+			while arg.contains(".right("):
+				arg = arg.replace(".right(", ", ")
+				arg = "right(" + arg
+				self.right_def = true
+				con = true
+			while arg.contains(".left("):
+				arg = arg.replace(".left(", ", ")
+				arg = "left(" + arg
+				self.left_def = true
+				con = true
+			while arg.contains(".open"):
+				arg = arg.replace(".open", " = open")
+				con = true
+			while arg.contains(".begins_with"):
+				arg = arg.replace(".begins_with", ".startswith")
+				con = true
+			while arg.contains(".ends_with"):
+				arg = arg.replace(".ends_with", ".endswith")
+				con = true
+			while arg.contains(".contains"):
+				arg = arg.replace(".contains", ".find")
+				arg = "0 <= " + arg
+				con = true
+			while arg.contains("File.READ"):
+				var r : String = ""
+				r += "\""
+				r += "r"
+				r += "\""
+				arg = arg.replace("File.READ", r)
+				con = true
+			while arg.contains("File.WRITE"):
+				var w : String = ""
+				w += "\""
+				w += "w"
+				w += "\""
+				arg = arg.replace("File.WRITE", w)
+				con = true
+			while arg.contains(".get_as_text"):
+				arg = arg.replace(".get_as_text", ".read")
+				con = true
+			while arg.contains(".store_string"):
+				arg = arg.replace(".store_string", ".write")
+				con = true
+			while (arg.contains(".new()")):
+				arg = arg.replace(".new()", "()")
+				con = true
+			var found : bool = false
+			for type in types:
+				while arg.begins_with(type):
+					found = true
+					arg = arg.replace(type, "")
+					break
+			if found:
+				e += arg
+				e += " "
+				continue
+			if con:
+				e += arg
+				e += " "
+				continue
+			if debug:
+				print("DEBUG: " + arg)
+			e += arg
 			e += " "
-	return e
+		while e.contains("	"):
+			e = e.replace("	", "   ")
+		return e

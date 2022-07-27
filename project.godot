@@ -12,8 +12,8 @@ config_version=5
 
 config/name="GDScript2PythonTranspiler"
 run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.0", "Double Precision", "Vulkan Mobile")
 config/icon="res://icon.png"
-config/features=PackedStringArray("4.0", "Vulkan Mobile")
 
 [display]
 

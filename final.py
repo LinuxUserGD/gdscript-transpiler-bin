@@ -15,18 +15,18 @@ class Main:
    right_def = False 
    left_def = False 
     
-   def transpile(content ): 
-      types.sort() 
+   def transpile(self, content ):
+      self.types.sort()
       t = ""
       for line in content.split( "\n"): 
-         t += analyze(line) 
+         t += self.analyze(line)
        
-      if left_def: 
+      if self.left_def:
          t += "def left(s, amount):"
          t += "\n"
          t += "	return s[:amount]"
          t += "\n"
-      if right_def: 
+      if self.right_def:
          t += "def right(s, amount):"
          t += "\n"
          t += "	return s[len(s)-amount:]"
@@ -43,19 +43,19 @@ class Main:
       t += "	_init()"
       t += "\n"
       return t 
-   def read(path ): 
+   def read(self, path ):
       file = "" 
       file = open(path, "r") 
       string = file.read() 
       file.close() 
       return string 
-   def save(path , content ): 
+   def save(self, path , content ):
       file = "" 
       file = open(path, "w") 
       file.write(content) 
       file.close() 
        
-   def analyze(l ): 
+   def analyze(self, l ):
       out = ""
       string_prev = l.split( "\"" + "\\" + "\"" + "\"")
       c = 0 
@@ -72,7 +72,7 @@ class Main:
             elif c ^ 1 != c + 1: 
                out += "\"" + string[i] + "\""
             else: 
-               out += translate(string[i]) 
+               out += self.translate(string[i])
             c+=1 
       if len(out) > 0: 
          res = "res"
@@ -83,7 +83,7 @@ class Main:
             out += ":"
          out += "\n"
       return out 
-   def translate(e ): 
+   def translate(self, e ):
       if (e == ","): 
          return ","
       if (e == ""): 
@@ -93,20 +93,20 @@ class Main:
       for arg in args: 
          if len(arg)==0: 
             continue 
-         if arg in op: 
+         if arg in self.op:
             e += arg 
             e += " "
             continue 
          while (arg.startswith( "	")): 
             e += "	"
-            arg = right(arg, len(arg)-1) 
+            arg = right(arg, len(arg)-1)
          if arg == "#!/usr/bin/godot":
             e += "#!/usr/bin/env python"
             e += " "
             continue 
          if arg == "-s":
             continue 
-         if arg in types: 
+         if arg in self.types:
             continue 
          if arg == "var":
             continue 
@@ -199,7 +199,7 @@ class Main:
             arg = arg.replace( ".new()", "()") 
             con = True 
          found = False 
-         for type in types: 
+         for type in self.types:
             while arg.startswith(type): 
                found = True 
                arg = arg.replace(type, "") 
@@ -212,7 +212,7 @@ class Main:
             e += arg 
             e += " "
             continue 
-         if debug: 
+         if self.debug:
             print( "DEBUG: "+ arg) 
          e += arg 
          e += " "
