@@ -10,17 +10,19 @@ func _init():
 	var _self : String = ""
 	var content : String = main.read(_self, path)
 	var out : String = main.transpile(_self, content)
-	print(out)
+	if main.verbose:
+		print(out)
 	main.save(_self, path2, out)
 	quit()
 
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var debug : bool = true
+	var debug : bool = false
 	var right_def : bool = false
 	var left_def : bool = false
 	var sys_imp : bool = true
+	var verbose : bool = false
 	
 	func transpile(_self : String, content : String):
 		self.types.sort()
