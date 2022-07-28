@@ -1,6 +1,5 @@
-[gd_scene load_steps=3 format=3 uid="uid://br8ubcpe0bhab"]
+[gd_scene load_steps=2 format=3 uid="uid://br8ubcpe0bhab"]
 
-[ext_resource type="Script" path="res://main-node.gd" id="1_2c5b3"]
 [ext_resource type="Script" path="res://RichTextLabel.gd" id="2_ubcpi"]
 
 [node name="Node" type="Control"]
@@ -8,7 +7,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_2c5b3")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_right = 1.0
