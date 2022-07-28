@@ -11,7 +11,7 @@ For Python to C transpiler, see [Nuitka](https://github.com/Nuitka/Nuitka).
 Copyright © 2019-2022 Hugo Locurcio and contributors
 
 - Unless otherwise specified, files in this repository are licensed under the
-  MIT license, see [LICENSE.md](LICENSE.md) for more information.
+  MIT license, see [LICENSE](LICENSE) for more information.
 - The [Hack](https://sourcefoundry.org/hack/) font is licensed under
   the Bitstream Vera and MIT licenses, see
   [fonts/LICENSE.Hack.md](fonts/LICENSE.Hack.md) for more information.
