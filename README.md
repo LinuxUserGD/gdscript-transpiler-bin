@@ -5,7 +5,7 @@ Minimal Scripts can be transpiled to Python.
 For Python to C transpiler, see [Nuitka](https://github.com/Nuitka/Nuitka).
 
 ## License
-    
+
 ### Repository: [GDScript Online](https://github.com/gdscript-online/gdscript-online.github.io)
 
 Copyright © 2019-2022 Hugo Locurcio and contributors

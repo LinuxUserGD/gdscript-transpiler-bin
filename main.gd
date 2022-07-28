@@ -116,6 +116,10 @@ class Main:
 			return e
 		if arg == "SceneTree":
 			return e
+		if arg == "_ready():":
+			e += "_init():"
+			e += " "
+			return e
 		if arg == "func":
 			e += "def"
 			e += " "
