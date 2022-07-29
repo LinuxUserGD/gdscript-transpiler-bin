@@ -242,3 +242,28 @@ func _on_transpile_button_pressed():
 
 func transpile():
 	$/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.set_text(_main.transpile(_self, $/root/MainWindow/HSplitContainer/VBoxContainer/ScriptEditor.get_text()))
+
+
+func _on_run_button_2_pressed():
+	var path : String = "res://temp.py"
+	var file : File = File.new()
+	file.open(path, File.WRITE)
+	file.store_string($/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.get_text())
+	file.close()
+	var stdout : Array = []
+	var exit = OS.execute("python", ["temp.py"], stdout, true, false)
+	var output : String = ""
+	output_panel.set_text(output)
+	$"/root/MainWindow/HSplitContainer/ok/OutputPanel/ErrorLabel".set_text(output)
+	for line in stdout:
+		output += line
+		output += "\n"
+	
+	if exit == OK:
+		output_panel.set_text(output)
+	else:
+		$"/root/MainWindow/HSplitContainer/ok/OutputPanel/ErrorLabel".set_text(output)
+
+
+func _on_script_editor_text_changed():
+	transpile()

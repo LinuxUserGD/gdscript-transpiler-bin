@@ -18,11 +18,11 @@ func _init():
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var debug : bool = false
+	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
 	var sys_imp : bool = true
-	var verbose : bool = false
+	var verbose : bool = true
 	
 	func transpile(_self : String, content : String):
 		self.types.sort()

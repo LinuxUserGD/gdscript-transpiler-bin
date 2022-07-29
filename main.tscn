@@ -61,6 +61,7 @@ script = ExtResource("3")
 metadata/_edit_layout_mode = 1
 
 [node name="TranspileButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
+visible = false
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -80.0
@@ -101,6 +102,18 @@ caret_blink = true
 caret_blink_speed = 0.5
 script = ExtResource("2")
 
+[node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 33.0
+grow_horizontal = 0
+hint_tooltip = "Shortcut: Ctrl + Enter"
+theme_override_fonts/font = ExtResource("4_5pn77")
+text = "Run"
+script = ExtResource("3")
+metadata/_edit_layout_mode = 1
+
 [node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok"]
 offset_left = 28.0
 offset_right = 356.0
@@ -110,8 +123,11 @@ offset_bottom = 600.0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 320.0
-offset_bottom = 26.0
+offset_bottom = 30.0
 size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.772549, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_5pn77")
+clip_text = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer/ok/OutputPanel"]
 offset_left = 8.0
@@ -133,5 +149,7 @@ offset_bottom = 46.0
 grow_horizontal = 0
 metadata/_edit_layout_mode = 1
 
+[connection signal="text_changed" from="HSplitContainer/VBoxContainer/ScriptEditor" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_on_script_editor_text_changed"]
 [connection signal="pressed" from="HSplitContainer/VBoxContainer/ScriptEditor/RunButton" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_run_button_pressed"]
 [connection signal="pressed" from="HSplitContainer/VBoxContainer/ScriptEditor/TranspileButton" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_on_transpile_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ok/VBoxContainer2/ScriptEditor/RunButton2" to="HSplitContainer/ok/VBoxContainer2/ScriptEditor" method="_on_run_button_2_pressed"]
