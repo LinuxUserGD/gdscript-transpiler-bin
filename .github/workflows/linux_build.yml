@@ -1,18 +1,18 @@
-name: 🍎 macOS Builds
+name: 🐧 Linux Build
 # Only trigger, when the build workflow succeeded
 on:
   workflow_run:
-    workflows: ["🐧 Linux Builds"]
+    workflows: ["Template"]
     types:
       - completed
 
 concurrency:
-  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-macos
+  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-linux
   cancel-in-progress: true
 
 jobs:
-  build-macos:
-    runs-on: "macos-latest"
+  build-linux:
+    runs-on: "ubuntu-latest"
     name: ${{ matrix.name }}
     steps:
       - name: Check-out repository
@@ -36,8 +36,8 @@ jobs:
           script-name: main.py
           onefile: true
 
-      - name: Upload Artifact
+      - name: Upload main.bin
         uses: actions/upload-artifact@v3
         with:
-          name: MacOS Build
+          name: Linux Build
           path: build/main.bin

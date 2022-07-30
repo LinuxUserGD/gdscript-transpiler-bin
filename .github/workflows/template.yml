@@ -1,4 +1,4 @@
-name: 🐧 Linux Builds
+name: Template
 on: push
 
 # Global Settings
@@ -85,7 +85,6 @@ jobs:
       - name: Generate Python Script
         run: |
           ./godot --headless -s main.gd
-          python main.py
 
       - name: Add main.py
         run: |
@@ -97,15 +96,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: dev
-
-      - name: Build Executable
-        uses: jimkring/python-script-to-exe@v0.2.0
-        with:
-          script-name: main.py
-          onefile: true
-
-      - name: Upload main.bin
-        uses: actions/upload-artifact@v3
-        with:
-          name: Linux Build
-          path: build/main.bin

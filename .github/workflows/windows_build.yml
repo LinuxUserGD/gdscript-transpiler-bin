@@ -1,0 +1,43 @@
+name: 🏁 Windows Build
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Template"]
+    types:
+      - completed
+
+concurrency:
+  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-windows
+  cancel-in-progress: true
+
+jobs:
+  build-windows:
+    runs-on: "windows-latest"
+    name: ${{ matrix.name }}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v2
+
+      - name: Setup Python and Scons
+        uses: ./.github/actions/godot-deps
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate Python Script
+        run: |
+          python main.py
+
+      - name: Build Executable
+        uses: jimkring/python-script-to-exe@v0.2.0
+        with:
+          script-name: main.py
+          onefile: true
+
+      - name: Upload main.exe
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows Build
+          path: build/main.exe
