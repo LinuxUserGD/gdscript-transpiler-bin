@@ -31,10 +31,11 @@ jobs:
           python main.py
 
       - name: Build Executable
-        uses: jimkring/python-script-to-exe@v0.3.2
+        uses: Nuitka/Nuitka-Action@v0.3.3
         with:
           script-name: main.py
           onefile: true
+          enable-plugins: anti-bloat
 
       - name: Upload main.exe
         uses: actions/upload-artifact@v3
