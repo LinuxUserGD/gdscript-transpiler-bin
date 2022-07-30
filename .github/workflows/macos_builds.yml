@@ -1,30 +1,30 @@
-name: 🐧 Linux Builds
+name: 🍎 macOS Builds
 on: push
 
 # Global Settings
 env:
   # Only used for the cache key. Increment version to force clean build.
-  GODOT_BASE_BRANCH: master-v2
+  GODOT_BASE_BRANCH: master-v3
   SCONSFLAGS: verbose=yes warnings=extra werror=no module_text_server_fb_enabled=no
 
 concurrency:
-  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-linux
+  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-macos
   cancel-in-progress: true
 
 jobs:
-  build-linux:
-    runs-on: "ubuntu-latest"
+  build-macos:
+    runs-on: "macos-latest"
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: Minimal Template (target=release, tools=no, everything disabled)
-            cache-name: linux-template-minimal
+            cache-name: macos-template-minimal
             target: release
             tools: false
             tests: false
-            sconsflags: module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_3d=yes disable_advanced_gui=yes deprecated=no minizip=no opengl3=no use_static_cpp=yes linker=bfd alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=yes module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
+            sconsflags: module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_3d=yes disable_advanced_gui=yes deprecated=no minizip=no opengl3=no use_static_cpp=yes linker=lld alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=yes module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
             artifact: true
 
     steps:
@@ -40,17 +40,6 @@ jobs:
           git submodule init
           git submodule update
 
-      - name: Linux dependencies
-        shell: bash
-        run: |
-          # Azure repositories are not reliable, we need to prevent azure giving us packages.
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f godot/misc/ci/sources.list /etc/apt/sources.list
-          sudo apt-get update
-          # The actual dependencies
-          sudo apt-get install build-essential pkg-config \
-              yasm xvfb wget unzip
-
       - name: Setup Godot build cache
         uses: ./.github/actions/godot-cache
         with:
@@ -64,7 +53,7 @@ jobs:
         uses: ./.github/actions/godot-build
         with:
           sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
-          platform: linuxbsd
+          platform: macos
           target: ${{ matrix.target }}
           tools: ${{ matrix.tools }}
           tests: ${{ matrix.tests }}
@@ -96,5 +85,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Linux Build
-          path: build/main.bin
+          name: MacOS Build
+          path: build/main.app/**/*
