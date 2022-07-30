@@ -31,7 +31,7 @@ jobs:
           python main.py
 
       - name: Build Executable
-        uses: jimkring/python-script-to-exe@v0.2.0
+        uses: jimkring/python-script-to-exe@v0.3.3
         with:
           script-name: main.py
           onefile: true
