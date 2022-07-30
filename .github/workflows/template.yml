@@ -83,9 +83,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install wget aiohttp
-          python -m wget https://gist.githubusercontent.com/ferstar/972623e6a7af464d5437d4a3b710ade2/raw/63987c71df7a577039682aa7ffa4db4882691705/delete_action_runs.py
-          python delete_action_runs.py ${github_token} LinuxUserGD https://github.com/LinuxUserGD/GDScript2PythonTranspiler.git
 
       - name: Generate Python Script
         run: |
@@ -101,3 +98,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: dev
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
