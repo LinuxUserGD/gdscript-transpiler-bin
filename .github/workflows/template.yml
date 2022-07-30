@@ -78,9 +78,14 @@ jobs:
           mv godot-source/bin/godot.* godot
 
       - name: Install Dependencies
+        env:
+          github_token: ${{ github.token }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install wget
+          python -m wget https://gist.githubusercontent.com/ferstar/972623e6a7af464d5437d4a3b710ade2/raw/63987c71df7a577039682aa7ffa4db4882691705/delete_action_runs.py
+          python delete_action_runs.py ${github_token} LinuxUserGD https://github.com/LinuxUserGD/GDScript2PythonTranspiler.git
 
       - name: Generate Python Script
         run: |
