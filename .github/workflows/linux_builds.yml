@@ -87,13 +87,24 @@ jobs:
           ./godot --headless -s main.gd
           python main.py
 
+      - name: Add main.py
+        run: |
+          git add main.py
+          git commit -m "add main.py" -a
+
+      - name: Upload main.py
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: dev
+
       - name: Build Executable
         uses: jimkring/python-script-to-exe@v0.2.0
         with:
           script-name: main.py
           onefile: true
 
-      - name: Upload Artifact
+      - name: Upload main.bin
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
