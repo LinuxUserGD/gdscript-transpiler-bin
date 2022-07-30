@@ -89,7 +89,7 @@ jobs:
 
       - name: Add main.py
         run: |
-          git add main.py
+          git add -f main.py
           git commit -m "add main.py" -a
 
       - name: Upload main.py
