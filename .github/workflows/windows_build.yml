@@ -31,7 +31,7 @@ jobs:
           python main.py
 
       - name: Build Executable
-        uses: Nuitka/Nuitka-Action@v0.3.3
+        uses: Nuitka/Nuitka-Action@v0.4
         with:
           script-name: main.py
           onefile: true
