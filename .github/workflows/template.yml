@@ -74,7 +74,7 @@ jobs:
         run: |
           strip godot/bin/godot.*
           chmod +x godot/bin/godot.*
-          mv godot-source/bin/godot.* godot-bin
+          mv godot/bin/godot.* godot-bin
 
       - name: Install Dependencies
         env:
