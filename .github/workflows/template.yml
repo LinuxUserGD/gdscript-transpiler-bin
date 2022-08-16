@@ -74,8 +74,7 @@ jobs:
         run: |
           strip godot/bin/godot.*
           chmod +x godot/bin/godot.*
-          mv godot godot-source
-          mv godot-source/bin/godot.* godot
+          mv godot-source/bin/godot.* godot-bin
 
       - name: Install Dependencies
         env:
@@ -86,10 +85,11 @@ jobs:
 
       - name: Generate Python Script
         run: |
-          ./godot --headless -s main.gd
+          ./godot-bin --headless -s main.gd
 
       - name: Add main.py
         run: |
+          rm godot-bin
           git add -f main.py
           git commit -m "add main.py" -a
 
