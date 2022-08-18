@@ -83,7 +83,8 @@ jobs:
           python -m pip install --upgrade pip requests
           pip install -r requirements.txt
           ./godot-bin --headless -s main.gd
-          python .github/workflows/api.py
+          mv .github/workflows/api.py .
+          python api.py
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
