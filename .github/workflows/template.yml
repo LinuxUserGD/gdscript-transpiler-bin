@@ -97,7 +97,7 @@ jobs:
           mv ../main.py .
 
       - name: Upload main.py
-      - uses: popsiclestick/gist-sync-action@v1.2.0
+        uses: popsiclestick/gist-sync-action@v1.2.0
         id: sync
         with:
           auth: ${{ secrets.GITHUB_TOKEN }}
