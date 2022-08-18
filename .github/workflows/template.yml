@@ -87,7 +87,6 @@ jobs:
         run: |
           ./godot-bin --headless -s main.gd
 
-      - uses: actions/checkout@v3
       - name: Upload main.py
         uses: exuanbo/actions-deploy-gist@v1
         with:
