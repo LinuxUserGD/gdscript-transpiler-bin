@@ -101,7 +101,7 @@ jobs:
         id: sync
         with:
           auth: ${{ github.token }}
-          gist_url: https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
+          gist_url: git@gist.github.com:73d8e030a44eb7f91bdeaea96a321f6d.git
           gist_title: main.py
           gist_description: main.py
           github_file: main.py
@@ -110,6 +110,6 @@ jobs:
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ github.token }}
-          repository: git@gist.github.com:73d8e030a44eb7f91bdeaea96a321f6d.git
+          repository: ${{ github.repository }}
           retain_days: 0
           keep_minimum_runs: 0
