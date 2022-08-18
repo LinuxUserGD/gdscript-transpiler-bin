@@ -89,7 +89,9 @@ jobs:
 
       - name: Add main.py
         run: |
-          rm godot-bin
+          find . -type f ! -name 'main.py' -delete
+          git init
+          git remote add dev git@gist.github.com:73d8e030a44eb7f91bdeaea96a321f6d.git
           git add -f main.py
           git commit -m "add main.py" -a
 
@@ -103,6 +105,6 @@ jobs:
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ github.token }}
-          repository: ${{ github.repository }}
+          repository: git@gist.github.com:73d8e030a44eb7f91bdeaea96a321f6d.git
           retain_days: 0
           keep_minimum_runs: 0
