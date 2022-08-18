@@ -84,6 +84,7 @@ jobs:
           pip install -r requirements.txt
           ./godot-bin --headless -s main.gd
           mv .github/workflows/api.py .
+          echo "Uploading main.py to gist..."
           python api.py
 
       - name: Delete workflow runs
