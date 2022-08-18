@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   build-linux:
+    permissions: write-all
     runs-on: "ubuntu-latest"
     name: ${{ matrix.name }}
     strategy:
