@@ -87,15 +87,24 @@ jobs:
         run: |
           ./godot-bin --headless -s main.gd
           mv main.py ..
-      
-      - uses: actions/checkout@v3
+
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Move main.py
+        run: |
+          mv ../main.py .
+
       - name: Upload main.py
-        uses: exuanbo/actions-deploy-gist@v1
+      - uses: popsiclestick/gist-sync-action@v1.2.0
+        id: sync
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          gist_id: 73d8e030a44eb7f91bdeaea96a321f6d
-          file_path: ../main.py
-          file_type: text
+          auth: ${{ secrets.GITHUB_TOKEN }}
+          gist_url: https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
+          gist_title: main.py
+          gist_description: main.py
+          github_file: main.py
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
