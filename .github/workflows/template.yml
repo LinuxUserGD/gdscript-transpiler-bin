@@ -79,7 +79,7 @@ jobs:
 
       - name: Install Dependencies
         env:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python -m pip install --upgrade pip requests
           pip install -r requirements.txt
