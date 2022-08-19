@@ -14,28 +14,30 @@ func _init():
 			return
 		var path_arg : String = '---path='
 		if arg.begins_with(path_arg):
-			var path : String = "res://" + arg.split("=")[1]
-			var args = arg.split("=")[1].split(".")
-			var c : int = args.size()
-			var pathstr : String = ""
-			for path_str in arg.split("=")[1].split("."):
-				c -= 1
-				if c != 0:
-					pathstr += path_str + "."
-			var path2 : String = "res://" + pathstr + "py"
-			var _self : String = ""
-			var main = Main.new()
-			var content : String = main.read(_self, path)
-			var out : String = main.transpile(_self, content)
-			if main.verbose:
-				print(out)
-			main.save(_self, path2, out)
+			start(arg)
 			quit()
 			return
-	help()
+	start("---path=main.gd")
 	quit()
 	return
 
+func start(arg : String):
+	var path : String = "res://" + arg.split("=")[1]
+	var args = arg.split("=")[1].split(".")
+	var c : int = args.size()
+	var pathstr : String = ""
+	for path_str in arg.split("=")[1].split("."):
+		c -= 1
+		if c != 0:
+			pathstr += path_str + "."
+	var path2 : String = "res://" + pathstr + "py"
+	var _self : String = ""
+	var main = Main.new()
+	var content : String = main.read(_self, path)
+	var out : String = main.transpile(_self, content)
+	if main.verbose:
+		print(out)
+	main.save(_self, path2, out)
 
 func version():
 	var info : Dictionary = Engine.get_version_info()
@@ -48,8 +50,11 @@ func version():
 	print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout : Array = []
 	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
-	for line in stdout:
-		print("Python: " + line)
+	print("Python: " + stdout[0].split("\n")[0])
+	stdout.clear()
+	var import_str : String = "from nuitka import Version"
+	OS.execute('python',['-c',import_str+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
+	print("Nuitka: " + stdout[0].split("\n")[0])
 
 func help():
 	print("Usage: main.py [options] main_script.gd");
@@ -61,10 +66,11 @@ func help():
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var debug : bool = false
+	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
 	var sys_imp : bool = true
+	var nuitka_imp : bool = true
 	var verbose : bool = true
 	
 	func transpile(_self : String, content : String):
@@ -196,6 +202,13 @@ class Main:
 			e += "stdout = [sys.version]"
 			e += " "
 			return e
+		if arg == "OS.execute('python',['-c',import_str+":
+			self.nuitka_imp = true
+			return e
+		if arg == "';print(Version.getNuitkaVersion())'],stdout,true,false)":
+			e += "stdout = [Version.getNuitkaVersion()]"
+			e += " "
+			return e
 		if arg == "quit()":
 			e += "sys.exit()"
 			e += " "
@@ -206,6 +219,9 @@ class Main:
 			if self.sys_imp:
 				e += "\n"
 				e += "import sys"
+			if self.nuitka_imp:
+				e += "\n"
+				e += "from nuitka import Version"
 			e += " "
 			return e
 		if arg == "File.new()":
