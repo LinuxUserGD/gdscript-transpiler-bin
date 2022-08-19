@@ -82,7 +82,7 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
         run: |
           python -m pip install --upgrade pip requests
-          ./godot-bin --headless -s main.gd
+          ./godot-bin --headless -s main.gd ---path=main.gd
           mv .github/workflows/api.py .
           echo "Uploading main.py to gist..."
           python api.py
