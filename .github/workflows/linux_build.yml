@@ -18,6 +18,7 @@ jobs:
       - name: Update script
         run: |
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
 
       - name: Setup Python
         uses: actions/setup-python@v4
