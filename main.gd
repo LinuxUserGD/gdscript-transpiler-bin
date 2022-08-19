@@ -4,6 +4,30 @@ extends SceneTree
 
 
 func _init():
+	for arg in OS.get_cmdline_args():
+		if arg == '---version':
+			var info : Dictionary = Engine.get_version_info()
+			var major : int = info.get("major")
+			var minor : int = info.get("minor")
+			var status : String = info.get("status")
+			var build : String = info.get("build")
+			var id : String = info.get("hash")
+			print("GDScript2PythonTranspiler")
+			print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
+			var stdout : Array = []
+			OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
+			for line in stdout:
+				print("Python: " + line)
+			quit()
+			return
+		if arg ==  '---help':
+			print("Usage: main.py [options] main_script.gd");
+			print();
+			print("Options:");
+			print("  " + '---version' + "            " + "show program's version number and exit");
+			print("  " + '---help' + "               " + "show this help message and exit");
+			quit()
+			return
 	var main = Main.new()
 	var path : String = "res://main.gd"
 	var path2 : String = "res://main.py"
@@ -132,11 +156,26 @@ class Main:
 			e += "False"
 			e += " "
 			return e
+		if arg == "&&":
+			e += "and"
+			e += " "
+			return e
+		if arg == "||":
+			e += "or"
+			e += " "
+			return e
 		if arg == ":":
 			return e
 		if arg == "extends":
 			return e
 		if arg == "File":
+			return e
+		if arg == "OS.execute('python',['-c','import":
+			self.sys_imp = true
+			return e
+		if arg == "sys;print(sys.version)'],stdout,true,false)":
+			e += "stdout = [sys.version]"
+			e += " "
 			return e
 		if arg == "quit()":
 			e += "sys.exit()"
@@ -193,6 +232,9 @@ class Main:
 			arg = arg.replace(".contains", ".find")
 			arg = "0 <= " + arg
 			con = true
+		while arg.contains("---"):
+			arg = arg.replace("---", "--")
+			con = true
 		while arg.contains("File.READ"):
 			var r : String = ""
 			r += "\""
@@ -221,6 +263,12 @@ class Main:
 			con = true
 		while (arg.contains("_self")):
 			arg = arg.replace("_self", "self")
+			con = true
+		while (arg.contains("OS.get_cmdline_args()")):
+			arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
+			con = true
+		while (arg.contains("Engine.get_version_info()")):
+			arg = arg.replace("Engine.get_version_info()", str(Engine.get_version_info()))
 			con = true
 		var found : bool = false
 		for type in self.types:
