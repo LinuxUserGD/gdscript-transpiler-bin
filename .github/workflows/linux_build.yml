@@ -19,8 +19,11 @@ jobs:
         run: |
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
 
-      - name: Setup Python and Scons
-        uses: ./.github/actions/godot-deps
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
 
       - name: Install Dependencies
         run: |
