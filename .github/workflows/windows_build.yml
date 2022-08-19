@@ -18,6 +18,7 @@ jobs:
       - name: Update script
         run: |
           Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py -OutFile 'main.py'
+          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -OutFile 'requirements.txt'
 
       - name: Setup Python
         uses: actions/setup-python@v4
