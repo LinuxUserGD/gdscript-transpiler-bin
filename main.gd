@@ -2,47 +2,66 @@
 
 extends SceneTree
 
-
 func _init():
 	for arg in OS.get_cmdline_args():
 		if arg == '---version':
-			var info : Dictionary = Engine.get_version_info()
-			var major : int = info.get("major")
-			var minor : int = info.get("minor")
-			var status : String = info.get("status")
-			var build : String = info.get("build")
-			var id : String = info.get("hash")
-			print("GDScript2PythonTranspiler")
-			print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
-			var stdout : Array = []
-			OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
-			for line in stdout:
-				print("Python: " + line)
+			version()
 			quit()
 			return
 		if arg ==  '---help':
-			print("Usage: main.py [options] main_script.gd");
-			print();
-			print("Options:");
-			print("  " + '---version' + "            " + "show program's version number and exit");
-			print("  " + '---help' + "               " + "show this help message and exit");
+			help()
 			quit()
 			return
-	var main = Main.new()
-	var path : String = "res://main.gd"
-	var path2 : String = "res://main.py"
-	var _self : String = ""
-	var content : String = main.read(_self, path)
-	var out : String = main.transpile(_self, content)
-	if main.verbose:
-		print(out)
-	main.save(_self, path2, out)
+		var path_arg : String = '---path='
+		if arg.begins_with(path_arg):
+			var path : String = "res://" + arg.split("=")[1]
+			var args = arg.split("=")[1].split(".")
+			var c : int = args.size()
+			var pathstr : String = ""
+			for path_str in arg.split("=")[1].split("."):
+				c -= 1
+				if c != 0:
+					pathstr += path_str + "."
+			var path2 : String = "res://" + pathstr + "py"
+			var _self : String = ""
+			var main = Main.new()
+			var content : String = main.read(_self, path)
+			var out : String = main.transpile(_self, content)
+			if main.verbose:
+				print(out)
+			main.save(_self, path2, out)
+			quit()
+			return
+	help()
 	quit()
+	return
+
+
+func version():
+	var info : Dictionary = Engine.get_version_info()
+	var major : int = info.get("major")
+	var minor : int = info.get("minor")
+	var status : String = info.get("status")
+	var build : String = info.get("build")
+	var id : String = info.get("hash")
+	print("GDScript2PythonTranspiler")
+	print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
+	var stdout : Array = []
+	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
+	for line in stdout:
+		print("Python: " + line)
+
+func help():
+	print("Usage: main.py [options] main_script.gd");
+	print();
+	print("Options:");
+	print("  " + '---version' + "            " + "show program's version number and exit");
+	print("  " + '---help' + "               " + "show this help message and exit");
 
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var debug : bool = true
+	var debug : bool = false
 	var right_def : bool = false
 	var left_def : bool = false
 	var sys_imp : bool = true
