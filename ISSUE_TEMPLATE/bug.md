@@ -1,29 +1,33 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: Bug report
-labels: bug
-assignees: LinuxUserGD
+
+name: "Bug report"
+about: "Create a report to help us improve"
+title: "Bug report"
+ref: "dev"
+labels: "bug"
+assignees: "LinuxUserGD"
+
+- bug
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Describe the bug
+<!-- A clear and concise description of what the bug is. -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## To Reproduce
+<!-- Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
-4. See error
+4. See error -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Expected behavior
+<!-- A clear and concise description of what you expected to happen. -->
 
-**Please complete the following information:**
- - OS: [e.g. iOS]
- - Version [e.g. 22]
+<!-- Please complete the following information: -->
+ - **OS:** [e.g. Ubuntu Linux powerpc, macOS M1, Windows 11 x86_64]
+ - **Version:** [e.g. Python version 3.10, Godot 4.0 commit, Nuitka version]
 
 
-**Additional context**
-Add any other context about the problem here.
+## Additional context
+<!-- Add any other context about the problem here. -->
