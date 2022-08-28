@@ -1,13 +1,13 @@
 ---
 
-name: "Bug report"
-about: "Create a report to help us improve"
-title: "Bug report"
-ref: "dev"
-labels: "bug"
-assignees: "LinuxUserGD"
-
+name: "Bug Report"
+about: "Issue with gdscript-transpiler-bin"
+title: "Bug Report"
+ref: "main"
+labels:
 - bug
+assignees:
+- LinuxUserGD
 
 ---
 
@@ -25,8 +25,8 @@ assignees: "LinuxUserGD"
 <!-- A clear and concise description of what you expected to happen. -->
 
 <!-- Please complete the following information: -->
- - **OS:** [e.g. Ubuntu Linux powerpc, macOS M1, Windows 11 x86_64]
- - **Version:** [e.g. Python version 3.10, Godot 4.0 commit, Nuitka version]
+ - **OS:** <!-- e.g. Ubuntu Linux powerpc, macOS M1, Windows 11 x86_64 -->
+ - **Version:** <!-- e.g. Python version 3.10, Godot 4.0 commit, Nuitka version] -->
 
 
 ## Additional context
