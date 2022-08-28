@@ -1,4 +1,6 @@
-# GDScript2PythonTranspiler
+# GDScript to Python to C Transpiler
+
+<h2>gdscript-transpiler-bin</h2>
 
 A GDScript and Python runtime environment.
 Minimal Scripts can be transpiled to Python.
@@ -7,6 +9,8 @@ Binary builds are compiled with [Nuitka](https://github.com/Nuitka/Nuitka):
 - https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions
 
 For Python script generated from `main.gd`, see [LinuxUserGD/main.py](https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d).
+
+[![Icon](icon.svg)](icon.svg)
 
 ## License
 
