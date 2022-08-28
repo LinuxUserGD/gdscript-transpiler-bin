@@ -2,7 +2,7 @@
 
 <h2>gdscript-transpiler-bin</h2>
 
-A GDScript and Python runtime environment.
+A GDScript compiler and Python runtime environment.
 Minimal Scripts can be transpiled to Python.
 
 Binary builds are compiled with [Nuitka](https://github.com/Nuitka/Nuitka):
