@@ -66,6 +66,7 @@ func help():
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
+	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","File":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","File.new()":"",}
 	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
@@ -155,67 +156,30 @@ class Main:
 		while (arg.begins_with("	")):
 			e += "	"
 			arg = arg.right(arg.length()-1)
-		if arg == "-s":
-			return e
 		if arg in self.types:
 			return e
-		if arg == "var":
+		elif arg in ["-s", "var", "Node", "SceneTree", "extends", "File"]:
+			e += self.repl_dict[arg]
 			return e
-		if arg == "Node":
-			return e
-		if arg == "SceneTree":
-			return e
-		if arg == "_ready():":
-			e += "_init():"
+		elif arg in ["_ready():", "func", "true", "false", "&&", "||", "sys;print(sys.version)'],stdout,true,false)", "';print(Version.getNuitkaVersion())'],stdout,true,false)"]:
+			e += self.repl_dict[arg]
 			e += " "
 			return e
-		if arg == "func":
-			e += "def"
-			e += " "
-			return e
-		if arg == "true":
-			e += "True"
-			e += " "
-			return e
-		if arg == "false":
-			e += "False"
-			e += " "
-			return e
-		if arg == "&&":
-			e += "and"
-			e += " "
-			return e
-		if arg == "||":
-			e += "or"
-			e += " "
-			return e
-		if arg == ":":
-			return e
-		if arg == "extends":
-			return e
-		if arg == "File":
-			return e
-		if arg == "OS.execute('python',['-c','import":
+		elif arg == "OS.execute('python',['-c','import":
+			e += self.repl_dict[arg]
 			self.sys_imp = true
 			return e
-		if arg == "sys;print(sys.version)'],stdout,true,false)":
-			e += "stdout = [sys.version]"
-			e += " "
-			return e
-		if arg == "OS.execute('python',['-c',import_str+":
+		elif arg == "OS.execute('python',['-c',import_str+":
+			e += self.repl_dict[arg]
 			self.nuitka_imp = true
 			return e
-		if arg == "';print(Version.getNuitkaVersion())'],stdout,true,false)":
-			e += "stdout = [Version.getNuitkaVersion()]"
-			e += " "
-			return e
-		if arg == "quit()":
-			e += "sys.exit()"
+		elif arg == "quit()":
+			e += self.repl_dict[arg]
 			e += " "
 			self.sys_imp = true
 			return e
-		if arg == "#!/usr/bin/godot":
-			e += "#!/usr/bin/env python"
+		elif arg == "#!/usr/bin/godot":
+			e += self.repl_dict[arg]
 			if self.sys_imp:
 				e += "\n"
 				e += "import sys"
@@ -224,7 +188,8 @@ class Main:
 				e += "from nuitka import Version"
 			e += " "
 			return e
-		if arg == "File.new()":
+		elif arg == "File.new()":
+			e += self.repl_dict[arg]
 			e += "\""
 			e += "\""
 			e += " "
@@ -336,4 +301,16 @@ class Main:
 			e += self.dict(_self, arg)
 		while e.contains("	"):
 			e = e.replace("	", "   ")
+		while e.contains(": ="):
+			e = e.replace(": =", "=")
+		while e.contains(":="):
+			e = e.replace(":=", "=")
+		while e.contains(": )"):
+			e = e.replace(": )", ")")
+		while e.contains(":)"):
+			e = e.replace(":)", ")")
+		while e.contains(": ,"):
+			e = e.replace(": ,", ",")
+		while e.contains(":,"):
+			e = e.replace(":,", ",")
 		return e
