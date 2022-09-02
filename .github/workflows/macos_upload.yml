@@ -11,11 +11,15 @@ jobs:
     runs-on: "ubuntu-latest"
     name: macOS itch.io Upload
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2.0.8
+      - uses: actions/checkout@master
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
         with:
-          name: MacOS Build
-          path: build/main.bin
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: MacOS Build
+          rename: mac
+          wait_seconds: 10
 
       - name: Upload to itch.io
         uses: manleydev/butler-publish-itchio-action@master
@@ -24,4 +28,4 @@ jobs:
           CHANNEL: mac
           ITCH_GAME: gdscript-transpiler-bin
           ITCH_USER: linuxusergd
-          PACKAGE: build/main.bin
+          PACKAGE: mac.zip
