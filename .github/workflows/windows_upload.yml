@@ -11,11 +11,15 @@ jobs:
     runs-on: "ubuntu-latest"
     name: Windows itch.io Upload
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2.0.8
+      - uses: actions/checkout@master
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
         with:
-          name: Windows Build
-          path: build/main.exe
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Windows Build
+          rename: windows
+          wait_seconds: 10
 
       - name: Upload to itch.io
         uses: manleydev/butler-publish-itchio-action@master
@@ -24,4 +28,4 @@ jobs:
           CHANNEL: windows
           ITCH_GAME: gdscript-transpiler-bin
           ITCH_USER: linuxusergd
-          PACKAGE: build/main.exe
+          PACKAGE: windows.zip
