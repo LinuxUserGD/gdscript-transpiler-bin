@@ -18,7 +18,7 @@ jobs:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: Windows Build
-          rename: windows
+          rename: windows.zip
           wait_seconds: 10
 
       - name: Upload to itch.io
