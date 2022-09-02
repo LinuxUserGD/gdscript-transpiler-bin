@@ -18,7 +18,7 @@ jobs:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: Linux Build
-          rename: linux
+          rename: linux.zip
           wait_seconds: 10
 
       - name: Upload to itch.io
