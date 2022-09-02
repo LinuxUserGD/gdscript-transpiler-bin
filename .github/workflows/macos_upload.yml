@@ -18,7 +18,7 @@ jobs:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: MacOS Build
-          rename: mac
+          rename: macOS.zip
           wait_seconds: 10
 
       - name: Upload to itch.io
@@ -28,4 +28,4 @@ jobs:
           CHANNEL: mac
           ITCH_GAME: gdscript-transpiler-bin
           ITCH_USER: linuxusergd
-          PACKAGE: mac.zip
+          PACKAGE: macOS.zip
