@@ -44,7 +44,7 @@ jobs:
           enable-plugins: anti-bloat
 
       - name: Upload to itch.io
-      - uses: manleydev/butler-publish-itchio-action@master
+        uses: manleydev/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: mac
