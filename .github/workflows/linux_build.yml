@@ -43,6 +43,15 @@ jobs:
           onefile: true
           enable-plugins: anti-bloat
 
+      - name: Upload to itch.io
+      - uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: linux
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: build/main.bin
+
       - name: Upload main.bin
         uses: actions/upload-artifact@v3
         with:
