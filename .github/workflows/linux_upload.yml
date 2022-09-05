@@ -1,0 +1,31 @@
+name: 🐧 Linux Upload
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["🐧 Linux Build"]
+    types:
+      - completed
+
+jobs:
+  build-linux:
+    runs-on: "ubuntu-latest"
+    name: Linux itch.io Upload
+    steps:
+      - uses: actions/checkout@master
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Linux Build
+          rename: linux.zip
+          wait_seconds: 10
+
+      - name: Upload to itch.io
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: linux
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: linux.zip
