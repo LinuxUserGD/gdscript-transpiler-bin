@@ -67,12 +67,12 @@ class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
 	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","File":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","File.new()":"",}
-	var debug : bool = true
+	var debug : bool = false
 	var right_def : bool = false
 	var left_def : bool = false
 	var sys_imp : bool = true
 	var nuitka_imp : bool = true
-	var verbose : bool = true
+	var verbose : bool = false
 	
 	func transpile(_self : String, content : String):
 		self.types.sort()
@@ -142,6 +142,8 @@ class Main:
 				out = out.replace(res, "")
 			while out.contains("if") and out.ends_with("\""):
 				out += ":"
+			if out.ends_with(" "):
+				out = out.left(out.length()-1)
 			out += "\n"
 		return out
 	
