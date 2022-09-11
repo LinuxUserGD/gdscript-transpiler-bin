@@ -71,7 +71,7 @@ func help():
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","File":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","File.new()":"","self.quit()":"quit()","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"~audio~",}
+	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","File":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","self.quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","File.new()":"","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"~audio~",}
 	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
@@ -162,7 +162,7 @@ class Main:
 		elif arg in ["-s", "var", "Node", "SceneTree", "extends", "File"]:
 			e += self.repl_dict[arg]
 			return e
-		elif arg in ["_ready():", "func", "true", "false", "&&", "||", "sys;print(sys.version)'],stdout,true,false)", "';print(Version.getNuitkaVersion())'],stdout,true,false)", "self.quit()", "(self.root.has_node(player)):", "self.root.add_child(player)", "player", "player.name", "player.stream", "player.stream.data", "player.play()"]:
+		elif arg in ["_ready():", "func", "true", "false", "&&", "||", "sys;print(sys.version)'],stdout,true,false)", "';print(Version.getNuitkaVersion())'],stdout,true,false)", "(self.root.has_node(player)):", "self.root.add_child(player)", "player", "player.name", "player.stream", "player.stream.data", "player.play()"]:
 			e += self.repl_dict[arg]
 			e += " "
 			return e
@@ -174,7 +174,7 @@ class Main:
 			e += self.repl_dict[arg]
 			self.nuitka_imp = true
 			return e
-		elif arg == "quit()":
+		elif arg == "quit()" or arg == "self.quit()":
 			e += self.repl_dict[arg]
 			e += " "
 			self.sys_imp = true
