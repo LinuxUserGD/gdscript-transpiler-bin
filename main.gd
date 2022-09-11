@@ -189,6 +189,8 @@ class Main:
 				e += "from nuitka import Version"
 			if self.audio_imp:
 				e += "\n"
+				e += "import os"
+				e += "\n"
 				e += "from base64 import b64decode"
 				e += "\n"
 				e += "from tempfile import NamedTemporaryFile"
