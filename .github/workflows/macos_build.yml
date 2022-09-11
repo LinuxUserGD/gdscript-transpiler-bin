@@ -41,6 +41,7 @@ jobs:
         with:
           script-name: main.py
           onefile: true
+          clang: true
           enable-plugins: anti-bloat
 
       - name: Upload main.bin
