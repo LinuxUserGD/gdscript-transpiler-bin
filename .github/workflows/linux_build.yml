@@ -29,6 +29,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          apt-get update
+          apt-get install libasound2
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
