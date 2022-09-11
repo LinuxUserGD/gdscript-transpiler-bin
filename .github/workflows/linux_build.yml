@@ -29,6 +29,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo cp -f .github/workflows/sources.list /etc/apt/sources.list
           apt-get update
           apt-get install libasound2
           python -m pip install --upgrade pip
