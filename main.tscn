@@ -28,12 +28,12 @@ anchor_bottom = 1.0
 split_offset = 640
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
-offset_right = 656.0
-offset_bottom = 600.0
+offset_right = 16.0
+offset_bottom = 38.0
 
 [node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/VBoxContainer"]
-offset_right = 656.0
-offset_bottom = 600.0
+offset_right = 16.0
+offset_bottom = 38.0
 size_flags_vertical = 3
 theme = ExtResource("4")
 text = "extends Node
@@ -75,17 +75,18 @@ script = ExtResource("3")
 metadata/_edit_layout_mode = 1
 
 [node name="ok" type="HSplitContainer" parent="HSplitContainer"]
-offset_left = 668.0
-offset_right = 1024.0
-offset_bottom = 600.0
+offset_left = 28.0
+offset_right = 73.0
+offset_bottom = 38.0
+split_offset = 640
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HSplitContainer/ok"]
 offset_right = 16.0
-offset_bottom = 600.0
+offset_bottom = 38.0
 
 [node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/ok/VBoxContainer2"]
 offset_right = 16.0
-offset_bottom = 600.0
+offset_bottom = 38.0
 size_flags_vertical = 3
 theme = ExtResource("4")
 text = "extends Node
@@ -116,13 +117,13 @@ metadata/_edit_layout_mode = 1
 
 [node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok"]
 offset_left = 28.0
-offset_right = 356.0
-offset_bottom = 600.0
+offset_right = 45.0
+offset_bottom = 38.0
 
 [node name="ErrorLabel" type="Label" parent="HSplitContainer/ok/OutputPanel"]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 320.0
+offset_right = 9.0
 offset_bottom = 30.0
 size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.772549, 0, 0, 1)
@@ -132,8 +133,8 @@ clip_text = true
 [node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer/ok/OutputPanel"]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 320.0
-offset_bottom = 592.0
+offset_right = 9.0
+offset_bottom = 30.0
 focus_mode = 2
 scroll_following = true
 selection_enabled = true

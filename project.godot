@@ -8,9 +8,6 @@
 
 config_version=5
 
-_global_script_classes=[]
-_global_script_class_icons={}
-
 [application]
 
 config/name="GDScript2PythonTranspiler"
@@ -21,6 +18,10 @@ config/icon="res://icon.png"
 
 [display]
 
+window/size/viewport_width=0
+window/size/viewport_height=0
+window/size/resizable=false
+window/size/borderless=true
 window/energy_saving/keep_screen_on=false
 window/handheld/orientation="sensor_landscape"
 window/size/width=1280
