@@ -35,12 +35,19 @@ jobs:
       - name: Generate Python Script
         run: |
           python main.py
+      
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v1
+        with:
+          version: latest
+          platform: x64
 
       - name: Build Executable
         uses: LinuxUserGD/Nuitka-Action@v0.5
         with:
           script-name: main.py
           onefile: true
+          clang: true
           enable-plugins: anti-bloat
 
       - name: Upload main.exe
