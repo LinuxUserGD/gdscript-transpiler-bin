@@ -33,7 +33,7 @@ jobs:
           sudo rm -f /etc/apt/sources.list.d/*
           sudo cp -f sources.list /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install libasound2
+          sudo apt-get install libasound2-dev
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
