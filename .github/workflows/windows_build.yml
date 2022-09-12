@@ -50,8 +50,8 @@ jobs:
           clang: true
           enable-plugins: anti-bloat
 
-      - name: Upload main.exe
+      - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
           name: Windows Build
-          path: build/main.exe
+          path: build/main.dist
