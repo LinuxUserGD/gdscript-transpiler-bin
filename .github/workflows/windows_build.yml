@@ -46,7 +46,7 @@ jobs:
         uses: LinuxUserGD/Nuitka-Action@v0.5
         with:
           script-name: main.py
-          onefile: true
+          onefile: false
           clang: true
           enable-plugins: anti-bloat
 
