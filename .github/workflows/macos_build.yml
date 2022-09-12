@@ -44,8 +44,8 @@ jobs:
           clang: true
           enable-plugins: anti-bloat
 
-      - name: Upload main.bin
+      - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
           name: MacOS Build
-          path: build/main.bin
+          path: build/main.dist
