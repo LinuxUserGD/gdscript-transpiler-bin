@@ -47,7 +47,6 @@ jobs:
           script-name: main.py
           onefile: false
           clang: true
-          enable-plugins: anti-bloat
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
