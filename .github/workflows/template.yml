@@ -81,8 +81,7 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
         run: |
           python -m pip install --upgrade pip requests
-          gdscript-transpiler-bin/godot-bin --headless --verbose -s gdscript-transpiler-bin/main.gd ---path=gdscript-transpiler-bin/main.gd
-          mv gdscript-transpiler-bin/main.py .
+          cd gdscript-transpiler-bin && godot-bin --headless --verbose -s main.gd ---path=main.gd
           mv .github/workflows/api.py .
           echo "Uploading main.py to gist..."
           python api.py
