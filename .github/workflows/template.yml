@@ -86,6 +86,23 @@ jobs:
           echo "Uploading main.py to gist..."
           python api.py
 
+      - uses: actions/checkout@master
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Linux Build
+          rename: Godot_export_templates.tpz.zip
+          wait_seconds: 10
+
+      - name: Setup
+        run: |
+          unzip Godot_export_templates.tpz.zip
+          unzip Godot_v4.0-beta1_export_templates.tpz
+          mkdir -p ~/.local/share/godot/templates/
+          mv templates/* ~/.local/share/godot/templates/
+
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
