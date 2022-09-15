@@ -1,0 +1,29 @@
+name: "godot-ci download"
+on:
+  push:
+    branches:
+      - none
+
+env:
+  GODOT_VERSION: "4.0"
+  RELEASE_NAME: beta1
+
+jobs:
+  export-templates:
+    name: Templates Export
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Setup
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_linux.x86_64.zip
+          wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot_linux.x86_64.zip
+          path: Godot_v4.0-beta1_linux.x86_64.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot_export_templates.tpz
+          path: Godot_v4.0-beta1_export_templates.tpz
