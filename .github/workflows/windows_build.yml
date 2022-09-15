@@ -34,7 +34,7 @@ jobs:
 
       - name: Generate Python Script
         run: |
-          python main.py --path=gdscript-transpiler-bin/main.gd
+          python main.py --path=main.gd
       
       - name: Set up Clang
         uses: egor-tensin/setup-clang@v1
