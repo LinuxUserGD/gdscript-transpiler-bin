@@ -86,7 +86,6 @@ jobs:
           echo "Uploading main.py to gist..."
           python api.py
 
-      - uses: actions/checkout@master
       - name: Download artifact from build
         uses: bettermarks/action-artifact-download@0.3.0
         with:
@@ -96,7 +95,6 @@ jobs:
           rename: Godot_export_templates.tpz.zip
           wait_seconds: 10
 
-      - uses: actions/checkout@master
       - name: Download artifact from build
         uses: bettermarks/action-artifact-download@0.3.0
         with:
