@@ -82,7 +82,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip requests
           cd gdscript-transpiler-bin && ./godot-bin --headless --verbose -s main.gd ---path=main.gd
-          mv .github/workflows/api.py .
+          mv ../.github/workflows/api.py .
           echo "Uploading main.py to gist..."
           python api.py
 
