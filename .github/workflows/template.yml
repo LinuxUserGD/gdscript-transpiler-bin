@@ -114,7 +114,9 @@ jobs:
           mkdir -p ~/.local/share/godot/templates/
           mv templates/* ~/.local/share/godot/templates/
           mkdir -p gdscript-transpiler-bin/dist/
-          cd gdscript-transpiler-bin && ./godot --headless -v --export "HTML5" dist/index.html
+          cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
+          ./godot --headless -v --export "HTML5" gdscript-transpiler-bin.zip
+          mv gdscript-transpiler-bin.zip dist && cd dist && unzip gdscript-transpiler-bin.zip && rm gdscript-transpiler-bin.zip
 
       - name: Minify files
         run: |
