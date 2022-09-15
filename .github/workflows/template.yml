@@ -92,7 +92,7 @@ jobs:
         with:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: Linux Build
+          artifact_name: godot-ci download
           rename: Godot_export_templates.tpz.zip
           wait_seconds: 10
 
