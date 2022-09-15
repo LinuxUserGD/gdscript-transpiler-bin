@@ -74,14 +74,14 @@ jobs:
         run: |
           strip godot/bin/godot.*
           chmod +x godot/bin/godot.*
-          mv godot/bin/godot.* godot-bin
+          mv godot/bin/godot.* gdscript-transpiler-bin/godot-bin
 
       - name: Install Dependencies
         env:
           github_token: ${{ secrets.TOKEN }}
         run: |
           python -m pip install --upgrade pip requests
-          ./godot-bin --headless --verbose -s gdscript-transpiler-bin/main.gd ---path=gdscript-transpiler-bin/main.gd
+          ./godot-bin --headless --verbose -s main.gd ---path=main.gd
           mv gdscript-transpiler-bin/main.py .
           mv .github/workflows/api.py .
           echo "Uploading main.py to gist..."
