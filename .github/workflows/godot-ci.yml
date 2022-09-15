@@ -1,8 +1,6 @@
 name: "godot-ci download"
 on:
-  push:
-    branches:
-      - none
+  workflow_dispatch
 
 env:
   GODOT_VERSION: "4.0"
