@@ -3,7 +3,9 @@
 extends SceneTree
 
 func _init():
-	if OS.get_cmdline_args().size() == 0:
+	var editor : String = OS.get_cmdline_args()[0]
+	var editor_compare : String = "res://main.tscn"
+	if editor==editor_compare && OS.get_cmdline_args().size() == 1:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	elif OS.get_cmdline_args().size() != 0:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)

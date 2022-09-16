@@ -17,21 +17,27 @@ symbol_color = Color(1, 1, 1, 1)
 function_color = Color(0.27451, 0.47451, 0.65098, 1)
 
 [node name="MainWindow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("4")
 script = ExtResource("5")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 split_offset = 640
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
+layout_mode = 2
 offset_right = 16.0
 offset_bottom = 38.0
 
 [node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/VBoxContainer"]
+layout_mode = 2
 offset_right = 16.0
 offset_bottom = 38.0
 size_flags_vertical = 3
@@ -45,16 +51,16 @@ highlight_current_line = true
 draw_tabs = true
 syntax_highlighter = SubResource("CodeHighlighter_wdykl")
 caret_blink = true
-caret_blink_speed = 0.5
 script = ExtResource("2")
 
 [node name="RunButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -80.0
 offset_bottom = 33.0
 grow_horizontal = 0
-hint_tooltip = "Shortcut: Ctrl + Enter"
 theme_override_fonts/font = ExtResource("4_5pn77")
 text = "Run"
 script = ExtResource("3")
@@ -62,29 +68,33 @@ metadata/_edit_layout_mode = 1
 
 [node name="TranspileButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
 visible = false
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -80.0
 offset_top = 39.0
 offset_bottom = 72.0
 grow_horizontal = 0
-hint_tooltip = "Shortcut: Ctrl + Enter"
 theme_override_fonts/font = ExtResource("4_5pn77")
 text = "Transpile"
 script = ExtResource("3")
 metadata/_edit_layout_mode = 1
 
 [node name="ok" type="HSplitContainer" parent="HSplitContainer"]
+layout_mode = 2
 offset_left = 28.0
 offset_right = 73.0
 offset_bottom = 38.0
 split_offset = 640
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HSplitContainer/ok"]
+layout_mode = 2
 offset_right = 16.0
 offset_bottom = 38.0
 
 [node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/ok/VBoxContainer2"]
+layout_mode = 2
 offset_right = 16.0
 offset_bottom = 38.0
 size_flags_vertical = 3
@@ -100,27 +110,29 @@ highlight_current_line = true
 draw_tabs = true
 syntax_highlighter = SubResource("CodeHighlighter_r1olw")
 caret_blink = true
-caret_blink_speed = 0.5
 script = ExtResource("2")
 
 [node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor"]
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -80.0
 offset_bottom = 33.0
 grow_horizontal = 0
-hint_tooltip = "Shortcut: Ctrl + Enter"
 theme_override_fonts/font = ExtResource("4_5pn77")
 text = "Run"
 script = ExtResource("3")
 metadata/_edit_layout_mode = 1
 
 [node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok"]
+layout_mode = 2
 offset_left = 28.0
 offset_right = 45.0
 offset_bottom = 38.0
 
 [node name="ErrorLabel" type="Label" parent="HSplitContainer/ok/OutputPanel"]
+layout_mode = 2
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 9.0
@@ -131,6 +143,7 @@ theme_override_fonts/font = ExtResource("4_5pn77")
 clip_text = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer/ok/OutputPanel"]
+layout_mode = 2
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 9.0
@@ -141,6 +154,8 @@ selection_enabled = true
 
 [node name="EngineVersion" type="Label" parent="."]
 modulate = Color(1, 1, 1, 0.501961)
+layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -132.0
