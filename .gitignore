@@ -12,10 +12,6 @@ data_*/
 # Python
 *.py
 
-# Imported assets
-.import/
-.godot/
-
 # GitHub Workflows
 #.github/
 
