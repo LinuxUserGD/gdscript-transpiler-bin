@@ -116,8 +116,8 @@ jobs:
           mv templates/* ~/.local/share/godot/export_templates/4.0.beta1/
           mkdir -p gdscript-transpiler-bin/dist/
           cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
-          ./godot project.godot -v --quit --headless
-          ./godot -v --export "Web" --headless --quit index.html
+          timeout 10 ./godot project.godot -v --quit --headless
+          timeout 10 ./godot -v --export "Web" --headless --quit index.html
           mv index* dist/
 
       - name: Minify files
