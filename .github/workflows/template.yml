@@ -130,7 +130,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2.2.3
         with:
-          name: ${{ env.EXPORT_NAME }}-html5
+          name: html5
           path: gdscript-transpiler-bin/dist
 
       - name: Delete workflow runs
