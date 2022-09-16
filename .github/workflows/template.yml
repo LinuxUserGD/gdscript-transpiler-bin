@@ -111,8 +111,8 @@ jobs:
           unzip Godot_linux.x86_64.zip.zip
           unzip Godot_v4.0-beta1_linux.x86_64.zip
           mv Godot_v4.0-beta1_linux.x86_64 gdscript-transpiler-bin/godot
-          mkdir -p ~/.local/share/godot/export_templates/4.0.beta/
-          mv templates/* ~/.local/share/godot/export_templates/4.0.beta/
+          sudo mkdir -p ~/root/.local/share/godot/export_templates/4.0.beta1/
+          sudo mv templates/* ~/root/.local/share/godot/export_templates/4.0.beta1/
           mkdir -p gdscript-transpiler-bin/dist/
           cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
           sudo ./godot --headless -v --export "Web" dist/index.html
