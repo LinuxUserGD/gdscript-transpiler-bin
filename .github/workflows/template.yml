@@ -115,14 +115,14 @@ jobs:
           mv templates/* ~/.local/share/godot/export_templates/4.0.beta/
           mkdir -p gdscript-transpiler-bin/dist/
           cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
-          ./godot --headless -v --export "Web" dist/index.html
+          sudo ./godot --headless -v --export "Web" dist/index.html
 
       - name: Minify files
         run: |
           wget https://github.com/tdewolff/minify/releases/download/v2.9.15/minify_linux_amd64.tar.gz
           tar xf minify_linux_amd64.tar.gz minify
           mv minify gdscript-transpiler-bin/
-          cd gdscript-transpiler-bin && ./minify --recursive dist --output .
+          cd gdscript-transpiler-bin && sudo ./minify --recursive dist --output .
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2.2.3
