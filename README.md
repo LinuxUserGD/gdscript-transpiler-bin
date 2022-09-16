@@ -10,7 +10,7 @@ Binary builds are compiled with [Nuitka](https://github.com/Nuitka/Nuitka):
 
 For Python script generated from `main.gd`, see [LinuxUserGD/main.py](https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d).
 
-[![Icon](icon.svg)](icon.svg)
+[![Icon](gdscript-transpiler-bin/icon.svg)](gdscript-transpiler-bin/icon.svg)
 
 ## License
 

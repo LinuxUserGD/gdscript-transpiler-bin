@@ -74,17 +74,62 @@ jobs:
         run: |
           strip godot/bin/godot.*
           chmod +x godot/bin/godot.*
-          mv godot/bin/godot.* godot-bin
+          mv godot/bin/godot.* gdscript-transpiler-bin/godot-bin
 
       - name: Install Dependencies
         env:
           github_token: ${{ secrets.TOKEN }}
         run: |
           python -m pip install --upgrade pip requests
-          ./godot-bin --headless --verbose -s main.gd ---path=main.gd
-          mv .github/workflows/api.py .
+          cd gdscript-transpiler-bin && ./godot-bin --headless --verbose -s main.gd ---path=main.gd
+          mv ../.github/workflows/api.py .
           echo "Uploading main.py to gist..."
           python api.py
+
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Godot_export_templates.tpz
+          rename: Godot_export_templates.tpz.zip
+          wait_seconds: 10
+
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Godot_linux.x86_64.zip
+          rename: Godot_linux.x86_64.zip.zip
+          wait_seconds: 10
+
+      - name: Setup
+        run: |
+          unzip Godot_export_templates.tpz.zip
+          unzip Godot_v4.0-beta1_export_templates.tpz
+          unzip Godot_linux.x86_64.zip.zip
+          unzip Godot_v4.0-beta1_linux.x86_64.zip
+          mv Godot_v4.0-beta1_linux.x86_64 gdscript-transpiler-bin/godot
+          mkdir -p ~/.local/share/godot/templates/
+          mv templates/* ~/.local/share/godot/templates/
+          mkdir -p gdscript-transpiler-bin/dist/
+          cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
+          ./godot --headless -v --export "HTML5" gdscript-transpiler-bin.zip
+          mv gdscript-transpiler-bin.zip dist && cd dist && unzip gdscript-transpiler-bin.zip && rm gdscript-transpiler-bin.zip
+
+      - name: Minify files
+        run: |
+          wget https://github.com/tdewolff/minify/releases/download/v2.9.15/minify_linux_amd64.tar.gz
+          tar xf minify_linux_amd64.tar.gz minify
+          mv minify gdscript-transpiler-bin/
+          cd gdscript-transpiler-bin && ./minify --recursive dist --output .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: ${{ env.EXPORT_NAME }}-html5
+          path: gdscript-transpiler-bin/dist
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
@@ -93,3 +138,28 @@ jobs:
           repository: ${{ github.repository }}
           retain_days: 0
           keep_minimum_runs: 0
+          delete_workflow_pattern: Upload
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: Build
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: Template
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: OSSAR
