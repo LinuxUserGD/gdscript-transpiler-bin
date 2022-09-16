@@ -110,11 +110,13 @@ jobs:
           unzip Godot_v4.0-beta1_export_templates.tpz
           unzip Godot_linux.x86_64.zip.zip
           unzip Godot_v4.0-beta1_linux.x86_64.zip
+          sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev
           mv Godot_v4.0-beta1_linux.x86_64 gdscript-transpiler-bin/godot
           mkdir -p ~/.local/share/godot/export_templates/4.0.beta1/
           mv templates/* ~/.local/share/godot/export_templates/4.0.beta1/
           mkdir -p gdscript-transpiler-bin/dist/
           cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
+          ./godot -e --headless --quit
           ./godot --headless -v --export "Web" dist/index.html
 
       - name: Minify files
