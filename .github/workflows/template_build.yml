@@ -56,6 +56,19 @@ jobs:
           "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip.zip
           "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip
 
+      - name: Download godot.zip
+        env:
+          INPUT_TOKEN: ${{ secrets.TOKEN }}
+          INPUT_ARTIFACT_NAME: godot.zip
+          INPUT_RENAME: godot.zip.zip
+          INPUT_REPO: LinuxUserGD/gdscript-transpiler-bin
+          INPUT_WAIT_SECONDS: 10
+        shell: cmd
+        run: |
+          python main.py
+          "C:\Program Files\7-Zip\7z.exe" x godot.zip.zip
+          "C:\Program Files\7-Zip\7z.exe" x godot.zip
+
       - name: Setup
         shell: cmd
         run: |
@@ -63,6 +76,7 @@ jobs:
           "C:\Program Files\7-Zip\7z.exe" x mesa.7z
           mklink opengl32.dll "x64\opengl32.dll"
           mklink libglapi.dll "x64\libglapi.dll"
+          move .godot gdscript-transpiler-bin/
           move Godot_v4.0-beta1_win64.exe gdscript-transpiler-bin/godot.exe
           md %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
           dir
@@ -78,6 +92,7 @@ jobs:
           md dist
           md temp
           curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
+          godot.exe project.godot -v --path "../gdscript-transpiler-bin" --headless --export "Web" temp/index.html
           godot.exe --headless --export "Web" dist/index.html
 
       - name: Upload Artifact
