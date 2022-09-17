@@ -16,6 +16,7 @@ jobs:
           wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_linux.x86_64.zip
           wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_win64.exe.zip
           wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz
+          wget https://codeberg.org/attachments/78a8cfa9-db1d-4288-b057-d5b4c3475f23
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
@@ -31,3 +32,8 @@ jobs:
         with:
           name: Godot_export_templates.tpz
           path: Godot_v4.0-beta1_export_templates.tpz
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot.zip
+          path: Godot.zip
