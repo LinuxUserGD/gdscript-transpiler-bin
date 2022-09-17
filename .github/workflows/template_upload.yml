@@ -2,14 +2,14 @@ name: Template Upload
 # Only trigger, when the build workflow succeeded
 on:
   workflow_run:
-    workflows: ["Template"]
+    workflows: ["Template Build"]
     types:
       - completed
 
 jobs:
   build-linux:
     runs-on: "ubuntu-latest"
-    name: Linux itch.io Upload
+    name: Template itch.io Upload
     steps:
       - uses: actions/checkout@master
       - name: Download artifact from build
