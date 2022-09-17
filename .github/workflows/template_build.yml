@@ -90,16 +90,7 @@ jobs:
           cd gdscript-transpiler-bin
           md dist
           curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
-          godot.exe -v --quit --headless --export "Web" index.html
-          move index.apple-touch-icon.png dist/
-          move index.audio.worklet.js dist/
-          move index.html dist/
-          move index.icon.png dist/
-          move index.js dist/
-          move index.pck dist/
-          move index.png dist/
-          move index.wasm dist/
-          move index.worker.js dist/
+          godot.exe -v --quit --headless --export "Web" dist/index.html
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2.2.3
