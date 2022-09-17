@@ -35,5 +35,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: Godot.zip
-          path: Godot.zip
+          name: godot.zip
+          path: godot.zip
