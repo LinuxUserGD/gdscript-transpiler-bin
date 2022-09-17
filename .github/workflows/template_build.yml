@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install urllib3
 
-      - name: Setup
+      - name: Download Godot_export_templates.tpz
         env:
           INPUT_TOKEN: ${{ secrets.TOKEN }}
           INPUT_ARTIFACT_NAME: Godot_export_templates.tpz
@@ -39,8 +39,23 @@ jobs:
           python main.py
           "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz.zip
           "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_export_templates.tpz
+
+      - name: Download Godot_linux.x86_64.zip
+        env:
+          INPUT_TOKEN: ${{ secrets.TOKEN }}
+          INPUT_ARTIFACT_NAME: Godot_linux.x86_64.zip
+          INPUT_RENAME: Godot_linux.x86_64.zip.zip
+          INPUT_REPO: LinuxUserGD/gdscript-transpiler-bin
+          INPUT_WAIT_SECONDS: 10
+        shell: cmd
+        run: |
+          python main.py
           "C:\Program Files\7-Zip\7z.exe" x Godot_linux.x86_64.zip.zip
           "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_linux.x86_64.zip
+
+      - name: Setup
+        shell: cmd
+        run: |
           curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
           "C:\Program Files\7-Zip\7z.exe" x mesa.7z
           mklink opengl32.dll "x64\opengl32.dll"
