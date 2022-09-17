@@ -46,15 +46,15 @@ jobs:
       - name: Download Godot_linux.x86_64.zip
         env:
           INPUT_TOKEN: ${{ secrets.TOKEN }}
-          INPUT_ARTIFACT_NAME: Godot_linux.x86_64.zip
-          INPUT_RENAME: Godot_linux.x86_64.zip.zip
+          INPUT_ARTIFACT_NAME: Godot_win64.exe.zip
+          INPUT_RENAME: Godot_win64.exe.zip.zip
           INPUT_REPO: LinuxUserGD/gdscript-transpiler-bin
           INPUT_WAIT_SECONDS: 10
         shell: cmd
         run: |
           python main.py
-          "C:\Program Files\7-Zip\7z.exe" x Godot_linux.x86_64.zip.zip
-          "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_linux.x86_64.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_win64.exe.zip
 
       - name: Setup
         shell: cmd
