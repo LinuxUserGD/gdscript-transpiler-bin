@@ -14,12 +14,18 @@ jobs:
       - name: Setup
         run: |
           wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_linux.x86_64.zip
+          wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_win64.exe.zip
           wget https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: Godot_linux.x86_64.zip
           path: Godot_v4.0-beta1_linux.x86_64.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot_win64.exe.zip
+          path: Godot_v4.0-beta1_win64.exe.zip
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
