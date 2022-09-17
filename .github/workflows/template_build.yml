@@ -64,14 +64,15 @@ jobs:
           mklink opengl32.dll "x64\opengl32.dll"
           mklink libglapi.dll "x64\libglapi.dll"
           move Godot_v4.0-beta1_win64.exe gdscript-transpiler-bin/godot.exe
-          mkdir %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
-          move templates/version.txt %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
-          move templates/web_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
-          move templates/web_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
-          move templates/web_dlink_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
-          move templates/web_dlink_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          md %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
+          dir
+          move templates/version.txt %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
+          move templates/web_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
+          move templates/web_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
+          move templates/web_dlink_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
+          move templates/web_dlink_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1
           cd gdscript-transpiler-bin
-          mkdir dist
+          md dist
           curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
           ./godot.exe project.godot -v
           ./godot.exe -v --export "Web" index.html
