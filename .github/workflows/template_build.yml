@@ -1,0 +1,60 @@
+name: Template Build
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Template"]
+    types:
+      - completed
+
+concurrency:
+  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-windows
+  cancel-in-progress: true
+
+jobs:
+  build-windows:
+    runs-on: "windows-latest"
+    name: ${{ matrix.name }}
+    steps:
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Godot_export_templates.tpz
+          rename: Godot_export_templates.tpz.zip
+          wait_seconds: 10
+
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Godot_linux.x86_64.zip
+          rename: Godot_linux.x86_64.zip.zip
+          wait_seconds: 10
+
+      - name: Setup
+        shell: cmd
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_export_templates.tpz
+          "C:\Program Files\7-Zip\7z.exe" x Godot_linux.x86_64.zip.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_linux.x86_64.zip
+          curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
+          "C:\Program Files\7-Zip\7z.exe" x mesa.7z
+          mklink opengl32.dll "x64\opengl32.dll"
+          mklink libglapi.dll "x64\libglapi.dll"
+          move Godot_v4.0-beta1_linux.x86_64 gdscript-transpiler-bin/godot
+          mkdir %USERPROFILE%\AppData\Roaming\Godot\templates\4.0.beta1\
+          move templates/* %USERPROFILE%\AppData\Roaming\Godot\templates\4.0.beta1\
+          mkdir -p gdscript-transpiler-bin/dist/
+          cd gdscript-transpiler-bin && curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
+          ./godot project.godot -v
+          ./godot -v --export "Web" index.html
+          move index* dist/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: html5
+          path: gdscript-transpiler-bin/dist
