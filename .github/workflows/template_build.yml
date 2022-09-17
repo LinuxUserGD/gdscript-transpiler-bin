@@ -89,8 +89,10 @@ jobs:
           cd ..
           cd gdscript-transpiler-bin
           md dist
+          md temp
           curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
-          godot.exe project.godot -v --path "../gdscript-transpiler-bin" --headless --export "Web" dist/index.html
+          godot.exe project.godot -v --path "../gdscript-transpiler-bin" --headless --export "Web" temp/index.html
+          godot.exe --headless --export "Web" dist/index.html
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2.2.3
