@@ -15,27 +15,23 @@ jobs:
     runs-on: "windows-latest"
     name: ${{ matrix.name }}
     steps:
-      - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          repo: LinuxUserGD/gdscript-transpiler-bin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: Godot_export_templates.tpz
-          rename: Godot_export_templates.tpz.zip
-          wait_seconds: 10
-
-      - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
-        with:
-          repo: LinuxUserGD/gdscript-transpiler-bin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: Godot_linux.x86_64.zip
-          rename: Godot_linux.x86_64.zip.zip
-          wait_seconds: 10
+          python-version: '3.x'
+          architecture: 'x64'
 
       - name: Setup
+        env:
+          INPUT_TOKEN: ${{ secrets.TOKEN }}
+          INPUT_ARTIFACT_NAME: Godot_export_templates.tpz
+          INPUT_RENAME: Godot_export_templates.tpz.zip
+          INPUT_REPO: LinuxUserGD/gdscript-transpiler-bin
+          INPUT_WAIT_SECONDS: 10
         shell: cmd
         run: |
+          curl.exe -L --output main.py --url https://raw.githubusercontent.com/bettermarks/action-artifact-download/master/main.py
+          python main.py
           "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz.zip
           "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_export_templates.tpz
           "C:\Program Files\7-Zip\7z.exe" x Godot_linux.x86_64.zip.zip
