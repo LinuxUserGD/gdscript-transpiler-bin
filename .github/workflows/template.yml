@@ -86,53 +86,6 @@ jobs:
           echo "Uploading main.py to gist..."
           python api.py
 
-      - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
-        with:
-          repo: LinuxUserGD/gdscript-transpiler-bin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: Godot_export_templates.tpz
-          rename: Godot_export_templates.tpz.zip
-          wait_seconds: 10
-
-      - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
-        with:
-          repo: LinuxUserGD/gdscript-transpiler-bin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: Godot_linux.x86_64.zip
-          rename: Godot_linux.x86_64.zip.zip
-          wait_seconds: 10
-
-      - name: Setup
-        run: |
-          unzip Godot_export_templates.tpz.zip
-          unzip Godot_v4.0-beta1_export_templates.tpz
-          unzip Godot_linux.x86_64.zip.zip
-          unzip Godot_v4.0-beta1_linux.x86_64.zip
-          sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev
-          mv Godot_v4.0-beta1_linux.x86_64 gdscript-transpiler-bin/godot
-          mkdir -p ~/.local/share/godot/export_templates/4.0.beta1/
-          mv templates/* ~/.local/share/godot/export_templates/4.0.beta1/
-          mkdir -p gdscript-transpiler-bin/dist/
-          cd gdscript-transpiler-bin && wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
-          timeout 30 ./godot project.godot -v || true
-          timeout 30 ./godot -v --export "Web" index.html || true
-          mv index* dist/
-
-      - name: Minify files
-        run: |
-          wget https://github.com/tdewolff/minify/releases/download/v2.9.15/minify_linux_amd64.tar.gz
-          tar xf minify_linux_amd64.tar.gz minify
-          mv minify gdscript-transpiler-bin/
-          cd gdscript-transpiler-bin && ./minify --recursive dist --output .
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2.2.3
-        with:
-          name: html5
-          path: gdscript-transpiler-bin/dist
-
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
