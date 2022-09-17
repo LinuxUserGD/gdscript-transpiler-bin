@@ -63,14 +63,27 @@ jobs:
           "C:\Program Files\7-Zip\7z.exe" x mesa.7z
           mklink opengl32.dll "x64\opengl32.dll"
           mklink libglapi.dll "x64\libglapi.dll"
-          move Godot_v4.0-beta1_linux.x86_64 gdscript-transpiler-bin/godot
-          mkdir %USERPROFILE%\AppData\Roaming\Godot\templates\4.0.beta1\
-          move templates/* %USERPROFILE%\AppData\Roaming\Godot\templates\4.0.beta1\
-          mkdir -p gdscript-transpiler-bin/dist/
-          cd gdscript-transpiler-bin && curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
-          ./godot project.godot -v
-          ./godot -v --export "Web" index.html
-          move index* dist/
+          move Godot_v4.0-beta1_win64.exe gdscript-transpiler-bin/godot.exe
+          mkdir %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          move templates/version.txt %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          move templates/web_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          move templates/web_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          move templates/web_dlink_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          move templates/web_dlink_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta1\
+          cd gdscript-transpiler-bin
+          mkdir dist
+          curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
+          ./godot.exe project.godot -v
+          ./godot.exe -v --export "Web" index.html
+          move index.apple-touch-icon.png dist/
+          move index.audio.worklet.js dist/
+          move index.html dist/
+          move index.icon.png dist/
+          move index.js dist/
+          move index.pck dist/
+          move index.png dist/
+          move index.wasm dist/
+          move index.worker.js dist/
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2.2.3
