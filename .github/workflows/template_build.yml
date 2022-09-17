@@ -41,9 +41,9 @@ jobs:
           curl.exe -L --output main.py --url https://raw.githubusercontent.com/bettermarks/action-artifact-download/master/main.py
           python main.py
           "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz.zip
-          "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_export_templates.tpz
+          "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz
 
-      - name: Download Godot_linux.x86_64.zip
+      - name: Download Godot_win64.exe.zip
         env:
           INPUT_TOKEN: ${{ secrets.TOKEN }}
           INPUT_ARTIFACT_NAME: Godot_win64.exe.zip
@@ -54,7 +54,7 @@ jobs:
         run: |
           python main.py
           "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip.zip
-          "C:\Program Files\7-Zip\7z.exe" x Godot_v4.0-beta1_win64.exe.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip
 
       - name: Download godot.zip
         env:
