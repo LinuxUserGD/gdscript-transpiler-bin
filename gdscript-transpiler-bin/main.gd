@@ -73,7 +73,7 @@ func help():
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","FileAccess":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","self.quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","FileAccess.new()":"","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"~audio~",}
+	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","FileAccess":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","self.quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","FileAccess":"","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"~audio~",}
 	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
@@ -108,13 +108,13 @@ class Main:
 		t += "\n"
 		return t
 	func read(_self : String, path : String):
-		var file : FileAccess = FileAccess.new()
+		var file : FileAccess = FileAccess
 		file.open(path, FileAccess.READ)
 		var string : String = file.get_as_text()
 		file.close()
 		return string
 	func save(_self : String, path : String, content : String):
-		var file : FileAccess = FileAccess.new()
+		var file : FileAccess = FileAccess
 		file.open(path, FileAccess.WRITE)
 		file.store_string(content)
 		file.close()
@@ -202,7 +202,7 @@ class Main:
 				e += "from io import BytesIO"
 			e += " "
 			return e
-		elif arg == "FileAccess.new()":
+		elif arg == "FileAccess":
 			e += self.repl_dict[arg]
 			e += "\""
 			e += "\""
