@@ -73,7 +73,7 @@ func help():
 class Main:
 	var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Dictionary", "float", "int", "max", "nil", "NodePath", "Object", "PackedByteArray", "PackedColorArray", "PackedFloat32Array", "PackedFloat64Array", "PackedInt32Array", "PackedInt64Array", "PackedStringArray", "PackedVector2Array", "PackedVector3Array", "Plane", "Quaternion", "Rect2", "Rect2i", "RID", "Signal", "String", "StringName", "Transform2D", "Transform3D", "Vector2", "Vector2i", "Vector3", "Vector3i"] 
 	var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
-	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","File":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","self.quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","File.new()":"","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"~audio~",}
+	var repl_dict : Dictionary = {"-s":"","var":"","Node":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","FileAccess":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","self.quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","FileAccess.new()":"","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"~audio~",}
 	var debug : bool = true
 	var right_def : bool = false
 	var left_def : bool = false
@@ -108,14 +108,14 @@ class Main:
 		t += "\n"
 		return t
 	func read(_self : String, path : String):
-		var file : File = File.new()
-		file.open(path, File.READ)
+		var file : FileAccess = FileAccess.new()
+		file.open(path, FileAccess.READ)
 		var string : String = file.get_as_text()
 		file.close()
 		return string
 	func save(_self : String, path : String, content : String):
-		var file : File = File.new()
-		file.open(path, File.WRITE)
+		var file : FileAccess = FileAccess.new()
+		file.open(path, FileAccess.WRITE)
 		file.store_string(content)
 		file.close()
 	func analyze(_self : String, l : String):
@@ -161,7 +161,7 @@ class Main:
 			arg = arg.right(arg.length()-1)
 		if arg in self.types:
 			return e
-		elif arg in ["-s", "var", "Node", "SceneTree", "extends", "File"]:
+		elif arg in ["-s", "var", "Node", "SceneTree", "extends", "FileAccess"]:
 			e += self.repl_dict[arg]
 			return e
 		elif arg in ["_ready():", "func", "true", "false", "&&", "||", "sys;print(sys.version)'],stdout,true,false)", "';print(Version.getNuitkaVersion())'],stdout,true,false)", "(self.root.has_node(player)):", "self.root.add_child(player)", "player", "player.name", "player.stream", "player.stream.data", "player.play()"]:
@@ -202,7 +202,7 @@ class Main:
 				e += "from io import BytesIO"
 			e += " "
 			return e
-		elif arg == "File.new()":
+		elif arg == "FileAccess.new()":
 			e += self.repl_dict[arg]
 			e += "\""
 			e += "\""
@@ -249,19 +249,19 @@ class Main:
 		while arg.contains("---"):
 			arg = arg.replace("---", "--")
 			con = true
-		while arg.contains("File.READ"):
+		while arg.contains("FileAccess.READ"):
 			var r : String = ""
 			r += "\""
 			r += "r"
 			r += "\""
-			arg = arg.replace("File.READ", r)
+			arg = arg.replace("FileAccess.READ", r)
 			con = true
-		while arg.contains("File.WRITE"):
+		while arg.contains("FileAccess.WRITE"):
 			var w : String = ""
 			w += "\""
 			w += "w"
 			w += "\""
-			arg = arg.replace("File.WRITE", w)
+			arg = arg.replace("FileAccess.WRITE", w)
 			con = true
 		while arg.contains(".get_as_text"):
 			arg = arg.replace(".get_as_text", ".read")
