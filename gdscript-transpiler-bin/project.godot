@@ -8,6 +8,16 @@
 
 config_version=5
 
+_global_script_classes=[{
+"base": "RefCounted",
+"class": &"File",
+"language": &"GDScript",
+"path": "res://file.gd"
+}]
+_global_script_class_icons={
+"File": ""
+}
+
 [application]
 
 config/name="GDScript2PythonTranspiler"

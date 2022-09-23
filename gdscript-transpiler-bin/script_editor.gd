@@ -247,7 +247,7 @@ func transpile():
 func _on_run_button_2_pressed():
 	var path : String = "res://temp.py"
 	var file : File = File.new()
-	file.open(path, File.WRITE)
+	file.open(path, File.FileOpts.WRITE)
 	file.store_string($/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.get_text())
 	file.close()
 	var stdout : Array = []
