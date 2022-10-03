@@ -47,7 +47,7 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/*
           sudo cp -f sources.list /etc/apt/sources.list
-          sudo apt-get update
+          sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
           sudo apt-get install build-essential pkg-config \
               yasm xvfb wget unzip
 
