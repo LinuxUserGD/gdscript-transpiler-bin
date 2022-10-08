@@ -86,9 +86,12 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
         run: |
           python -m pip install --upgrade pip requests
-          cd gdscript-transpiler-bin && ./godot-bin --headless --verbose -s main.gd ---path=main.gd
+          cd gdscript-transpiler-bin
+          ./godot-bin --headless --verbose -s main.gd ---path=main.gd
+          ./godot-bin --headless --verbose -s main.gd ---path=transpiler.gd
+          ./godot-bin --headless --verbose -s main.gd ---path=props.gd
           mv ../.github/workflows/api.py .
-          echo "Uploading main.py to gist..."
+          echo "Uploading main.py, transpiler.py, props.py to gist..."
           python api.py
 
       - name: Delete workflow runs
