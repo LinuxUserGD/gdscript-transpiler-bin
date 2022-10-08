@@ -5,10 +5,7 @@ extends TextEdit
 @onready var error_label: Label = $"/root/MainWindow/HSplitContainer/ok/OutputPanel/ErrorLabel"
 @onready var output_panel: RichTextLabel = $"/root/MainWindow/HSplitContainer/ok/OutputPanel/RichTextLabel"
 var ch : CodeHighlighter = self.syntax_highlighter
-const Main := preload("res://main.gd")
-var main = Main.new()
-var _main = main.Main.new()
-var _self : String = ""
+var _main = Transpiler.new()
 
 # The printing functions to create.
 const PRINT_FUNCS = {
@@ -241,7 +238,7 @@ func _on_transpile_button_pressed():
 	transpile()
 
 func transpile():
-	$/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.set_text(_main.transpile(_self, $/root/MainWindow/HSplitContainer/VBoxContainer/ScriptEditor.get_text()))
+	$/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.set_text(_main.transpile($/root/MainWindow/HSplitContainer/VBoxContainer/ScriptEditor.get_text()))
 
 
 func _on_run_button_2_pressed():

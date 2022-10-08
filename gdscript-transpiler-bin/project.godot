@@ -13,9 +13,27 @@ _global_script_classes=[{
 "class": &"File",
 "language": &"GDScript",
 "path": "res://file.gd"
+}, {
+"base": "RefCounted",
+"class": &"Props",
+"language": &"GDScript",
+"path": "res://props.gd"
+}, {
+"base": "RefCounted",
+"class": &"Transpiler",
+"language": &"GDScript",
+"path": "res://transpiler.gd"
+}, {
+"base": "SceneTree",
+"class": &"main",
+"language": &"GDScript",
+"path": "res://main.gd"
 }]
 _global_script_class_icons={
-"File": ""
+"File": "",
+"Props": "",
+"Transpiler": "",
+"main": ""
 }
 
 [application]
