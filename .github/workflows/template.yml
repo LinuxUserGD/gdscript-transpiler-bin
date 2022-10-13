@@ -40,7 +40,8 @@ jobs:
           git update-index --cacheinfo 160000,${commit},godot
           git submodule init
           git submodule update
-          cd godot && git revert 5aadc618b6ff152dbc0ca4ea901c34a97e164091 && cd -
+          cd godot && wget https://github.com/LinuxUserGD/godot/commit/7753d8de9c24a5d91bd186c1b9277686b3eecc11.patch
+          git apply 7753d8de9c24a5d91bd186c1b9277686b3eecc11.patch && cd -
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
 
       - name: Linux dependencies
