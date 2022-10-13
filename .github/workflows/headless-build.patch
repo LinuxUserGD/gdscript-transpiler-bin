@@ -1,3 +1,11 @@
+From 7753d8de9c24a5d91bd186c1b9277686b3eecc11 Mon Sep 17 00:00:00 2001
+From: Linux User <34406967+LinuxUserGD@users.noreply.github.com>
+Date: Thu, 13 Oct 2022 23:55:37 +0200
+Subject: [PATCH] remove graphics for headless build
+
+---
+ platform/linuxbsd/os_linuxbsd.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/platform/linuxbsd/os_linuxbsd.cpp b/platform/linuxbsd/os_linuxbsd.cpp
 index 995a904398df..c6e90bf3988b 100644
