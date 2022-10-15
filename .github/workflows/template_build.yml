@@ -16,7 +16,7 @@ jobs:
     name: ${{ matrix.name }}
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.5.0
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -83,7 +83,7 @@ jobs:
           godot.exe --headless --export "Web" dist/index.html
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2.2.3
+        uses: actions/upload-artifact@v3.1.0
         with:
           name: html5
           path: gdscript-transpiler-bin/dist
