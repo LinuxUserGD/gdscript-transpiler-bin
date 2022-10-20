@@ -52,11 +52,12 @@ jobs:
           sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
           sudo apt-get install build-essential pkg-config \
               yasm xvfb wget unzip
-
-      - uses: rui314/setup-mold@v1
-        with:
-          mold-version: latest
-          make-default: true
+          git clone https://github.com/rui314/mold.git
+          cd mold && mkdir build && cd build
+          sudo ./install-build-deps.sh
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_INSTALL_PREFIX=/usr ..
+          make -j4
+          sudo make install
 
       - name: Setup Godot build cache
         uses: ./.github/actions/godot-cache
