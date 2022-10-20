@@ -1,7 +1,7 @@
 #!/usr/bin/godot -s
 
 extends SceneTree
-class_name main
+class_name Main
 
 ## GDScript Transpiler Script
 ##
