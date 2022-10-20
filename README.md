@@ -2,6 +2,8 @@
 
 <h2>gdscript-transpiler-bin</h2>
 
+[![Template](https://github.com/LinuxUserGD/gdscript-transpiler-bin/actions/workflows/template.yml/badge.svg?branch=dev)](https://github.com/LinuxUserGD/gdscript-transpiler-bin/actions/workflows/template.yml)
+
 A GDScript compiler and Python runtime environment.
 Minimal Scripts can be transpiled to Python.
 
