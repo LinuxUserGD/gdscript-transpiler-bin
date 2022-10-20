@@ -54,7 +54,7 @@ jobs:
               yasm xvfb wget unzip
           git clone https://github.com/rui314/mold.git
           cd mold && mkdir build && cd build
-          sudo ./install-build-deps.sh
+          sudo ../install-build-deps.sh
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_INSTALL_PREFIX=/usr ..
           make -j4
           sudo make install
