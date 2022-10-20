@@ -52,12 +52,12 @@ func start(arg : String):
 		if c != 0:
 			pathstr += path_str + "."
 	var path2 : String = "res://" + pathstr + "py"
-	var main = Transpiler.new()
-	var content : String = main.read(path)
-	var out : String = main.transpile(content)
-	if main.props.verbose:
+	var transpiler = Transpiler.new()
+	var content : String = transpiler.read(path)
+	var out : String = transpiler.transpile(content)
+	if transpiler.props.verbose:
 		print(out)
-	main.save(path2, out)
+	transpiler.save(path2, out)
 
 ## Prints Python and Godot Engine version information to console
 func version():
