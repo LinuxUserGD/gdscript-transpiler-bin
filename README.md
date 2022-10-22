@@ -3,6 +3,8 @@
 <h2>gdscript-transpiler-bin</h2>
 
 [![Template](https://github.com/LinuxUserGD/gdscript-transpiler-bin/actions/workflows/template.yml/badge.svg?branch=dev)](https://github.com/LinuxUserGD/gdscript-transpiler-bin/actions/workflows/template.yml)
+[![Godot 4.0.alpha](Godot-v4.0.svg)](https://downloads.tuxfamily.org/godotengine/4.0/)
+[![MIT license](License-MIT-blue.svg)](LICENSE)
 
 A GDScript compiler and Python runtime environment.
 Minimal Scripts can be transpiled to Python.
