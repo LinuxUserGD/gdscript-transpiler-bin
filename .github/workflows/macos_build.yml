@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build-macos:
-    runs-on: "macos-latest"
+    runs-on: macos-12
     name: ${{ matrix.name }}
     steps:
       - name: Update script
