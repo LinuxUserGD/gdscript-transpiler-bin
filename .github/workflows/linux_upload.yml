@@ -1,8 +1,8 @@
-name: 🐧 Linux Upload
+name: Upload
 # Only trigger, when the build workflow succeeded
 on:
   workflow_run:
-    workflows: ["Template"]
+    workflows: ["Template", "🍎 macOS Build", "🏁 Windows Build"]
     types:
       - completed
 
@@ -21,6 +21,24 @@ jobs:
           rename: linux.zip
           wait_seconds: 10
 
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: MacOS Build
+          rename: macOS.zip
+          wait_seconds: 10
+
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Windows Build
+          rename: windows.zip
+          wait_seconds: 10
+
       - name: Upload to itch.io
         uses: manleydev/butler-publish-itchio-action@master
         env:
@@ -29,3 +47,21 @@ jobs:
           ITCH_GAME: gdscript-transpiler-bin
           ITCH_USER: linuxusergd
           PACKAGE: linux.zip
+
+      - name: Upload to itch.io
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: mac
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: macOS.zip
+
+      - name: Upload to itch.io
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: windows
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: windows.zip
