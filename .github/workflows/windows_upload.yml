@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-22.04
     name: Windows itch.io Upload
     steps:
       - uses: actions/checkout@master
