@@ -25,7 +25,7 @@ jobs:
             target: template_release
             tools: false
             tests: false
-            sconsflags: use_llvm=yes module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_3d=yes disable_advanced_gui=yes deprecated=no minizip=no openxr=no opengl3=no use_static_cpp=yes linker=mold alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=no module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
+            sconsflags: use_llvm=yes module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_3d=yes disable_advanced_gui=yes deprecated=no minizip=no openxr=no opengl3=no use_static_cpp=yes linker=lld alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=no module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
             artifact: true
 
     steps:
@@ -52,12 +52,6 @@ jobs:
           sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
           sudo apt-get install build-essential pkg-config \
               yasm xvfb wget unzip
-          git clone https://github.com/rui314/mold.git
-          cd mold && mkdir build && cd build
-          sudo ../install-build-deps.sh
-          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_INSTALL_PREFIX=/usr ..
-          make -j4
-          sudo make install
 
       - name: Setup Godot build cache
         uses: ./.github/actions/godot-cache
@@ -97,13 +91,18 @@ jobs:
           echo "Uploading main.py, transpiler.py, props.py to gist..."
           python api.py
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-          architecture: 'x64'
 
-      - name: Update script
+      - name: Setup latest Alpine Linux
+        id: alpine-root
+        uses: jirutka/setup-alpine@v1
+        with:
+          packages: >
+            python3
+            wget
+            alsa-lib
+            gcc
+
+      - name: Run script inside Alpine chroot as root
         run: |
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
@@ -112,32 +111,21 @@ jobs:
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd          
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get install libasound2-dev llvm
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt          
-
-      - name: Generate Python Script
-        run: |
-          python main.py --path=main.gd
-          python main.py --path=transpiler.gd
-          python main.py --path=props.gd          
-
-      - name: Build Executable
-        uses: LinuxUserGD/Nuitka-Action@v0.5
-        with:
-          script-name: main.py
-          onefile: false
-          clang: true
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
+          python3 -m ensurepip
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirments.txt
+          python3 main.py --path=main.gd
+          python3 main.py --path=transpiler.gd
+          python3 main.py --path=props.gd
+          python3 -m nuitka --standalone main.py
+        shell: alpine.sh --root {0}
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
-          path: build/main.dist
+          path: ${{ steps.alpine-root.outputs.root-path }}/build/main.dist
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
