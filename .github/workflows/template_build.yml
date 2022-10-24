@@ -78,7 +78,6 @@ jobs:
           curl.exe -L --output full-size.html --url https://raw.githubusercontent.com/godotengine/godot/master/misc/dist/html/full-size.html
           md dist
           md temp
-          curl.exe -L --output export_presets.cfg --url https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/export_presets.cfg
           godot.exe project.godot -v --path "../gdscript-transpiler-bin" --headless --export "Web" temp/index.html
           godot.exe --headless --export "Web" dist/index.html
 
