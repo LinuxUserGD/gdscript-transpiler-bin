@@ -114,7 +114,7 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
           python3 -m ensurepip
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirments.txt
+          python3 -m pip install -r requirements.txt
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
