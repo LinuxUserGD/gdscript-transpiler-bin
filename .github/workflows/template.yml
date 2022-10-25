@@ -107,7 +107,7 @@ jobs:
             musl-dev
             patchelf
 
-      - name: Run script inside Alpine chroot as root
+      - name: Run script inside Alpine chroot
         run: |
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
@@ -122,13 +122,13 @@ jobs:
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
           python3 -m nuitka --standalone main.py
-        shell: alpine.sh --root {0}
+        shell: alpine.sh {0}
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
-          path: ${{ steps.alpine-root.outputs.root-path }}/build/main.dist
+          path: ${{ steps.alpine-root.outputs.root-path }}/home/runner/build/main.dist
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
