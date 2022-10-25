@@ -120,6 +120,8 @@ jobs:
             libffi-dev
             bzip2
             bzip2-dev
+            zlib
+            zlib-dev
           shell-name: alpine.sh
 
 
