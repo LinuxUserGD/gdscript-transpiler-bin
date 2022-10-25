@@ -116,15 +116,7 @@ jobs:
         run: |
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
-          update-alternatives --install /usr/bin/cc cc /usr/bin/clang 15
-          update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 15
-          update-alternatives --install /usr/bin/ld ld /usr/bin/lld 15
-          update-alternatives --auto cc
-          update-alternatives --auto c++
-          update-alternatives --auto ld
-          update-alternatives --display cc
-          update-alternatives --display c++
-          update-alternatives --display ld
+          ln -sf /usr/bin/lld /usr/bin/ld
         shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
