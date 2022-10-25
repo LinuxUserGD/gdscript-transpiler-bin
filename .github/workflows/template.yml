@@ -105,6 +105,7 @@ jobs:
             alsa-lib
             alsa-lib-dev
             clang15
+            libgcc
             lld
             compiler-rt
             musl-dev
