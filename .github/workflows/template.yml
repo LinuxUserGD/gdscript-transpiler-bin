@@ -128,8 +128,8 @@ jobs:
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
           ln -sf /usr/bin/mold /usr/bin/ld
-          git clone --single-branch --depth 1 https://github.com/Nuitka/Nuitka-Python.git
-          cd Nuitka-Python
+          git clone --single-branch --depth 1 -b 3.10 https://github.com/python/cpython.git python
+          cd python
           ./configure --prefix=/usr --disable-shared
           make -j4
           make install
