@@ -103,6 +103,7 @@ jobs:
             wget
             alsa-lib
             gcc
+            musl-dev
 
       - name: Run script inside Alpine chroot as root
         run: |
