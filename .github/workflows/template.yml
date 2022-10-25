@@ -106,7 +106,10 @@ jobs:
             alsa-lib-dev
             clang15
             llvm-libunwind
+            libgcc
+            gcc
             lld
+            mold
             compiler-rt
             musl-dev
             patchelf
@@ -117,9 +120,7 @@ jobs:
         run: |
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
-          ln -sf /usr/bin/lld /usr/bin/ld
-          ln -sf /usr/lib/libunwind.so /usr/lib/libgcc_s.so.1
-          ln -sf /usr/lib/libunwind.so /usr/lib/libgcc_s.so
+          ln -sf /usr/bin/mold /usr/bin/ld
         shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
