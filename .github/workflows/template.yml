@@ -114,6 +114,8 @@ jobs:
             git
             readline
             readline-dev
+            openssl
+            openssl-dev
           shell-name: alpine.sh
 
 
