@@ -105,7 +105,7 @@ jobs:
             alsa-lib
             alsa-lib-dev
             clang15
-            libgcc
+            llvm-libunwind
             lld
             compiler-rt
             musl-dev
@@ -118,6 +118,8 @@ jobs:
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
           ln -sf /usr/bin/lld /usr/bin/ld
+          ln -sf /usr/lib/libunwind.so /usr/lib/libgcc_s.so.1
+          ln -sf /usr/lib/libunwind.so /usr/lib/libgcc_s.so
         shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
@@ -130,7 +132,7 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
-          CC=clang-15 CXX=clang++-15 python3 -m pip install -r requirements.txt
+          CC=clang CXX=clang++ python3 -m pip install -r requirements.txt
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
