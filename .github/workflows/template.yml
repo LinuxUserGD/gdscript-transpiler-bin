@@ -121,7 +121,7 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
-          python3 -m pip install -r requirements.txt
+          CC=clang-15 CXX=clang++-15 python3 -m pip install -r requirements.txt
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
