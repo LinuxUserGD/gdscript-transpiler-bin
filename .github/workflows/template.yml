@@ -122,7 +122,7 @@ jobs:
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
           python3 -m nuitka --standalone main.py
-          cd build/main.dist
+          cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
 
@@ -130,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
-          path: ${{ steps.alpine-x86_64.outputs.root-path }}/home/runner/build/main.dist
+          path: ${{ steps.alpine-x86_64.outputs.root-path }}/home/runner/main.dist
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
