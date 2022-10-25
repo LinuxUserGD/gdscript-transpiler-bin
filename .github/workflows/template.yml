@@ -98,6 +98,7 @@ jobs:
         with:
           packages: >
             python3
+            py3-pip
             wget
             alsa-lib
             gcc
@@ -112,8 +113,6 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
-          python3 -m ensurepip
-          python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
