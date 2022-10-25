@@ -125,8 +125,6 @@ jobs:
 
       - name: Run script inside Alpine chroot as root
         run: |
-          export CC="clang"
-          export CXX="clang++"
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
           ln -sf /usr/bin/mold /usr/bin/ld
