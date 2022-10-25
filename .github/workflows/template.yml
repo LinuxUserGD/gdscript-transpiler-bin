@@ -102,6 +102,7 @@ jobs:
             py3-pip
             wget
             alsa-lib
+            alsa-lib-dev
             gcc
             musl-dev
 
