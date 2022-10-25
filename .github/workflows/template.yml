@@ -99,6 +99,7 @@ jobs:
             python3
             python3-dev
             py3-pip
+            py3-wheel
             wget
             alsa-lib
             alsa-lib-dev
@@ -130,7 +131,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
-          path: ${{ steps.alpine-x86_64.outputs.root-path }}/home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/main.dist
+          path: /home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/main.dist
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
