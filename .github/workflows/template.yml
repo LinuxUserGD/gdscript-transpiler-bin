@@ -122,7 +122,7 @@ jobs:
           ln -sf /usr/bin/mold /usr/bin/ld
           git clone https://github.com/Nuitka/Nuitka-Python.git
           cd Nuitka-Python
-          ./configure --prefix=/usr --enable-shared
+          ./configure --prefix=/usr --disable-shared
           make -j4
           make install
         shell: alpine.sh --root {0}
