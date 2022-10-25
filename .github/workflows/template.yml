@@ -116,6 +116,8 @@ jobs:
             readline-dev
             openssl
             openssl-dev
+            libffi
+            libffi-dev
           shell-name: alpine.sh
 
 
