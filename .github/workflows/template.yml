@@ -48,7 +48,7 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/*
           sudo cp -f sources.list /etc/apt/sources.list
-          sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
+          sudo apt-get update
           sudo apt-get install build-essential pkg-config \
               yasm xvfb wget unzip
 
@@ -103,7 +103,9 @@ jobs:
             wget
             alsa-lib
             alsa-lib-dev
-            gcc
+            clang15
+            lld
+            compiler-rt
             musl-dev
             patchelf
           shell-name: alpine.sh
@@ -122,7 +124,7 @@ jobs:
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
-          python3 -m nuitka --standalone main.py
+          python3 -m nuitka --static-libpython=yes --remove-output --pgo --standalone --lto=clang --clang main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
