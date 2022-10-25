@@ -105,6 +105,7 @@ jobs:
             alsa-lib-dev
             gcc
             musl-dev
+            patchelf
 
       - name: Run script inside Alpine chroot as root
         run: |
