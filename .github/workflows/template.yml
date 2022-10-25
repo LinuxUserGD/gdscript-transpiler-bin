@@ -111,6 +111,22 @@ jobs:
             patchelf
           shell-name: alpine.sh
 
+
+      - name: Run script inside Alpine chroot as root
+        run: |
+          ln -sf /usr/bin/clang /usr/bin/cc
+          ln -sf /usr/bin/clang++ /usr/bin/c++
+          update-alternatives --install /usr/bin/cc cc /usr/bin/clang 15
+          update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 15
+          update-alternatives --install /usr/bin/ld ld /usr/bin/lld 15
+          update-alternatives --auto cc
+          update-alternatives --auto c++
+          update-alternatives --auto ld
+          update-alternatives --display cc
+          update-alternatives --display c++
+          update-alternatives --display ld
+        shell: alpine.sh --root {0}
+
       - name: Run script inside Alpine chroot
         run: |
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
@@ -121,7 +137,7 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
-          CC=clang-15 CXX=clang++-15 LD=ld.lld python3 -m pip install -r requirements.txt
+          CC=clang-15 CXX=clang++-15 python3 -m pip install -r requirements.txt
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
