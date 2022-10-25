@@ -128,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
-          path: ${{ steps.alpine-root.outputs.root-path }}/home/runner/build/main.dist
+          path: ${{ steps.alpine-root.outputs.root-path }}/home/runner/work/build/main.dist
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
