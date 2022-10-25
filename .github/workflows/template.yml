@@ -118,6 +118,8 @@ jobs:
             openssl-dev
             libffi
             libffi-dev
+            bzip2
+            bzip2-dev
           shell-name: alpine.sh
 
 
