@@ -102,6 +102,8 @@ jobs:
             perl
             alsa-lib
             alsa-lib-dev
+            ncurses
+            ncurses-dev
             llvm15
             clang15
             llvm-libunwind
