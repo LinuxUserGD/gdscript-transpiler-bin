@@ -138,7 +138,7 @@ jobs:
           git apply ea990bf31c5d7866bb25a7d4f015bf5c14408d75.patch
           rm ea990bf31c5d7866bb25a7d4f015bf5c14408d75.patch
           wget https://github.com/LinuxUserGD/Nuitka-Python/commit/b16c1cfdf60eb0201457aa20d00de45732994072.patch
-          git apply https://github.com/LinuxUserGD/Nuitka-Python/commit/b16c1cfdf60eb0201457aa20d00de45732994072.patch
+          git apply b16c1cfdf60eb0201457aa20d00de45732994072.patch
           rm b16c1cfdf60eb0201457aa20d00de45732994072.patch
           cd -
         shell: alpine.sh {0}
