@@ -104,6 +104,8 @@ jobs:
             alsa-lib-dev
             ncurses
             ncurses-dev
+            tcl
+            tcl-dev
             llvm15
             clang15
             llvm-libunwind
