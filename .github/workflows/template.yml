@@ -113,16 +113,6 @@ jobs:
             pkgconf
             make
             git
-            readline
-            readline-dev
-            openssl
-            openssl-dev
-            libffi
-            libffi-dev
-            bzip2
-            bzip2-dev
-            zlib
-            zlib-dev
           shell-name: alpine.sh
 
 
@@ -135,19 +125,12 @@ jobs:
 
       - name: Run script inside Alpine chroot
         run: |
-          git clone --single-branch --depth 1 -b 3.10 https://github.com/python/cpython.git python
+          git clone --single-branch --depth 1 -b 3.9 https://github.com/Nuitka/Nuitka-Python.git python
           cd python
-          ./configure --prefix=/usr --disable-shared
-          make -j4
+          ./build.sh
+          ls -l output/*
           cd -
         shell: alpine.sh {0}
-
-      - name: Run script inside Alpine chroot as root
-        run: |
-          cd python
-          make install
-          cd -
-        shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
         run: |
@@ -159,13 +142,13 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
-          CC=clang CXX=clang++ python3 -m pip install wheel
-          CC=clang CXX=clang++ python3 -m pip install ordered-set
-          CC=clang CXX=clang++ python3 -m pip install -r requirements.txt
-          python3 main.py --path=main.gd
-          python3 main.py --path=transpiler.gd
-          python3 main.py --path=props.gd
-          python3 -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
+          CC=clang CXX=clang++ ./python/output/python3 -m pip install wheel
+          CC=clang CXX=clang++ ./python/output/python3 -m pip install ordered-set
+          CC=clang CXX=clang++ ./python/output/python3 -m pip install -r requirements.txt
+          ./python/output/python3 main.py --path=main.gd
+          ./python/output/python3 main.py --path=transpiler.gd
+          ./python/output/python3 main.py --path=props.gd
+          ./python/output/python3 -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
