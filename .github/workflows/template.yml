@@ -106,6 +106,8 @@ jobs:
             ncurses-dev
             tcl
             tcl-dev
+            tk
+            tk-dev
             llvm15
             clang15
             llvm-libunwind
