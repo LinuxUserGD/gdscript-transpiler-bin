@@ -99,6 +99,7 @@ jobs:
           packages: >
             wget
             curl
+            perl
             alsa-lib
             alsa-lib-dev
             llvm15
