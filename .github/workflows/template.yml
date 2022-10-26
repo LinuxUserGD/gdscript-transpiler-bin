@@ -118,6 +118,8 @@ jobs:
             git
             bash
             tar
+            file
+            gzip
           shell-name: alpine.sh
 
 
