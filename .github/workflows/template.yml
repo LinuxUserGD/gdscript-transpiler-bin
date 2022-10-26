@@ -111,6 +111,7 @@ jobs:
             mold
             compiler-rt
             musl-dev
+            linux-headers
             patchelf
             pkgconf
             make
