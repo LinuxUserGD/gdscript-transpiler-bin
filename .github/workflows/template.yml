@@ -127,6 +127,8 @@ jobs:
         run: |
           git clone --single-branch --depth 1 -b 3.9 https://github.com/Nuitka/Nuitka-Python.git python
           cd python
+          ls -l
+          chmod +x build.sh
           ./build.sh
           ls -l output/*
           cd -
