@@ -135,7 +135,7 @@ jobs:
         run: |
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
-          ln -sf /usr/bin/mold /usr/bin/ld
+          ln -sf /usr/bin/ld.lld /usr/bin/ld
         shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
@@ -173,8 +173,8 @@ jobs:
           export CC="clang"
           export CXX="clang++"
           export CXXFLAGS="${COMMON_FLAGS} -stdlib=libc++"
-          export LDFLAGS="${COMMON_FLAGS} ${LDFLAGS} ${LDLIBS} -Wl,-O2 -Wl,--as-needed -Wl,--icf=all -Wl,--threads=4 -Wl,-z,relro,-z,now -fuse-ld=mold"
-          export LD="ld.mold"
+          export LDFLAGS="${COMMON_FLAGS} ${LDFLAGS} ${LDLIBS} -Wl,-O2 -Wl,--as-needed -Wl,--icf=all -Wl,--threads=4 -Wl,-z,relro,-z,now -fuse-ld=lld"
+          export LD="ld.lld"
           export AR="llvm-ar"
           export AS="llvm-as"
           export NM="llvm-nm"
