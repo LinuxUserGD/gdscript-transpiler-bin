@@ -98,6 +98,7 @@ jobs:
           arch: x86_64
           packages: >
             wget
+            curl
             alsa-lib
             alsa-lib-dev
             llvm15
