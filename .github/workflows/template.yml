@@ -130,10 +130,20 @@ jobs:
           ln -sf /usr/bin/clang /usr/bin/cc
           ln -sf /usr/bin/clang++ /usr/bin/c++
           ln -sf /usr/bin/mold /usr/bin/ld
+        shell: alpine.sh --root {0}
+
+      - name: Run script inside Alpine chroot
+        run: |
           git clone --single-branch --depth 1 -b 3.10 https://github.com/python/cpython.git python
           cd python
           ./configure --prefix=/usr --disable-shared
           make -j4
+          cd -
+        shell: alpine.sh {0}
+
+      - name: Run script inside Alpine chroot as root
+        run: |
+          cd python
           make install
           cd -
         shell: alpine.sh --root {0}
@@ -148,6 +158,7 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
+          CC=clang CXX=clang++ python3 -m pip install wheel
           CC=clang CXX=clang++ python3 -m pip install -r requirements.txt
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
