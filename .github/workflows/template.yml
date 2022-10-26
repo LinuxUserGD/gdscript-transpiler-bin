@@ -120,6 +120,7 @@ jobs:
             tar
             file
             gzip
+            sudo
           shell-name: alpine.sh
 
 
