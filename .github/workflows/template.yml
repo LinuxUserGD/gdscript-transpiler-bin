@@ -41,16 +41,13 @@ jobs:
           git submodule update
           cd godot && mv ../.github/workflows/headless-build.patch .
           git apply headless-build.patch && cd -
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
 
       - name: Linux dependencies
         shell: bash
         run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo cp -f sources.list /etc/apt/sources.list
-          sudo apt-get update
-          sudo apt-get install build-essential pkg-config \
-              yasm xvfb wget unzip
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
+          sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
+          sudo apt-get update && sudo apt-get install build-essential pkg-config yasm xvfb wget unzip
 
       - name: Setup Godot build cache
         uses: ./.github/actions/godot-cache
