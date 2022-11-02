@@ -126,7 +126,7 @@ jobs:
             file
             gzip
             sudo
-            libintl
+            gettext-dev
           shell-name: alpine.sh
 
 
