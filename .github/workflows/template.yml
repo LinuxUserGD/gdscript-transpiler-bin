@@ -102,6 +102,8 @@ jobs:
             perl
             alsa-lib
             alsa-lib-dev
+            libffi
+            libffi-dev
             ncurses
             ncurses-dev
             tcl
