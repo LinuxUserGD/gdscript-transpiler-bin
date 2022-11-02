@@ -144,18 +144,9 @@ jobs:
         run: |
           git clone --single-branch --depth 1 -b 3.9 https://github.com/Nuitka/Nuitka-Python.git python
           cd python
-          wget https://github.com/LinuxUserGD/Nuitka-Python/commit/ea990bf31c5d7866bb25a7d4f015bf5c14408d75.patch
-          git apply ea990bf31c5d7866bb25a7d4f015bf5c14408d75.patch
-          rm ea990bf31c5d7866bb25a7d4f015bf5c14408d75.patch
-          wget https://github.com/LinuxUserGD/Nuitka-Python/commit/b16c1cfdf60eb0201457aa20d00de45732994072.patch
-          git apply b16c1cfdf60eb0201457aa20d00de45732994072.patch
-          rm b16c1cfdf60eb0201457aa20d00de45732994072.patch
-          wget https://github.com/LinuxUserGD/Nuitka-Python/commit/a08fac4df3b92e194c19ec3676dcbff77f2a5217.patch
-          git apply a08fac4df3b92e194c19ec3676dcbff77f2a5217.patch
-          rm a08fac4df3b92e194c19ec3676dcbff77f2a5217.patch
-          wget https://github.com/LinuxUserGD/Nuitka-Python/commit/a1a1063c4f651452890c036808f67ffe99ad2abd.patch
-          git apply a1a1063c4f651452890c036808f67ffe99ad2abd.patch
-          rm a1a1063c4f651452890c036808f67ffe99ad2abd.patch
+          wget https://github.com/LinuxUserGD/Nuitka-Python/commit/73113a60bebd5f6d6a7b7b2e3ebc1bafdcebdcb2.patch
+          git apply 73113a60bebd5f6d6a7b7b2e3ebc1bafdcebdcb2.patch
+          rm 73113a60bebd5f6d6a7b7b2e3ebc1bafdcebdcb2.patch
           cd -
         shell: alpine.sh {0}
 
