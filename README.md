@@ -18,4 +18,4 @@ For Python script generated from [`main.gd`](gdscript-transpiler-bin/main.gd), s
 
 ## License
 
-### See [LICENSE.md](LICENSE.MD)
+### See [LICENSE.md](LICENSE.md)
