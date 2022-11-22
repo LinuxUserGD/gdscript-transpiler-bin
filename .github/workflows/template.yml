@@ -141,11 +141,6 @@ jobs:
       - name: Run script inside Alpine chroot
         run: |
           git clone --single-branch --depth 1 -b 3.9 https://github.com/Nuitka/Nuitka-Python.git python
-          cd python
-          wget https://github.com/LinuxUserGD/Nuitka-Python/commit/73113a60bebd5f6d6a7b7b2e3ebc1bafdcebdcb2.patch
-          git apply 73113a60bebd5f6d6a7b7b2e3ebc1bafdcebdcb2.patch
-          rm 73113a60bebd5f6d6a7b7b2e3ebc1bafdcebdcb2.patch
-          cd -
         shell: alpine.sh {0}
 
       - name: Run script inside Alpine chroot as root
