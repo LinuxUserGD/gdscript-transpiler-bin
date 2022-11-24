@@ -9,6 +9,8 @@
 A GDScript compiler and Python runtime environment.
 Minimal Scripts can be transpiled to Python.
 
+[![Video](preview.gif)](preview.gif)
+
 Binary builds are compiled with [Nuitka](https://github.com/Nuitka/Nuitka):
 - https://linuxusergd.itch.io/gdscript-transpiler-bin, [GitHub Actions](https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions)
 
