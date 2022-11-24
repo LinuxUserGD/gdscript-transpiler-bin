@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/hack_regular.ttf-820faac22e8507b865c49f372d61
 [params]
 
 Rendering=null
-antialiased=true
+antialiasing=1
 generate_mipmaps=false
 multichannel_signed_distance_field=false
 msdf_pixel_range=8

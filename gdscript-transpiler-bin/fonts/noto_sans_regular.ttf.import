@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/noto_sans_regular.ttf-17218758a5901582c240baa
 [params]
 
 Rendering=null
-antialiased=true
+antialiasing=1
 generate_mipmaps=false
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
