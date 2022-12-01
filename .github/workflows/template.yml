@@ -167,17 +167,17 @@ jobs:
 
       - name: Run script inside Alpine chroot as root
         run: |
-          CC=clang CXX=clang++ python2 -m pip install wheel
-          CC=clang CXX=clang++ python2 -m pip install ordered-set
-          CC=clang CXX=clang++ python2 -m pip install -r requirements.txt
+          CC=clang CXX=clang++ python -m pip install wheel
+          CC=clang CXX=clang++ python -m pip install ordered-set
+          CC=clang CXX=clang++ python -m pip install -r requirements.txt
         shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
         run: |
-          python2 main.py --path=main.gd
-          python2 main.py --path=transpiler.gd
-          python2 main.py --path=props.gd
-          python2 -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
+          python main.py --path=main.gd
+          python main.py --path=transpiler.gd
+          python main.py --path=props.gd
+          python -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
