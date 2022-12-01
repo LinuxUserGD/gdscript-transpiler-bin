@@ -296,7 +296,4 @@ func translate(e : String):
 		e = e.replace("= import Transpiler", "import transpiler")
 	while e.contains("= import Props"):
 		e = e.replace("= import Props", "import props")
-	while e.contains("~audio~"):
-		var string : String = "play(data)"
-		e = e.replace("~audio~", string)
 	return e
