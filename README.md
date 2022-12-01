@@ -8,6 +8,7 @@
 
 A GDScript compiler and Python runtime environment.
 Minimal Scripts can be transpiled to Python.
+Compatible with Python 2.6, 2.7, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10.
 
 [![Video](preview.gif)](preview.gif)
 
