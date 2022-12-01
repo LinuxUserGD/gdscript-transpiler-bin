@@ -142,14 +142,14 @@ jobs:
 
       - name: Run script inside Alpine chroot
         run: |
-          export PYTHON_VERSION=2.7.18
+          export PYTHON_VERSION=3.10.8
           wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
           tar xzf Python-${PYTHON_VERSION}.tgz
         shell: alpine.sh {0}
 
       - name: Run script inside Alpine chroot
         run: |
-          export PYTHON_VERSION=2.7.18
+          export PYTHON_VERSION=3.10.8
           cd Python-${PYTHON_VERSION}
           ./configure --prefix=/usr --enable-optimizations --with-ensurepip=install --disable-shared
           make -j4
