@@ -80,7 +80,7 @@ func version():
 ## Help function which prints all possible commands
 func help():
 	print("Usage: main [options]")
-	print()
+	print("\n")
 	print("Options:")
 	print("  " + '---version' + "                   " + "show program's version number and exit")
 	print("  " + '---help' + "                      " + "show this help message and exit")
