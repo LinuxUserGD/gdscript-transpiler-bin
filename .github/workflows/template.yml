@@ -163,13 +163,13 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
-          CC=clang CXX=clang++ ./python/output/python3 -m pip install wheel
-          CC=clang CXX=clang++ ./python/output/python3 -m pip install ordered-set
-          CC=clang CXX=clang++ ./python/output/python3 -m pip install -r requirements.txt
-          ./python/output/python3 main.py --path=main.gd
-          ./python/output/python3 main.py --path=transpiler.gd
-          ./python/output/python3 main.py --path=props.gd
-          ./python/output/python3 -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
+          CC=clang CXX=clang++ python2 -m pip install wheel
+          CC=clang CXX=clang++ python2 -m pip install ordered-set
+          CC=clang CXX=clang++ python2 -m pip install -r requirements.txt
+          python2 main.py --path=main.gd
+          python2 main.py --path=transpiler.gd
+          python2 main.py --path=props.gd
+          python2 -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
