@@ -163,9 +163,17 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd 
+        shell: alpine.sh {0}
+
+      - name: Run script inside Alpine chroot as root
+        run: |
           CC=clang CXX=clang++ python2 -m pip install wheel
           CC=clang CXX=clang++ python2 -m pip install ordered-set
           CC=clang CXX=clang++ python2 -m pip install -r requirements.txt
+        shell: alpine.sh --root {0}
+
+      - name: Run script inside Alpine chroot
+        run: |
           python2 main.py --path=main.gd
           python2 main.py --path=transpiler.gd
           python2 main.py --path=props.gd
