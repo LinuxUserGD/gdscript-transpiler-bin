@@ -108,6 +108,7 @@ jobs:
             tcl-dev
             tk
             tk-dev
+            zlib-dev
             llvm15
             clang15
             llvm-libunwind
@@ -117,6 +118,7 @@ jobs:
             mold
             compiler-rt
             musl-dev
+            openssl-dev
             linux-headers
             patchelf
             pkgconf
@@ -140,20 +142,15 @@ jobs:
 
       - name: Run script inside Alpine chroot
         run: |
-          git clone --single-branch --depth 1 -b 2.7 https://github.com/LinuxUserGD/Nuitka-Python.git python
+          export PYTHON_VERSION=2.7.18
+          wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
+          tar xzf Python-${PYTHON_VERSION}.tgz
         shell: alpine.sh {0}
-
-      - name: Run script inside Alpine chroot as root
-        run: |
-          cd python
-          ls -l
-          chmod +x build.sh
-          cd -
-        shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
         run: |
-          cd python
+          export PYTHON_VERSION=2.7.18
+          cd Python-${PYTHON_VERSION}
           export COMMON_FLAGS="-O3 -pipe -fstack-protector-strong -D_FORTIFY_SOURCE=2 -flto=4"
           export CFLAGS="${COMMON_FLAGS}"
           export CC="clang"
@@ -169,8 +166,9 @@ jobs:
           export READELF="llvm-readelf"
           export OBJCOPY="llvm-objcopy"
           export OBJDUMP="llvm-objdump"
-          /bin/bash build.sh
-          ls -l output/*
+          ./configure --prefix=/usr --enable-optimizations --with-ensurepip=install --disable-shared
+          make -j4
+          sudo make install
           cd -
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
