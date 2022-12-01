@@ -214,6 +214,9 @@ func dict(arg : String):
 		arg = arg.replace(".new()", "")
 		arg = "import " + arg
 		con = true
+	while (arg.contains(".clear()")):
+		arg = arg.replace(".clear()", "[:] = []")
+		con = true
 	while (arg.contains("_self,")):
 		arg = arg.replace("_self,", "")
 		con = true
