@@ -77,8 +77,6 @@ jobs:
           cd gdscript-transpiler-bin
           curl.exe -L --output full-size.html --url https://raw.githubusercontent.com/godotengine/godot/master/misc/dist/html/full-size.html
           md dist
-          md temp
-          godot.exe project.godot -v --path "../gdscript-transpiler-bin" --headless --export "Web" temp/index.html
           godot.exe --headless --export "Web" dist/index.html
 
       - name: Upload Artifact
