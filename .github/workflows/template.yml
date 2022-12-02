@@ -95,28 +95,19 @@ jobs:
           branch: edge
           arch: x86_64
           packages: >
+            alsa-lib-dev
+            libffi-dev
+            ncurses-dev
+            tcl-dev
+            tk-dev
+            zlib-dev
+            gettext-dev
+            python2-dev
             wget
             curl
             perl
-            alsa-lib
-            alsa-lib-dev
-            libffi
-            libffi-dev
-            ncurses
-            ncurses-dev
-            tcl
-            tcl-dev
-            tk
-            tk-dev
-            zlib-dev
-            llvm15
-            clang15
-            llvm-libunwind
             libgcc
             gcc
-            lld
-            mold
-            compiler-rt
             musl-dev
             openssl-dev
             linux-headers
@@ -129,32 +120,10 @@ jobs:
             file
             gzip
             sudo
-            gettext-dev
           shell-name: alpine.sh
 
-
-      - name: Run script inside Alpine chroot as root
-        run: |
-          ln -sf /usr/bin/clang /usr/bin/cc
-          ln -sf /usr/bin/clang++ /usr/bin/c++
-          ln -sf /usr/bin/ld.lld /usr/bin/ld
-        shell: alpine.sh --root {0}
-
       - name: Run script inside Alpine chroot
         run: |
-          export PYTHON_VERSION=3.10.8
-          wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
-          tar xzf Python-${PYTHON_VERSION}.tgz
-        shell: alpine.sh {0}
-
-      - name: Run script inside Alpine chroot
-        run: |
-          export PYTHON_VERSION=3.10.8
-          cd Python-${PYTHON_VERSION}
-          ./configure --prefix=/usr --enable-optimizations --with-ensurepip=install --disable-shared
-          make -j4
-          sudo make install
-          cd -
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/props.py
@@ -167,17 +136,17 @@ jobs:
 
       - name: Run script inside Alpine chroot as root
         run: |
-          CC=clang CXX=clang++ python3 -m pip install wheel
-          CC=clang CXX=clang++ python3 -m pip install ordered-set
-          CC=clang CXX=clang++ python3 -m pip install -r requirements.txt
+          CC=clang CXX=clang++ python2 -m pip install wheel
+          CC=clang CXX=clang++ python2 -m pip install ordered-set
+          CC=clang CXX=clang++ python2 -m pip install -r requirements.txt
         shell: alpine.sh --root {0}
 
       - name: Run script inside Alpine chroot
         run: |
-          python3 main.py --path=main.gd
-          python3 main.py --path=transpiler.gd
-          python3 main.py --path=props.gd
-          python3 -m nuitka --static-libpython=yes --standalone --lto=yes main.py
+          python2 main.py --path=main.gd
+          python2 main.py --path=transpiler.gd
+          python2 main.py --path=props.gd
+          python2 -m nuitka --static-libpython=no --standalone --lto=yes main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
