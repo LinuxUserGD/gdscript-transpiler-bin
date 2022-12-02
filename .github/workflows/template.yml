@@ -177,7 +177,7 @@ jobs:
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
-          python3 -m nuitka --static-libpython=yes --disable-ccache --remove-output --standalone --lto=yes --clang main.py
+          python3 -m nuitka --static-libpython=yes --standalone --lto=yes main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
