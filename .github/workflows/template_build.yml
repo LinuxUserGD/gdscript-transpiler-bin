@@ -88,7 +88,7 @@ jobs:
       - name: Setup
         shell: cmd
         run: |
-          godot.exe --headless --export "Web" dist/index.html
+          D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin\godot.exe --headless --export "Web" D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin\dist\index.html
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3.1.0
