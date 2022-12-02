@@ -80,6 +80,7 @@ jobs:
           md temp
 
       - name: Run file with timeout
+        shell: cmd
         timeout-minutes: 1 # Times out after 1 minute
         run: |
           godot.exe project.godot -v --path "../gdscript-transpiler-bin" --export "Web" temp/index.html
