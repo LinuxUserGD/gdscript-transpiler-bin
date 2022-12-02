@@ -102,7 +102,6 @@ jobs:
             tk-dev
             zlib-dev
             gettext-dev
-            python2-dev
             wget
             curl
             perl
