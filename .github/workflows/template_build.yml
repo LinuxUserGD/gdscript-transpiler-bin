@@ -83,9 +83,7 @@ jobs:
         shell: cmd
         timeout-minutes: 1 # Times out after 1 minute
         run: |
-          start D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin\godot.exe D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin\project.godot -v --headless --path "D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin" --export "Web" D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin\temp/index.html
-          timeout /t 40
-          taskkill /im godot.exe
+          python D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\.github/workflows/godot.py
 
       - name: Setup
         shell: cmd
