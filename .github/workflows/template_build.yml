@@ -77,6 +77,16 @@ jobs:
           cd gdscript-transpiler-bin
           curl.exe -L --output full-size.html --url https://raw.githubusercontent.com/godotengine/godot/master/misc/dist/html/full-size.html
           md dist
+          md temp
+
+      - name: Run file with timeout
+        timeout-minutes: 1 # Times out after 1 minute
+        run: |
+          godot.exe project.godot -v --path "../gdscript-transpiler-bin" --export "Web" temp/index.html
+
+      - name: Setup
+        shell: cmd
+        run: |
           godot.exe --headless --export "Web" dist/index.html
 
       - name: Upload Artifact
