@@ -83,7 +83,7 @@ jobs:
         shell: cmd
         timeout-minutes: 1 # Times out after 1 minute
         run: |
-          cmd.exe /c godot.exe project.godot -v --path "../gdscript-transpiler-bin" --export "Web" temp/index.html
+          cmd.exe /c D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gdscript-transpiler-bin\godot.exe project.godot -v --path "../gdscript-transpiler-bin" --export "Web" temp/index.html
 
       - name: Setup
         shell: cmd
