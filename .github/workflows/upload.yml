@@ -46,15 +46,6 @@ jobs:
           rename: windows.zip
           wait_seconds: 10
 
-      - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
-        with:
-          repo: LinuxUserGD/gdscript-transpiler-bin
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifact_name: html5
-          rename: html5.zip
-          wait_seconds: 10
-
       - name: Upload to itch.io
         uses: manleydev/butler-publish-itchio-action@master
         env:
