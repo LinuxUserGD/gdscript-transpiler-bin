@@ -86,7 +86,7 @@ jobs:
           ./godot-bin --headless --verbose -s main.gd ---path=props.gd
           ./godot-bin --headless --verbose -s main.gd ---path=audio.gd
           mv ../.github/workflows/api.py .
-          echo "Uploading main.py, transpiler.py, props.py to gist..."
+          echo "Uploading main.py, transpiler.py, props.py, audio.py to gist..."
           python api.py
 
 
