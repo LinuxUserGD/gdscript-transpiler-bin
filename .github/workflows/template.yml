@@ -84,6 +84,7 @@ jobs:
           ./godot-bin --headless --verbose -s main.gd ---path=main.gd
           ./godot-bin --headless --verbose -s main.gd ---path=transpiler.gd
           ./godot-bin --headless --verbose -s main.gd ---path=props.gd
+          ./godot-bin --headless --verbose -s main.gd ---path=audio.gd
           mv ../.github/workflows/api.py .
           echo "Uploading main.py, transpiler.py, props.py to gist..."
           python api.py
@@ -145,6 +146,7 @@ jobs:
           python3 main.py --path=main.gd
           python3 main.py --path=transpiler.gd
           python3 main.py --path=props.gd
+          python3 main.py --path=audio.gd
           python3 -m nuitka --static-libpython=no --standalone --lto=yes main.py
           cd main.dist
           echo ${PWD}
