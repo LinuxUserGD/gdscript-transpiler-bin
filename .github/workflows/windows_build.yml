@@ -41,6 +41,7 @@ jobs:
           python main.py --path=main.gd
           python main.py --path=transpiler.gd
           python main.py --path=props.gd
+          python main.py --path=audio.gd
       
       - name: Set up Clang
         uses: egor-tensin/setup-clang@v1
