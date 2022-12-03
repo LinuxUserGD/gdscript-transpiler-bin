@@ -1,6 +1,3 @@
-#!/usr/bin/godot -s
-
-extends SceneTree
 class_name Audio
 
 ## GDScript Audio Script
