@@ -11,7 +11,45 @@ var types : Array = [ "AABB", "Array", "Basis", "bool", "Callable", "Color", "Di
 ## Common gdscript operations (for parsing)
 var op : Array = [ "", ",", "[", "]", "+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", "==", "!=", ">", "<", ">=", "<=" ]
 ## Dictionary to replace GDScript syntax with valid Python code
-var repl_dict : Dictionary = {"-s":"","var":"","Node":"","Main":"","main":"","Props":"","props":"","Transpiler":"","transpiler":"","SceneTree":"","_ready():":"_init():","func":"def","true":"True","false":"False","&&":"and","||":"or",":":"","extends":"","class_name":"","File":"","OS.execute('python',['-c','import":"","sys;print(sys.version)'],stdout,true,false)":"stdout = [sys.version]","OS.execute('python',['-c',import_str+":"","';print(Version.getNuitkaVersion())'],stdout,true,false)":"stdout = [Version.getNuitkaVersion()]","quit()":"sys.exit()","self.quit()":"sys.exit()","#!/usr/bin/godot":"#!/usr/bin/env python","File.new()":"","(self.root.has_node(player)):":"False:","self.root.add_child(player)":"","player":"~delete~","player.name":"~delete~","player.stream":"~delete~","player.stream.data":"data","player.play()":"play(data)",}
+var repl_dict : Dictionary = {
+	"-s": "",
+	"var": "",
+	"Node": "",
+	"Main": "",
+	"main": "",
+	"Props": "",
+	"props": "",
+	"Audio": "",
+	"audio": "",
+	"Transpiler": "",
+	"transpiler": "",
+	"SceneTree": "",
+	"_ready():": "_init():",
+	"func": "def",
+	"true": "True",
+	"false": "False",
+	"&&": "and",
+	"||": "or",
+	":": "",
+	"extends": "",
+	"class_name": "",
+	"File": "",
+	"OS.execute('python',['-c','import": "",
+	"sys;print(sys.version)'],stdout,true,false)": "stdout = [sys.version]",
+	"OS.execute('python',['-c',import_str+": "",
+	"';print(Version.getNuitkaVersion())'],stdout,true,false)": "stdout = [Version.getNuitkaVersion()]",
+	"quit()": "sys.exit()",
+	"self.quit()": "sys.exit()",
+	"#!/usr/bin/godot": "#!/usr/bin/env python",
+	"File.new()": "",
+	"(self.root.has_node(player)):": "False:",
+	"self.root.add_child(player)": "",
+	"player": "~delete~",
+	"player.name": "~delete~",
+	"player.stream": "~delete~",
+	"player.stream.data": "data",
+	"player.play()": "play(data)"
+	}
 ## Print additional parsing information if true
 var debug : bool = true
 ## Print transpiled script as output to console
