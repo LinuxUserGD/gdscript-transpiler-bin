@@ -102,7 +102,7 @@ func dict(arg : String):
 		arg = arg.right(arg.length()-1)
 	if arg in props.types:
 		return e
-	elif arg in ["-s", "var", "Node", "SceneTree", "Main", "main", "Props", "props", "Transpiler", "transpiler", "extends", "class_name", "File"]:
+	elif arg in ["-s", "var", "Node", "SceneTree", "Main", "main", "Props", "props", "Audio", "audio", "Transpiler", "transpiler", "extends", "class_name", "File"]:
 		e += props.repl_dict[arg]
 		return e
 	elif arg in ["_ready():", "func", "true", "false", "&&", "||", "sys;print(sys.version)'],stdout,true,false)", "';print(Version.getNuitkaVersion())'],stdout,true,false)", "(self.root.has_node(player)):", "self.root.add_child(player)", "player", "player.name", "player.stream", "player.stream.data", "player.play()"]:
@@ -296,4 +296,6 @@ func translate(e : String):
 		e = e.replace("= import Transpiler", "import transpiler")
 	while e.contains("= import Props"):
 		e = e.replace("= import Props", "import props")
+	while e.contains("= import Audio"):
+		e = e.replace("= import Audio", "import audio")
 	return e
