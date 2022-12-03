@@ -24,6 +24,7 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd
 
       - name: Setup Python
         uses: actions/setup-python@v4
