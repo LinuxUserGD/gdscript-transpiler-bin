@@ -24,6 +24,7 @@ jobs:
           Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd -OutFile 'main.gd'
           Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd -OutFile 'transpiler.gd'
           Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd -OutFile 'props.gd'
+          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd -OutFile 'audio.gd'
 
       - name: Setup Python
         uses: actions/setup-python@v4
