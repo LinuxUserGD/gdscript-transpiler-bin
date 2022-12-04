@@ -11,7 +11,7 @@ func _init(X : float, Y : float):
 func angle() -> float:
 	return atan2(y, x)
 
-func from_angle(p_angle : float):
+func from_angle(p_angle : float) -> VECTOR2:
 	return VECTOR2.new(cos(p_angle), sin(p_angle))
 
 func length() -> float:
@@ -105,13 +105,13 @@ func bounce(p_normal : VECTOR2) -> VECTOR2:
 func reflect(p_normal : VECTOR2) -> VECTOR2:
 	return p_normal.mul(2.0).mul(self.dot(p_normal)).sub(self)
 
-func is_equal_approx(p_v : VECTOR2):
+func is_equal_approx(p_v : VECTOR2) -> bool:
 	return is_equal_approx(x, p_v.x) and is_equal_approx(y, p_v.y)
 
-func is_zero_approx():
+func is_zero_approx() -> bool:
 	return is_zero_approx(x) and is_zero_approx(y)
 
-func is_finite():
+func is_finite() -> bool:
 	return is_finite(x) and is_finite(y)
 
 func sub(p_vector2 : VECTOR2) -> VECTOR2:
