@@ -13,7 +13,7 @@ class_name Main
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
 
 ## Runs once when executed, prints different output to console depending on argument
-func _init():
+func _init() -> void:
 	var editor : String = OS.get_cmdline_args()[0]
 	var editor_compare : String = "res://main.tscn"
 	if editor==editor_compare && OS.get_cmdline_args().size() == 1:
@@ -42,7 +42,7 @@ func _init():
 	return
 
 ## Function for transpiling script (by path)
-func start(arg : String):
+func start(arg : String) -> void:
 	var path : String = "res://" + arg.split("=")[1]
 	var args = arg.split("=")[1].split(".")
 	var c : int = args.size()
@@ -60,7 +60,7 @@ func start(arg : String):
 	transpiler.save(path2, out)
 
 ## Prints Python and Godot Engine version information to console
-func version():
+func version() -> void:
 	var info : Dictionary = Engine.get_version_info()
 	var major : int = info.get("major")
 	var minor : int = info.get("minor")
@@ -78,7 +78,7 @@ func version():
 	print("Nuitka: " + stdout[0].split("\n")[0])
 
 ## Help function which prints all possible commands
-func help():
+func help() -> void:
 	print("Usage: main [options]")
 	print("\n")
 	print("Options:")
@@ -89,7 +89,7 @@ func help():
 
 
 ## Function for setting the value which segfaults Godot
-func set_segfault(segfault_value):
+func set_segfault(segfault_value) -> void:
 	segfault = segfault_value
 
 
@@ -99,7 +99,7 @@ var segfault: int = 0:
 		set_segfault(segfault_value)
 
 ## Godot quits with segfault if function is run twice
-func segmentation_fault(message : String):
+func segmentation_fault(message : String) -> void:
 	var player : String = 'player'
 	if (self.root.has_node(player)):
 		print(message)
@@ -108,7 +108,7 @@ func segmentation_fault(message : String):
 		return
 
 ## Method for decoding and playing base64 audio
-func play_base64_audio():
+func play_base64_audio() -> void:
 	var progress : String = "..."
 	segmentation_fault("Closing Godot with segfault" + progress)
 	var player = AudioStreamPlayer.new()
