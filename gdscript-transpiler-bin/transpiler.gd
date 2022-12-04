@@ -13,7 +13,7 @@ var props = Props.new()
 
 ## Function to split script into lines and analyze each one.
 ## Imports are added to transpiled python script if required.
-func transpile(content : String):
+func transpile(content : String) -> String:
 	props.types.sort()
 	var t = ""
 	for line in content.split("\n"):
@@ -42,7 +42,7 @@ func transpile(content : String):
 	return t
 
 ## Function to output contents of a file using File compatibility class
-func read(path : String):
+func read(path : String) -> String:
 	var file : File = File.new()
 	file.open(path, file.FileOpts.READ)
 	var string : String = file.get_as_text()
@@ -50,14 +50,14 @@ func read(path : String):
 	return string
 
 ## Function to write final output to a file using File compatibility class
-func save(path : String, content : String):
+func save(path : String, content : String) -> void:
 	var file : File = File.new()
 	file.open(path, file.FileOpts.WRITE)
 	file.store_string(content)
 	file.close()
 
 ## Function for splitting lines (excluding double quoted Strings) into readable GDScript syntax expressions which later can be converted
-func analyze(l : String):
+func analyze(l : String) -> String:
 	var out : String = ""
 	var string_prev : Array = l.split("\"" + "\\" + "\"" + "\"")
 	var c : int = 0
@@ -89,7 +89,7 @@ func analyze(l : String):
 	return out
 
 ## Dictionary function which converts known GDScript arguments
-func dict(arg : String):
+func dict(arg : String) -> String:
 	var e : String = ""
 	if arg.length()==0:
 		return e
@@ -259,7 +259,7 @@ func dict(arg : String):
 	return e
 
 ## Translation function for removing gdscript type hints and internal types
-func translate(e : String):
+func translate(e : String) -> String:
 	if (e == ","):
 		return ","
 	if (e == ""):
