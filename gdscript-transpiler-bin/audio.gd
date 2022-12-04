@@ -8,7 +8,7 @@ class_name Audio
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
 
 ## Base64 encoded audio (Free Software Song)
-func getData():
+func getData() -> String:
 	var lines : Array = [
 		"/+MYxAANMAbZGUEAAIA3Lpdxn/BAEIkBAoCAY8HAxbJ/UCHWD5rwfB8H/38oCHP/4Pv1Agc8H3lz",
 		"8o7yjuD7+UBBoZls/qPj/+MYxAYNES7oAYw4AGx6EbPsoYnjd5CC0jNl4H0cN+bnJimZLgSjUX5A",
