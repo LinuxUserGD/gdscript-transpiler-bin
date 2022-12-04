@@ -17,7 +17,7 @@ enum FileOpts {READ, WRITE, WRITE_READ, READ_WRITE}
 
 ## Constructor call
 func _init():
-	file = FileAccess.new()
+	file = null
 
 ## "Open" function for compatibility
 func open(path : String, fo : FileOpts) -> void:
