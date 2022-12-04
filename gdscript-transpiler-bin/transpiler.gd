@@ -282,6 +282,8 @@ func translate(e : String):
 		e = e.replace(": ,", ",")
 	while e.contains(":,"):
 		e = e.replace(":,", ",")
+	while e.contains(" -> "):
+		e = e.replace(" -> ", "")
 	while e.contains("segfault"):
 		e = ""
 	while e.contains("DisplayServer"):
