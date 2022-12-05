@@ -73,16 +73,11 @@ func version() -> void:
 	print("GDScript2PythonTranspiler")
 	print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
-	OS.execute("python", ["-c", "import sys;print(sys.version)"], stdout, true, false)
+	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
 	print("Python: " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str: String = "from nuitka import Version"
-	(
-		OS
-		. execute(
-			"python", ["-c", import_str + ";print(Version.getNuitkaVersion())"], stdout, true, false
-		)
-	)
+	OS.execute('python',['-c',import_str+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
 	print("Nuitka: " + stdout[0].split("\n")[0])
 
 
