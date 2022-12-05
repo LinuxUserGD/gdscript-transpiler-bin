@@ -4,16 +4,17 @@ class_name Transpiler
 ##
 ## Transpiler for converting any GDScript code to Python
 ## using search-and-replace syntax
-## 
+##
 ##
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
 
 ## Properties class instance
 var props = Props.new()
 
+
 ## Function to split script into lines and analyze each one.
 ## Imports are added to transpiled python script if required.
-func transpile(content : String) -> String:
+func transpile(content: String) -> String:
 	props.types.sort()
 	var t = ""
 	for line in content.split("\n"):
@@ -32,80 +33,122 @@ func transpile(content : String) -> String:
 	t += "i"
 	t += "f"
 	t += " __name__=="
-	t += "\""
+	t += '"'
 	t += "__main__"
-	t += "\""
+	t += '"'
 	t += ":"
 	t += "\n"
 	t += "   _init()"
 	t += "\n"
 	return t
 
+
 ## Function to output contents of a file using File compatibility class
-func read(path : String) -> String:
-	var file : File = File.new()
+func read(path: String) -> String:
+	var file: File = File.new()
 	file.open(path, file.FileOpts.READ)
-	var string : String = file.get_as_text()
+	var string: String = file.get_as_text()
 	file.close()
 	return string
 
+
 ## Function to write final output to a file using File compatibility class
-func save(path : String, content : String) -> void:
-	var file : File = File.new()
+func save(path: String, content: String) -> void:
+	var file: File = File.new()
 	file.open(path, file.FileOpts.WRITE)
 	file.store_string(content)
 	file.close()
 
+
 ## Function for splitting lines (excluding double quoted Strings) into readable GDScript syntax expressions which later can be converted
-func analyze(l : String) -> String:
-	var out : String = ""
-	var string_prev : Array = l.split("\"" + "\\" + "\"" + "\"")
-	var c : int = 0
+func analyze(l: String) -> String:
+	var out: String = ""
+	var string_prev: Array = l.split('"' + "\\" + '"' + '"')
+	var c: int = 0
 	for ii in range(0, string_prev.size()):
-		var string : Array = string_prev[ii].split("\"")
+		var string: Array = string_prev[ii].split('"')
 		if ii > 0:
-			out += "\"" + "\\" + "\"" + "\""
+			out += '"' + "\\" + '"' + '"'
 		for i in range(0, string.size()):
 			if ii > 0:
 				if string[i] == "\\" + "\\":
-					out += "\"" + string[i] + "\""
+					out += '"' + string[i] + '"'
 				else:
 					out += string[i]
 			elif c ^ 1 != c + 1:
-				out += "\"" + string[i] + "\""
+				out += '"' + string[i] + '"'
 			else:
 				out += translate(string[i])
-			c+=1
+			c += 1
 	if out.length() > 0:
-		var res : String = "res"
+		var res: String = "res"
 		res += "://"
 		while out.contains(res):
 			out = out.replace(res, "")
-		while out.contains("if") and out.ends_with("\""):
+		while out.contains("if") and out.ends_with('"'):
 			out += ":"
 		if out.ends_with(" "):
-			out = out.left(out.length()-1)
+			out = out.left(out.length() - 1)
 		out += "\n"
 	return out
 
+
 ## Dictionary function which converts known GDScript arguments
-func dict(arg : String) -> String:
-	var e : String = ""
-	if arg.length()==0:
+func dict(arg: String) -> String:
+	var e: String = ""
+	if arg.length() == 0:
 		return e
 	if arg in props.op:
 		e += arg
 		e += " "
 		return e
-	while (arg.begins_with("	")):
+	while arg.begins_with("	"):
 		e += "	"
-		arg = arg.right(arg.length()-1)
+		arg = arg.right(arg.length() - 1)
 	if arg in props.types:
 		return e
-	elif arg in ["-s", "var", "Node", "SceneTree", "Main", "main", "Props", "props", "Audio", "audio", "Transpiler", "transpiler", "extends", "class_name", "File"]:
+	elif (
+		arg
+		in [
+			"-s",
+			"var",
+			"Node",
+			"SceneTree",
+			"Main",
+			"main",
+			"Props",
+			"props",
+			"Audio",
+			"audio",
+			"Transpiler",
+			"transpiler",
+			"extends",
+			"class_name",
+			"File"
+		]
+	):
 		e += props.repl_dict[arg]
 		return e
-	elif arg in ["_ready():", "func", "true", "false", "&&", "||", "sys;print(sys.version)'],stdout,true,false)", "';print(Version.getNuitkaVersion())'],stdout,true,false)", "(self.root.has_node(player)):", "self.root.add_child(player)", "player", "player.name", "player.stream", "player.stream.data", "player.play()"]:
+	elif (
+		arg
+		in [
+			"_ready():",
+			"func",
+			"true",
+			"false",
+			"&&",
+			"||",
+			"sys;print(sys.version)'],stdout,true,false)",
+			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
+			"(self.root.has_node(player)):",
+			"self.root.add_child(player)",
+			"player",
+			"player.name",
+			"player.stream",
+			"player.stream.data",
+			"player.play()"
+		]
+	):
 		e += props.repl_dict[arg]
 		e += " "
 		return e
@@ -145,11 +188,11 @@ func dict(arg : String) -> String:
 		return e
 	elif arg == "File.new()":
 		e += props.repl_dict[arg]
-		e += "\""
-		e += "\""
+		e += '"'
+		e += '"'
 		e += " "
 		return e
-	var con : bool = false
+	var con: bool = false
 	while arg.contains(".size()"):
 		arg = arg.replace(".size()", ")")
 		if arg.contains("("):
@@ -191,17 +234,17 @@ func dict(arg : String) -> String:
 		arg = arg.replace("---", "--")
 		con = true
 	while arg.contains("file.FileOpts.READ"):
-		var r : String = ""
-		r += "\""
+		var r: String = ""
+		r += '"'
 		r += "r"
-		r += "\""
+		r += '"'
 		arg = arg.replace("file.FileOpts.READ", r)
 		con = true
 	while arg.contains("file.FileOpts.WRITE"):
-		var w : String = ""
-		w += "\""
+		var w: String = ""
+		w += '"'
 		w += "w"
-		w += "\""
+		w += '"'
 		arg = arg.replace("file.FileOpts.WRITE", w)
 		con = true
 	while arg.contains(".get_as_text"):
@@ -210,35 +253,35 @@ func dict(arg : String) -> String:
 	while arg.contains(".store_string"):
 		arg = arg.replace(".store_string", ".write")
 		con = true
-	while (arg.contains(".new()")):
+	while arg.contains(".new()"):
 		arg = arg.replace(".new()", "")
 		arg = "import " + arg
 		con = true
-	while (arg.contains(".clear()")):
+	while arg.contains(".clear()"):
 		arg = arg.replace(".clear()", "[:] = []")
 		con = true
-	while (arg.contains("_self,")):
+	while arg.contains("_self,"):
 		arg = arg.replace("_self,", "")
 		con = true
-	while (arg.contains("_self")):
+	while arg.contains("_self"):
 		arg = arg.replace("_self", "self")
 		con = true
-	while (arg.contains("OS.get_cmdline_args()")):
+	while arg.contains("OS.get_cmdline_args()"):
 		arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
 		con = true
-	while (arg.contains("Engine.get_version_info()")):
+	while arg.contains("Engine.get_version_info()"):
 		arg = arg.replace("Engine.get_version_info()", str(Engine.get_version_info()))
 		con = true
-	while (arg.contains("Marshalls.base64_to_raw")):
+	while arg.contains("Marshalls.base64_to_raw"):
 		arg = arg.replace("Marshalls.base64_to_raw", "AudioSegment.from_file(BytesIO(b64decode")
 		arg += "), format="
-		arg += "\""
+		arg += '"'
 		arg += "mp3"
-		arg += "\""
+		arg += '"'
 		arg += ")"
 		props.audio_imp = true
 		con = true
-	var found : bool = false
+	var found: bool = false
 	for type in props.types:
 		while arg.begins_with(type):
 			found = true
@@ -258,13 +301,14 @@ func dict(arg : String) -> String:
 	e += " "
 	return e
 
+
 ## Translation function for removing gdscript type hints and internal types
-func translate(e : String) -> String:
-	if (e == ","):
+func translate(e: String) -> String:
+	if e == ",":
 		return ","
-	if (e == ""):
+	if e == "":
 		return ""
-	var args : Array = e.split(" ")
+	var args: Array = e.split(" ")
 	e = ""
 	for arg in args:
 		e += dict(arg)
