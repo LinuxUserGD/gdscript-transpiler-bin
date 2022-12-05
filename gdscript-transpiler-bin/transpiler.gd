@@ -67,14 +67,9 @@ func analyze(l: String) -> String:
 	var c: int = 0
 	for ii in range(0, string_prev.size()):
 		var string: Array = string_prev[ii].split('"')
-		if ii > 0:
-			out += "'\"'"
 		for i in range(0, string.size()):
 			if ii > 0:
-				if string[i] == "'\"'":
-					out += '"' + string[i] + '"'
-				else:
-					out += string[i]
+				out += string[i]
 			elif c ^ 1 != c + 1:
 				out += '"' + string[i] + '"'
 			else:
