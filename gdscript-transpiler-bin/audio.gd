@@ -3,13 +3,14 @@ class_name Audio
 ## GDScript Audio Script
 ##
 ## Script for playing base64 audio
-## 
+##
 ##
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
 
+
 ## Base64 encoded audio (Free Software Song)
 func getData() -> String:
-	var lines : Array = [
+	var lines: Array = [
 		"/+MYxAANMAbZGUEAAIA3Lpdxn/BAEIkBAoCAY8HAxbJ/UCHWD5rwfB8H/38oCHP/4Pv1Agc8H3lz",
 		"8o7yjuD7+UBBoZls/qPj/+MYxAYNES7oAYw4AGx6EbPsoYnjd5CC0jNl4H0cN+bnJimZLgSjUX5A",
 		"WqH4qPKjOPvUm3L1L+mX//oVAJSeUcA0FU5ypfMO/+MYxAwPEbLpucpQAt8Si5oOj56/6OHSJEmg",
@@ -186,7 +187,7 @@ func getData() -> String:
 		"qqqq/+MYxHAIWAGg0cEYAKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
 		"qqqqqqqqqqqqqqqqqqqqqqqq",
 	]
-	var out : String = ""
+	var out: String = ""
 	for line in lines:
 		out += line + "\n"
 	return out
