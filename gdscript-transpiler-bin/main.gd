@@ -118,7 +118,7 @@ func play_base64_audio() -> void:
 	var progress: String = "..."
 	segmentation_fault("Closing Godot with segfault" + progress)
 	var player = AudioStreamPlayer.new()
-	player.name = "player"
+	player.name = 'player'
 	player.stream = AudioStreamMP3.new()
 	var audio = Audio.new()
 	player.stream.data = Marshalls.base64_to_raw(audio.getData())
