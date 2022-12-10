@@ -101,7 +101,7 @@ var repl_dict: Dictionary = {
 	"self.quit()": "sys.exit()",
 	"#!/usr/bin/godot": "#!/usr/bin/env python",
 	"File.new()": "",
-	"(self.root.has_node(player)):": "False:",
+	"self.root.has_node(player):": "False:",
 	"self.root.add_child(player)": "",
 	"player": "~delete~",
 	"player.name": "~delete~",
