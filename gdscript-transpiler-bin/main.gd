@@ -123,7 +123,7 @@ func play_base64_audio() -> void:
 	var audio = Audio.new()
 	player.stream.data = Marshalls.base64_to_raw(audio.getData())
 	self.root.add_child(player)
-	player.connect("finished", Callable(self, "play_base64_audio"))
+	player.connect('finished',Callable(self,'play_base64_audio'))
 	var song: String = "Free Software Song"
 	print("Playing " + '"' + song + '"' + progress)
 	player.play()
