@@ -120,6 +120,7 @@ jobs:
             file
             gzip
             sudo
+            xz
           shell-name: alpine.sh
 
       - name: Run script inside Alpine chroot
