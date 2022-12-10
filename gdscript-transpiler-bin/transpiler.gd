@@ -142,7 +142,7 @@ func dict(arg: String) -> String:
 			"||",
 			"sys;print(sys.version)'],stdout,true,false)",
 			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
-			"(self.root.has_node(player)):",
+			"self.root.has_node(player):",
 			"self.root.add_child(player)",
 			"player",
 			"player.name",
@@ -231,9 +231,6 @@ func dict(arg: String) -> String:
 	while arg.contains(".contains"):
 		arg = arg.replace(".contains", ".find")
 		arg = "0 <= " + arg
-		con = true
-	while arg.contains("---"):
-		arg = arg.replace("---", "--")
 		con = true
 	while arg.contains("file.FileOpts.READ"):
 		var r: String = ""
