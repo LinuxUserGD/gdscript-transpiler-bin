@@ -140,14 +140,14 @@ jobs:
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd
-          sudo python3 -m pip install wheel
-          sudo python3 -m pip install ordered-set
-          sudo python3 -m pip install -r requirements.txt
-          python3 main.py --path=main.gd
-          python3 main.py --path=transpiler.gd
-          python3 main.py --path=props.gd
-          python3 main.py --path=audio.gd
-          python3 -m nuitka --static-libpython=no --standalone --lto=yes main.py
+          sudo python3.10 -m pip install wheel
+          sudo python3.10 -m pip install ordered-set
+          sudo python3.10 -m pip install -r requirements.txt
+          python3.10 main.py --path=main.gd
+          python3.10 main.py --path=transpiler.gd
+          python3.10 main.py --path=props.gd
+          python3.10 main.py --path=audio.gd
+          python3.10 -m nuitka --static-libpython=no --standalone --lto=yes main.py
           cd main.dist
           echo ${PWD}
         shell: alpine.sh {0}
