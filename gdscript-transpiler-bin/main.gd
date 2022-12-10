@@ -22,18 +22,18 @@ func _init() -> void:
 	elif OS.get_cmdline_args().size() != 0:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	for arg in OS.get_cmdline_args():
-		if arg == "---version":
+		if arg == "--version":
 			version()
 			self.quit()
 			return
-		if arg == "---help":
+		if arg == "--help":
 			help()
 			self.quit()
 			return
-		if arg == "---test=base64_audio":
+		if arg == "--test=base64_audio":
 			play_base64_audio()
 			return
-		var path_arg: String = "---path="
+		var path_arg: String = "--path="
 		if arg.begins_with(path_arg):
 			start(arg)
 			self.quit()
@@ -86,10 +86,10 @@ func help() -> void:
 	print("Usage: main [options]")
 	print("\n")
 	print("Options:")
-	print("  " + "---version" + "                   " + "show program's version number and exit")
-	print("  " + "---help" + "                      " + "show this help message and exit")
-	print("  " + "---path=../path/to/file.gd" + "   " + "path to gdscript file")
-	print("  " + "---test=base64_audio" + "         " + "play base64 encoded audio file")
+	print("  " + "--version" + "                   " + "show program's version number and exit")
+	print("  " + "--help" + "                      " + "show this help message and exit")
+	print("  " + "--path=../path/to/file.gd" + "   " + "path to gdscript file")
+	print("  " + "--test=base64_audio" + "         " + "play base64 encoded audio file")
 
 
 ## Function for setting the value which segfaults Godot
