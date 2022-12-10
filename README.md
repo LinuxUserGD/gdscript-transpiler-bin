@@ -19,6 +19,16 @@ For Python script generated from [`main.gd`](gdscript-transpiler-bin/main.gd), s
 
 [![Icon](gdscript-transpiler-bin/icon.svg)](gdscript-transpiler-bin/icon.svg)
 
+## Example
+
+`godot.exe -s main.gd --headless ---help`
+
+`godot.exe -s main.gd --headless ---path=main.gd` (audio.gd, transpiler.gd, props.gd)
+
+`python main.py --help`
+
+`python main.py --path=main.gd`
+
 ## License
 
 ### See [LICENSE](LICENSE) and [CREDITS](CREDITS) (third-party licenses)
