@@ -126,10 +126,14 @@ jobs:
       - name: Run script inside Alpine chroot
         run: |
           export PYTHON_VERSION=3.10.9
-          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v3.10.9/python-${PYTHON_VERSION}.tar.xz
+          export REQUESTS_VERSION=2.28.1-r1-1
+          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/python-${PYTHON_VERSION}.tar.xz
+          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/requests-${REQUESTS_VERSION}.tar.xz
           sudo mv python-${PYTHON_VERSION}.tar.xz /
+          sudo mv requests-${REQUESTS_VERSION}.tar.xz /
           cd /
           sudo tar xpvf python-${PYTHON_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
+          sudo tar xpvf requests-${REQUESTS_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
           cd -
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
