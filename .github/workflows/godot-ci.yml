@@ -4,7 +4,7 @@ on:
 
 env:
   GODOT_VERSION: "4.0"
-  RELEASE_NAME: beta7
+  RELEASE_NAME: beta8
 
 jobs:
   export-templates:
