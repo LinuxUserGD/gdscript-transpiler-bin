@@ -9,7 +9,7 @@
 config_version=5
 
 _global_script_classes=[{
-"base": "SceneTree",
+"base": "RefCounted",
 "class": &"Audio",
 "language": &"GDScript",
 "path": "res://audio.gd"
@@ -33,13 +33,19 @@ _global_script_classes=[{
 "class": &"Transpiler",
 "language": &"GDScript",
 "path": "res://transpiler.gd"
+}, {
+"base": "RefCounted",
+"class": &"VECTOR2",
+"language": &"GDScript",
+"path": "res://ports/vector2.gd"
 }]
 _global_script_class_icons={
 "Audio": "",
 "File": "",
 "Main": "",
 "Props": "",
-"Transpiler": ""
+"Transpiler": "",
+"VECTOR2": ""
 }
 
 [application]
