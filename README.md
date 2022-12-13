@@ -21,9 +21,9 @@ For Python script generated from [`main.gd`](gdscript-transpiler-bin/main.gd), s
 
 ## Example
 
-`godot.exe -s main.gd --headless ---help`
+`godot.exe -s main.gd --headless --help`
 
-`godot.exe -s main.gd --headless ---path=main.gd` (audio.gd, transpiler.gd, props.gd)
+`godot.exe -s main.gd --headless --path=main.gd` (audio.gd, transpiler.gd, props.gd)
 
 `python main.py --help`
 
