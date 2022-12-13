@@ -26,9 +26,9 @@ For Python script generated from [`main.gd`](gdscript-transpiler-bin/main.gd), s
 
 ### Godot Engine 4 command line
 
-- `./godot.exe -s main.gd --headless --help`
+- `./godot4 -s main.gd --headless --help`
 
-- `./godot.exe -s main.gd --headless --path=main.gd` (audio.gd, transpiler.gd, props.gd)
+- `./godot4 -s main.gd --headless --path=main.gd` (audio.gd, transpiler.gd, props.gd)
 
 ### Python environment
 
