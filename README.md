@@ -21,13 +21,19 @@ For Python script generated from [`main.gd`](gdscript-transpiler-bin/main.gd), s
 
 ## Example
 
+### Godot Engine 4 command line
+
 `./godot.exe -s main.gd --headless --help`
 
 `./godot.exe -s main.gd --headless --path=main.gd` (audio.gd, transpiler.gd, props.gd)
 
+### Python environment
+
 `python main.py --help`
 
 `python main.py --path=main.gd`
+
+### Nuitka compiled binary
 
 `./main --help`
 
