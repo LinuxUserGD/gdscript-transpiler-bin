@@ -84,9 +84,10 @@ jobs:
           ./godot-bin --headless --verbose -s main.gd --path=main.gd
           ./godot-bin --headless --verbose -s main.gd --path=transpiler.gd
           ./godot-bin --headless --verbose -s main.gd --path=props.gd
+          ./godot-bin --headless --verbose -s main.gd --path=vector2.gd
           ./godot-bin --headless --verbose -s main.gd --path=audio.gd
           mv ../.github/workflows/api.py .
-          echo "Uploading main.py, transpiler.py, props.py, audio.py to gist..."
+          echo "Uploading main.py, transpiler.py, props.py, vector2.py, audio.py to gist..."
           python api.py
 
 
@@ -142,11 +143,13 @@ jobs:
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/main.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/props.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/vector2.py
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/main.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd
+           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/vector2.gd
           wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd
           wget https://bootstrap.pypa.io/pip/get-pip.py
           sudo python3.10 get-pip.py
@@ -156,6 +159,7 @@ jobs:
           python3.10 main.py --path=main.gd
           python3.10 main.py --path=transpiler.gd
           python3.10 main.py --path=props.gd
+          python3.10 main.py --path=vector2.gd
           python3.10 main.py --path=audio.gd
           python3.10 -m nuitka --static-libpython=no --standalone --lto=yes main.py
           cd main.dist
