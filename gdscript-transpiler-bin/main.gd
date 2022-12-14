@@ -33,6 +33,10 @@ func _init() -> void:
 		if arg == "--test=base64_audio":
 			play_base64_audio()
 			return
+		if arg == "--test=vector2":
+			run_vector2()
+			self.quit()
+			return
 		var path_arg: String = "--path="
 		if arg.begins_with(path_arg):
 			start(arg)
@@ -112,6 +116,15 @@ func segmentation_fault(message: String) -> void:
 		segfault = 6
 		return
 
+## Testing Vector2 implementation
+func run_vector2() -> void:
+	var vector2 = VECTOR2.new()
+	vector2.x = 3
+	print("vector2.x -> " + str(vector2.x))
+	vector2.y = 5
+	print("vector2.y -> " + str(vector2.y))
+	print("vector2.vec_length() -> " + str(vector2.vec_length()))
+	print("vector2.length_squared() -> " + str(vector2.length_squared()))
 
 ## Method for decoding and playing base64 audio
 func play_base64_audio() -> void:
