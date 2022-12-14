@@ -4,17 +4,17 @@ var x : float = 0
 var y : float = 0
 
 ## Constructor call
-func _init(X : float, Y : float):
-	x = X
-	y = Y
+func _init():
+	self.x = 0
+	self.y = 0
 
 func angle() -> float:
 	return atan2(y, x)
 
 func from_angle(p_angle : float):
-	return VECTOR2.new(cos(p_angle), sin(p_angle))
+	return self.new(cos(p_angle), sin(p_angle))
 
-func length() -> float:
+func vec_length() -> float:
 	return sqrt(x * x + y * y)
 
 func length_squared() -> float:
@@ -24,8 +24,8 @@ func normalized():
 	var l : float = x * x + y * y
 	if (l != 0):
 		l = sqrt(l)
-		return VECTOR2.new(x/l, y/l)
-	return VECTOR2.new(x,y)
+		return self.new(x/l, y/l)
+	return self.new(x,y)
 
 func is_normalized() -> bool:
 	return is_equal_approx(length_squared(), 1)
@@ -49,39 +49,39 @@ func cross(p_other) -> float:
 	return x * p_other.y - y * p_other.x
 
 func sign():
-	return VECTOR2.new(sign(x), sign(y))
+	return self.new(sign(x), sign(y))
 
 func floor():
-	return VECTOR2.new(floor(x), floor(y))
+	return self.new(floor(x), floor(y))
 
 func ceil():
-	return VECTOR2.new(ceil(x), ceil(y))
+	return self.new(ceil(x), ceil(y))
 
 func round():
-	return VECTOR2.new(round(x), round(y))
+	return self.new(round(x), round(y))
 
 func rotated(p_by : float):
 	var sine : float = sin(p_by)
 	var cosi : float = cos(p_by)
-	return VECTOR2.new(x * cosi - y * sine, x * sine + y * cosi)
+	return self.new(x * cosi - y * sine, x * sine + y * cosi)
 
 func posmod(p_mod: float):
-	return VECTOR2.new(fposmod(x, p_mod), fposmod(y, p_mod))
+	return self.new(fposmod(x, p_mod), fposmod(y, p_mod))
 
 func posmodv(p_modv):
-	return VECTOR2.new(fposmod(x, p_modv.x), fposmod(y, p_modv.y))
+	return self.new(fposmod(x, p_modv.x), fposmod(y, p_modv.y))
 
 func project(p_to):
 	return p_to.mul(dot(p_to) / p_to.length_squared())
 
 func clamp(p_min, p_max):
-	return VECTOR2.new(clamp(x, p_min.x, p_max.x), clamp(y, p_min.y, p_max.y))
+	return self.new(clamp(x, p_min.x, p_max.x), clamp(y, p_min.y, p_max.y))
 
 func snapped(p_step):
-	return VECTOR2.new(snapped(x, p_step.x), snapped(y, p_step.y))
+	return self.new(snapped(x, p_step.x), snapped(y, p_step.y))
 
 func limit_length(p_len : float):
-	var l : float = length()
+	var l : float = vec_length()
 	var v = self
 	if (l > 0 && p_len < l):
 		return v.div(l).mul(p_len)
@@ -90,7 +90,7 @@ func limit_length(p_len : float):
 func move_toward(p_to, p_delta : float):
 	var v = self
 	var vd = p_to.sub(v)
-	var len : float = vd.length()
+	var len : float = vd.vec_length()
 	if (len <= p_delta):
 		return p_to
 	else:
@@ -115,16 +115,16 @@ func is_finite() -> bool:
 	return is_finite(x) and is_finite(y)
 
 func sub(p_vector2):
-	return VECTOR2.new(x-p_vector2.x,y-p_vector2.y)
+	return self.new(x-p_vector2.x,y-p_vector2.y)
 
 func add(p_vector2):
-	return VECTOR2.new(x+p_vector2.x,y+p_vector2.y)
+	return self.new(x+p_vector2.x,y+p_vector2.y)
 
 func mul(p_by : float):
-	return VECTOR2.new(p_by*x, p_by*y)
+	return self.new(p_by*x, p_by*y)
 
 func inv():
-	return VECTOR2.new(-x,-y)
+	return self.new(-x,-y)
 
 func div(p_by : float):
-	return VECTOR2.new(x/p_by, y/p_by)
+	return self.new(x/p_by, y/p_by)

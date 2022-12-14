@@ -37,7 +37,7 @@ _global_script_classes=[{
 "base": "RefCounted",
 "class": &"VECTOR2",
 "language": &"GDScript",
-"path": "res://ports/vector2.gd"
+"path": "res://vector2.gd"
 }]
 _global_script_class_icons={
 "Audio": "",

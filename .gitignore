@@ -23,3 +23,4 @@ gdscript-transpiler-bin/__pycache__/audio.cpython-310.pyc
 gdscript-transpiler-bin/__pycache__/main.cpython-310.pyc
 gdscript-transpiler-bin/__pycache__/props.cpython-310.pyc
 gdscript-transpiler-bin/__pycache__/transpiler.cpython-310.pyc
+gdscript-transpiler-bin/ports/__pycache__/vector2.cpython-310.pyc

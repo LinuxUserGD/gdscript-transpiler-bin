@@ -81,6 +81,8 @@ var repl_dict: Dictionary = {
 	"audio": "",
 	"Transpiler": "",
 	"transpiler": "",
+	"VECTOR2": "",
+	"vector2": "",
 	"SceneTree": "",
 	"_ready():": "_init():",
 	"func": "def",
@@ -121,5 +123,7 @@ var left_def: bool = false
 var sys_imp: bool = true
 ## Add additional python nuitka import to transpiled script if required
 var nuitka_imp: bool = true
+## Add additional python math import to transpiled script if required
+var math_imp : bool = true
 ## Add additional python simpleaudio import to transpiled script if required
 var audio_imp: bool = true

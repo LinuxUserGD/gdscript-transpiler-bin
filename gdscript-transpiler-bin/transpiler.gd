@@ -20,6 +20,8 @@ func transpile(content: String) -> String:
 	for line in content.split("\n"):
 		if not line.begins_with("##"):
 			t += analyze(line)
+	if props.math_imp:
+		t = "import math" + "\n" + t
 	if props.left_def:
 		t += "def left(s, amount):"
 		t += "\n"
@@ -124,6 +126,8 @@ func dict(arg: String) -> String:
 			"audio",
 			"Transpiler",
 			"transpiler",
+			"VECTOR2",
+			"vector2",
 			"extends",
 			"class_name",
 			"File"
@@ -271,6 +275,10 @@ func dict(arg: String) -> String:
 	while arg.contains("Engine.get_version_info()"):
 		arg = arg.replace("Engine.get_version_info()", str(Engine.get_version_info()))
 		con = true
+	while arg.contains("sqrt(") and not arg.contains("math.sqrt("):
+		arg = arg.replace("sqrt(", "math.sqrt(")
+		props.math_imp = true
+		con = true
 	while arg.contains("Marshalls.base64_to_raw"):
 		arg = arg.replace("Marshalls.base64_to_raw", "AudioSegment.from_file(BytesIO(b64decode")
 		arg += "), format="
@@ -343,4 +351,6 @@ func translate(e: String) -> String:
 		e = e.replace("= import Props", "import props")
 	while e.contains("= import Audio"):
 		e = e.replace("= import Audio", "import audio")
+	while e.contains("= import VECTOR2"):
+		e = e.replace("= import VECTOR2", "import vector2")
 	return e
