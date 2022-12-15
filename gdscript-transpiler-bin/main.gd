@@ -121,11 +121,12 @@ func segmentation_fault(message: String) -> void:
 func run_vector2() -> void:
 	var vector2 = VECTOR2.new()
 	vector2.x = 3
-	print("vector2.x -> " + str(vector2.x))
+	print("x -> " + str(vector2.x))
 	vector2.y = 5
-	print("vector2.y -> " + str(vector2.y))
-	print("vector2.vec_length() -> " + str(vector2.vec_length()))
-	print("vector2.length_squared() -> " + str(vector2.length_squared()))
+	print("y -> " + str(vector2.y))
+	print("vec_length() -> " + str(vector2.vec_length()))
+	print("length_squared() -> " + str(vector2.length_squared()))
+	print("angle() -> " + str(vector2.angle()))
 
 ## Method for decoding and playing base64 audio
 func play_base64_audio() -> void:

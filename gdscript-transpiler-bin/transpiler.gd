@@ -279,6 +279,10 @@ func dict(arg: String) -> String:
 		arg = arg.replace("sqrt(", "math.sqrt(")
 		props.math_imp = true
 		con = true
+	while arg.contains("atan2(") and not arg.contains("math.atan2("):
+		arg = arg.replace("atan2(", "math.atan2(")
+		props.math_imp = true
+		con = true
 	while arg.contains("Marshalls.base64_to_raw"):
 		arg = arg.replace("Marshalls.base64_to_raw", "AudioSegment.from_file(BytesIO(b64decode")
 		arg += "), format="
