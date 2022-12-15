@@ -92,8 +92,9 @@ func help() -> void:
 	print("Options:")
 	print("  " + "--version" + "                   " + "show program's version number and exit")
 	print("  " + "--help" + "                      " + "show this help message and exit")
-	print("  " + "--path=../path/to/file.gd" + "   " + "path to gdscript file")
+	print("  " + "--path=../path/to/file.gd" + "   " + "path to GDScript file")
 	print("  " + "--test=base64_audio" + "         " + "play base64 encoded audio file")
+	print("  " + "--test=vector2" + "              " + "testing Vector2 implementation")
 
 
 ## Function for setting the value which segfaults Godot
