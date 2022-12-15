@@ -127,6 +127,8 @@ func run_vector2() -> void:
 	print("vec_length() -> " + str(vector2.vec_length()))
 	print("length_squared() -> " + str(vector2.length_squared()))
 	print("angle() -> " + str(vector2.angle()))
+	var vector2_res = vector2.from_angle(30)
+	print("from_angle(30) -> " + "(" + str(vector2_res.x) + ", " + str(vector2_res.y) + ")")
 
 ## Method for decoding and playing base64 audio
 func play_base64_audio() -> void:

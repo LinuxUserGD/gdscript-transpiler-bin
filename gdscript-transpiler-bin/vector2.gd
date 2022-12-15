@@ -13,7 +13,10 @@ func angle() -> float:
 	return atan2(y, x)
 
 func from_angle(p_angle : float):
-	return self.new(cos(p_angle), sin(p_angle))
+	var vector2 = VECTOR2.new()
+	vector2.x = sin(p_angle)
+	vector2.y = cos(p_angle)
+	return vector2
 
 ## Returns the length (magnitude) of this vector.
 func vec_length() -> float:

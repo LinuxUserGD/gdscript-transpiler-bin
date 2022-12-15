@@ -119,15 +119,10 @@ func dict(arg: String) -> String:
 			"Node",
 			"SceneTree",
 			"Main",
-			"main",
 			"Props",
-			"props",
 			"Audio",
-			"audio",
 			"Transpiler",
-			"transpiler",
 			"VECTOR2",
-			"vector2",
 			"extends",
 			"class_name",
 			"File"
@@ -283,6 +278,14 @@ func dict(arg: String) -> String:
 		arg = arg.replace("atan2(", "math.atan2(")
 		props.math_imp = true
 		con = true
+	while arg.contains("sin(") and not arg.contains("math.sin("):
+		arg = arg.replace("sin(", "math.sin(")
+		props.math_imp = true
+		con = true
+	while arg.contains("cos(") and not arg.contains("math.cos("):
+		arg = arg.replace("cos(", "math.cos(")
+		props.math_imp = true
+		con = true
 	while arg.contains("Marshalls.base64_to_raw"):
 		arg = arg.replace("Marshalls.base64_to_raw", "AudioSegment.from_file(BytesIO(b64decode")
 		arg += "), format="
@@ -349,12 +352,12 @@ func translate(e: String) -> String:
 		e = ""
 	while e.contains("~delete~"):
 		e = ""
-	while e.contains("= import Transpiler"):
-		e = e.replace("= import Transpiler", "import transpiler")
-	while e.contains("= import Props"):
-		e = e.replace("= import Props", "import props")
-	while e.contains("= import Audio"):
-		e = e.replace("= import Audio", "import audio")
-	while e.contains("= import VECTOR2"):
-		e = e.replace("= import VECTOR2", "import vector2")
+	while e.contains("transpiler = import Transpiler"):
+		e = e.replace("transpiler = import Transpiler", "import transpiler")
+	while e.contains("props = import Props"):
+		e = e.replace("props = import Props", "import props")
+	while e.contains("audio = import Audio"):
+		e = e.replace("audio = import Audio", "import audio")
+	while e.contains("vector2 = import VECTOR2"):
+		e = e.replace("vector2 = import VECTOR2", "import vector2")
 	return e
