@@ -52,20 +52,20 @@ func distance_squared_to(p_vector2) -> float:
 	return (x - p_vector2.x) * (x - p_vector2.x) + (y - p_vector2.y) * (y - p_vector2.y)
 
 ## Returns the angle to the given vector, in radians.
-func angle_to(p_vector2) -> float:
-	return atan2(cross(p_vector2), dot(p_vector2))
+func angle_to(vector2, p_vector2) -> float:
+	return atan2(cross(vector2, p_vector2), dot(vector2, p_vector2))
 
 ## Returns the angle between the line connecting the two points and the X axis, in radians.
-func angle_to_point(p_vector2) -> float:
-	return (p_vector2.sub(self)).angle()
+func angle_to_point(vector2, p_vector2) -> float:
+	return (sub(vector2, p_vector2)).angle()
 
 ## Returns the dot product of this vector and with. This can be used to compare the angle between two vectors.
-func dot(p_other) -> float:
-	return x * p_other.x + y * p_other.y
+func dot(vector2, p_other) -> float:
+	return vector2.x * p_other.x + vector2.y * p_other.y
 
 ## Returns the 2D analog of the cross product for this vector and with.
-func cross(p_other) -> float:
-	return x * p_other.y - y * p_other.x
+func cross(vector2, p_other) -> float:
+	return vector2.x * p_other.y - vector2.y * p_other.x
 
 ## Returns a new vector with each component set to one or negative one, depending on the signs of the components.
 func sign():
@@ -84,22 +84,31 @@ func round():
 	return self.new(round(x), round(y))
 
 ## Returns the vector rotated by angle (in radians).
-func rotated(p_by : float):
+func rotated(vec2, p_by : float):
 	var sine : float = sin(p_by)
 	var cosi : float = cos(p_by)
-	return self.new(x * cosi - y * sine, x * sine + y * cosi)
+	var vector2 = VECTOR2.new()
+	vector2.x = vec2.x * cosi - vec2.y * sine
+	vector2.y = vec2.x * sine + vec2.y * cosi
+	return vector2
 
 ## Returns a vector composed of the fposmod of this vector's components and mod.
-func posmod(p_mod: float):
-	return self.new(fposmod(x, p_mod), fposmod(y, p_mod))
+func posmod(vec2, p_mod: float):
+	var vector2 = VECTOR2.new()
+	vector2.x = fposmod(vec2.x, p_mod)
+	vector2.y = fposmod(vec2.y, p_mod)
+	return vector2
 
 ## Returns a vector composed of the fposmod of this vector's components and modv's components.
-func posmodv(p_modv):
-	return self.new(fposmod(x, p_modv.x), fposmod(y, p_modv.y))
+func posmodv(vec2, p_modv):
+	var vector2 = VECTOR2.new()
+	vector2.x = fposmod(vec2.x, p_modv.x)
+	vector2.y = fposmod(vec2.y, p_modv.y)
+	return vector2
 
 ## Returns this vector projected onto the vector b.
-func project(p_to):
-	return p_to.mul(dot(p_to) / p_to.length_squared())
+func project(vector2, p_to):
+	return mul(p_to, dot(vector2, p_to) / p_to.length_squared())
 
 ## Deprecated, please use limit_length instead.
 func clamped(p_min, p_max):
@@ -114,7 +123,7 @@ func limit_length(p_len : float):
 	var l : float = vec_length()
 	var v = self
 	if (l > 0 && p_len < l):
-		return v.div(l).mul(p_len)
+		return mul(div(v, l), p_len)
 	return v
 
 ## Returns a new vector moved toward to by the fixed delta amount. Will not go past the final value.
@@ -125,19 +134,19 @@ func move_toward(p_to, p_delta : float):
 	if (len <= p_delta):
 		return p_to
 	else:
-		return v.add(vd.div(len).mul(p_delta))
+		return add(v, mul(vd.div(len), p_delta))
 
 ## Returns this vector slid along a plane defined by the given normal.
-func slide(p_normal):
-	return self.sub(p_normal.mul(self.dot(p_normal)))
+func slide(vector2, p_normal):
+	return sub(vector2, mul(p_normal, dot(vector2, p_normal)))
 
 ## Returns the vector "bounced off" from a plane defined by the given normal.
-func bounce(p_normal):
-	return reflect(p_normal).inv()
+func bounce(vector2, p_normal):
+	return inv(reflect(vector2, p_normal))
 
 ## Returns the vector reflected (i.e. mirrored, or symmetric) over a line defined by the given direction vector n.
-func reflect(p_normal):
-	return p_normal.mul(2.0).mul(self.dot(p_normal)).sub(self)
+func reflect(vector2, p_normal):
+	return sub(mul(mul(p_normal, 2.0), dot(vector2, p_normal)), vector2)
 
 ## Returns true if this vector and v are approximately equal, by running math_is_equal_approx on each component.
 func vec_is_equal_approx(p_v) -> bool:
@@ -151,20 +160,35 @@ func is_zero_approx() -> bool:
 func is_finite() -> bool:
 	return is_finite(x) and is_finite(y)
 
-func sub(p_vector2):
-	return self.new(x-p_vector2.x,y-p_vector2.y)
+func sub(vec1, vec2):
+	var vector2 = VECTOR2.new()
+	vector2.x = vec1.x-vec2.x
+	vector2.y = vec1.y-vec2.y
+	return vector2
 
-func add(p_vector2):
-	return self.new(x+p_vector2.x,y+p_vector2.y)
+func add(vec1, vec2):
+	var vector2 = VECTOR2.new()
+	vector2.x = vec1.x+vec2.x
+	vector2.y = vec1.y+vec2.y
+	return vector2
 
-func mul(p_by : float):
-	return self.new(p_by*x, p_by*y)
+func mul(vec, p_by : float):
+	var vector2 = VECTOR2.new()
+	vector2.x = vec.x*p_by
+	vector2.y = vec.y*p_by
+	return vector2
 
-func inv():
-	return self.new(-x,-y)
+func inv(vec):
+	var vector2 = VECTOR2.new()
+	vector2.x = -vec.x
+	vector2.y = -vec.y
+	return vector2
 
-func div(p_by : float):
-	return self.new(x/p_by, y/p_by)
+func div(vec, p_by : float):
+	var vector2 = VECTOR2.new()
+	vector2.x = vec.x/p_by
+	vector2.y = vec.y/p_by
+	return vector2
 
 func math_is_equal_approx(a : float, b : float) -> bool:
 	# Check for exact equality first, required to handle "infinity" values.

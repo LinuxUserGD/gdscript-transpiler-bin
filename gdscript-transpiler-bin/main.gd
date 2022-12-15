@@ -135,6 +135,17 @@ func run_vector2() -> void:
 	var vector2_res2 = vector2.normalized()
 	print("normalized() -> " + "(" + str(vector2_res2.x) + ", " + str(vector2_res2.y) + ")")
 	print("is_normalized() -> " + str(vector2_res2.is_normalized()))
+	print("distance_to() -> " + str(vector2.distance_to(vector2)))
+	print("distance_squared_to() -> " + str(vector2.distance_squared_to(vector2)))
+	print("angle_to() -> " + str(vector2.angle_to(vector2, vector2)))
+	print("angle_to_point() -> " + str(vector2.angle_to_point(vector2, vector2)))
+	vector2.x = 3
+	vector2.y = 5
+	print("dot() -> " + str(vector2.dot(vector2, vector2)))
+	print("cross() -> " + str(vector2.cross(vector2, vector2)))
+	var vec_rot = vector2.rotated(vector2, 1)
+	print("rotated() -> " + "(" + str(vec_rot.x) + ", " + str(vec_rot.y) + ")")
+
 
 ## Method for decoding and playing base64 audio
 func play_base64_audio() -> void:
