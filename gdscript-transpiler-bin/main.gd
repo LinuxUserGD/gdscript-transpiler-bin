@@ -145,6 +145,10 @@ func run_vector2() -> void:
 	print("cross() -> " + str(vector2.cross(vector2, vector2)))
 	var vec_rot = vector2.rotated(vector2, 1)
 	print("rotated() -> " + "(" + str(vec_rot.x) + ", " + str(vec_rot.y) + ")")
+	vector2.x = 3
+	vector2.y = 5
+	var vec_proj = vector2.project(vector2, vector2)
+	print("project() -> " + "(" + str(vec_proj.x) + ", " + str(vec_proj.y) + ")")
 
 
 ## Method for decoding and playing base64 audio
