@@ -327,7 +327,7 @@ func translate(e: String) -> String:
 	for arg in args:
 		e += dict(arg)
 	while e.contains("	"):
-		e = e.replace("	", "   ")
+		e = e.replace("	", "    ")
 	while e.contains(": ="):
 		e = e.replace(": =", "=")
 	while e.contains(":="):
