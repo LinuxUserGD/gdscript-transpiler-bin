@@ -111,17 +111,23 @@ func project(vector2, p_to):
 	return mul(p_to, dot(vector2, p_to) / p_to.length_squared())
 
 ## Deprecated, please use limit_length instead.
-func clamped(p_min, p_max):
-	return self.new(clamp(x, p_min.x, p_max.x), clamp(y, p_min.y, p_max.y))
+func clamped(vec2, p_min, p_max):
+	var vector2 = VECTOR2.new()
+	vector2.x = clamp(vec2.x, p_min.x, p_max.x)
+	vector2.y = clamp(vec2.y, p_min.y, p_max.y)
+	return vector2
 
 ## Returns this vector with each component snapped to the nearest multiple of step. This can also be used to round to an arbitrary number of decimals.
-func snapped(p_step):
-	return self.new(snapped(x, p_step.x), snapped(y, p_step.y))
+func snapped(vec2, p_step):
+	var vector2 = VECTOR2.new()
+	vector2.x = snapped(vec2.x, p_step.x)
+	vector2.y = snapped(vec2.y, p_step.y)
+	return vector2
 
 ## Returns the vector with a maximum length by limiting its length to length.
-func limit_length(p_len : float):
+func limit_length(vec2, p_len : float):
 	var l : float = vec_length()
-	var v = self
+	var v = vec2
 	if (l > 0 && p_len < l):
 		return mul(div(v, l), p_len)
 	return v

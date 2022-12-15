@@ -149,6 +149,10 @@ func run_vector2() -> void:
 	vector2.y = 5
 	var vec_proj = vector2.project(vector2, vector2)
 	print("project() -> " + "(" + str(vec_proj.x) + ", " + str(vec_proj.y) + ")")
+	vector2.x = 3
+	vector2.y = 5
+	var vec_lim = vector2.limit_length(vector2, 2)
+	print("limit_length() -> " + "(" + str(vec_lim.x) + ", " + str(vec_lim.y) + ")")
 
 
 ## Method for decoding and playing base64 audio
