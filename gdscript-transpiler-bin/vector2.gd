@@ -133,8 +133,8 @@ func limit_length(vec2, p_len : float):
 	return v
 
 ## Returns a new vector moved toward to by the fixed delta amount. Will not go past the final value.
-func move_toward(p_to, p_delta : float):
-	var v = self
+func move_toward(vec2, p_to, p_delta : float):
+	var v = vec2
 	var vd = p_to.sub(v)
 	var len : float = vd.vec_length()
 	if (len <= p_delta):
