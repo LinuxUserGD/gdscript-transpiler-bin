@@ -25,12 +25,12 @@ func transpile(content: String) -> String:
 	if props.left_def:
 		t += "def left(s, amount):"
 		t += "\n"
-		t += "   return s[:amount]"
+		t += "    return s[:amount]"
 		t += "\n"
 	if props.right_def:
 		t += "def right(s, amount):"
 		t += "\n"
-		t += "   return s[len(s)-amount:]"
+		t += "    return s[len(s)-amount:]"
 		t += "\n"
 	t += "i"
 	t += "f"
@@ -40,7 +40,7 @@ func transpile(content: String) -> String:
 	t += '"'
 	t += ":"
 	t += "\n"
-	t += "   _init()"
+	t += "    _init()"
 	t += "\n"
 	return t
 
