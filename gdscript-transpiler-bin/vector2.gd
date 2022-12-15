@@ -28,15 +28,20 @@ func length_squared() -> float:
 
 ## Returns the vector scaled to unit length. Equivalent to v / v.length().
 func normalized():
+	var vector2 = VECTOR2.new()
 	var l : float = x * x + y * y
 	if (l != 0):
 		l = sqrt(l)
-		return self.new(x/l, y/l)
-	return self.new(x,y)
+		vector2.x = x/l
+		vector2.y = y/l
+		return vector2
+	vector2.x = x
+	vector2.y = y
+	return vector2
 
 ## Returns true if the vector is normalized, false otherwise.
 func is_normalized() -> bool:
-	return is_equal_approx(length_squared(), 1)
+	return math_is_equal_approx(length_squared(), 1)
 
 ## Returns the distance between this vector and to.
 func distance_to(p_vector2) -> float:
@@ -134,9 +139,9 @@ func bounce(p_normal):
 func reflect(p_normal):
 	return p_normal.mul(2.0).mul(self.dot(p_normal)).sub(self)
 
-## Returns true if this vector and v are approximately equal, by running is_equal_approx on each component.
-func is_equal_approx(p_v) -> bool:
-	return is_equal_approx(x, p_v.x) and is_equal_approx(y, p_v.y)
+## Returns true if this vector and v are approximately equal, by running math_is_equal_approx on each component.
+func vec_is_equal_approx(p_v) -> bool:
+	return math_is_equal_approx(x, p_v.x) and math_is_equal_approx(y, p_v.y)
 
 ## Returns true if this vector is approximately zero, by running is_zero_approx on each component.
 func is_zero_approx() -> bool:
@@ -160,3 +165,13 @@ func inv():
 
 func div(p_by : float):
 	return self.new(x/p_by, y/p_by)
+
+func math_is_equal_approx(a : float, b : float) -> bool:
+	# Check for exact equality first, required to handle "infinity" values.
+	if (a == b):
+		return true
+	var CMP_EPSILON : float = 0.00001
+	var tolerance : float = CMP_EPSILON * abs(a)
+	if tolerance < CMP_EPSILON:
+		tolerance = CMP_EPSILON
+	return abs(a-b) < tolerance

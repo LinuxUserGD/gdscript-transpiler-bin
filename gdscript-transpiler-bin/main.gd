@@ -124,11 +124,17 @@ func run_vector2() -> void:
 	print("x -> " + str(vector2.x))
 	vector2.y = 5
 	print("y -> " + str(vector2.y))
-	print("vec_length() -> " + str(vector2.vec_length()))
-	print("length_squared() -> " + str(vector2.length_squared()))
 	print("angle() -> " + str(vector2.angle()))
 	var vector2_res = vector2.from_angle(30)
 	print("from_angle(30) -> " + "(" + str(vector2_res.x) + ", " + str(vector2_res.y) + ")")
+	print("vec_length() -> " + str(vector2.vec_length()))
+	print("length_squared() -> " + str(vector2.length_squared()))
+	# Class instance not working yet in Python, see https://stackoverflow.com/a/7616959
+	vector2.x = 3
+	vector2.y = 5
+	var vector2_res2 = vector2.normalized()
+	print("normalized() -> " + "(" + str(vector2_res2.x) + ", " + str(vector2_res2.y) + ")")
+	print("is_normalized() -> " + str(vector2_res2.is_normalized()))
 
 ## Method for decoding and playing base64 audio
 func play_base64_audio() -> void:
