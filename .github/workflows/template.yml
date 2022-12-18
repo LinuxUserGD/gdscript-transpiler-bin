@@ -88,6 +88,7 @@ jobs:
           ./godot-bin --headless --verbose -s main.gd --path=audio.gd
           wget https://raw.githubusercontent.com/PyCQA/pycodestyle/main/pycodestyle.py
           wget https://raw.githubusercontent.com/hhatto/autopep8/main/autopep8.py
+          python autopep8.py -i pycodestyle.py
           python autopep8.py -i autopep8.py
           python autopep8.py -i *.py
           mv ../.github/workflows/api.py .
