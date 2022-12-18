@@ -86,6 +86,9 @@ jobs:
           ./godot-bin --headless --verbose -s main.gd --path=props.gd
           ./godot-bin --headless --verbose -s main.gd --path=vector2.gd
           ./godot-bin --headless --verbose -s main.gd --path=audio.gd
+          wget https://raw.githubusercontent.com/hhatto/autopep8/main/autopep8.py
+          python autopep8.py -i autopep8.py
+          python autopep8.py -i *.py
           mv ../.github/workflows/api.py .
           echo "Uploading main.py, transpiler.py, props.py, vector2.py, audio.py to gist..."
           python api.py
