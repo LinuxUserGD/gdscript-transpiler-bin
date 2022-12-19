@@ -141,6 +141,8 @@ func dict(arg: String) -> String:
 			"||",
 			"sys;print(sys.version)'],stdout,true,false)",
 			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
+			"';print(autopep8.__version__)'],stdout,true,false)",
+			"';sys.exit(autopep8.main())'],stdout,true,false)",
 			"self.root.has_node(player):",
 			"self.root.add_child(player)",
 			"player",
@@ -157,9 +159,17 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str+":
+	elif arg == "OS.execute('python',['-c',import_str1+":
 		e += props.repl_dict[arg]
 		props.nuitka_imp = true
+		return e
+	elif arg == "OS.execute('python',['-c',import_str2+":
+		e += props.repl_dict[arg]
+		props.autopep8_imp = true
+		return e
+	elif arg == "OS.execute('python',['-c',str+":
+		e += props.repl_dict[arg]
+		props.autopep8_imp = true
 		return e
 	elif arg == "quit()" or arg == "self.quit()":
 		e += props.repl_dict[arg]
@@ -174,6 +184,9 @@ func dict(arg: String) -> String:
 		if props.nuitka_imp:
 			e += "\n"
 			e += "from nuitka import Version"
+		if props.autopep8_imp:
+			e += "\n"
+			e += "import autopep8"
 		if props.audio_imp:
 			e += "\n"
 			e += "from os import remove"
