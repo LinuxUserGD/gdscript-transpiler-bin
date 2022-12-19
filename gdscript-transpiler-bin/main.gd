@@ -57,6 +57,7 @@ func start(arg: String) -> void:
 		c -= 1
 		if c != 0:
 			pathstr += path_str + "."
+	print("Transpiling " + pathstr + "gd...")
 	var path2: String = "res://" + pathstr + "py"
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
@@ -69,10 +70,16 @@ func start(arg: String) -> void:
 	str += "import sys;"
 	str += "x='python';"
 	str += "y='-i';"
-	str += "z='main.py';"
+	str += "z='"
+	str += pathstr
+	str += "py"
+	str += "';"
 	str += "sys.argv=[x,y,z]"
+	print("Formatting " + pathstr + "py...")
 	OS.execute('python',['-c',str+ ';sys.exit(autopep8.main())'],stdout,true,false)
-	print(stdout[0].split("\n")[0])
+	var output : String = stdout[0].split("\n")[0]
+	if output.length() > 0:
+		print(output)
 
 
 ## Prints Python and Godot Engine version information to console
