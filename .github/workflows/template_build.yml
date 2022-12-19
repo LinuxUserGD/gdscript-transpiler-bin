@@ -64,15 +64,17 @@ jobs:
           mklink opengl32.dll "x64\opengl32.dll"
           mklink libglapi.dll "x64\libglapi.dll"
           move .godot gdscript-transpiler-bin/
-          move Godot_v4.0-beta8_win64.exe gdscript-transpiler-bin/godot.exe
-          md %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta8
+          echo "GODOT_VERSION=4.0" >> $Env:GITHUB_ENV
+          echo "RELEASE_NAME=beta9" >> $Env:GITHUB_ENV
+          move Godot_v$GODOT_VERSION-$RELEASE_NAME_win64.exe gdscript-transpiler-bin/godot.exe
+          md %USERPROFILE%\AppData\Roaming\Godot\export_templates\$GODOT_VERSION.$RELEASE_NAME
           dir
           cd templates
-          move version.txt %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta8
-          move web_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta8
-          move web_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta8
-          move web_dlink_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta8
-          move web_dlink_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\4.0.beta8
+          move version.txt %USERPROFILE%\AppData\Roaming\Godot\export_templates\$GODOT_VERSION.$RELEASE_NAME
+          move web_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\$GODOT_VERSION.$RELEASE_NAME
+          move web_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\$GODOT_VERSION.$RELEASE_NAME
+          move web_dlink_release.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\$GODOT_VERSION.$RELEASE_NAME
+          move web_dlink_debug.zip %USERPROFILE%\AppData\Roaming\Godot\export_templates\$GODOT_VERSION.$RELEASE_NAME
           cd ..
           cd gdscript-transpiler-bin
           curl.exe -L --output full-size.html --url https://raw.githubusercontent.com/godotengine/godot/master/misc/dist/html/full-size.html
