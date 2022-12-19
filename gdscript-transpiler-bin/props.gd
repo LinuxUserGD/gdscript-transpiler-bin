@@ -99,7 +99,7 @@ var repl_dict: Dictionary = {
 	"';print(autopep8.__version__)'],stdout,true,false)":
 	"    stdout = [autopep8.__version__]",
 	"';sys.exit(autopep8.main())'],stdout,true,false)":
-	"    sys.argv=['python','-i','main.py']" + "\n" + "    stdout = [sys.exit(autopep8.main())]",
+	"    sys.argv=['python','-i',pathstr+'py']" + "\n" + "    stdout = [sys.exit(autopep8.main())]",
 	"quit()": "sys.exit()",
 	"self.quit()": "sys.exit()",
 	"#!/usr/bin/godot": "#!/usr/bin/env python",
@@ -113,7 +113,7 @@ var repl_dict: Dictionary = {
 	"player.play()": "play(data)"
 }
 ## Print additional parsing information if true
-var debug: bool = true
+var debug: bool = false
 ## Print transpiled script as output to console
 var verbose: bool = false
 ## Add additional python code for right() method to transpiled script if required
