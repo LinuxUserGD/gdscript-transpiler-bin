@@ -30,14 +30,14 @@ func _init() -> void:
 			help()
 			self.quit()
 			return
-		if arg == "--test=base64_audio":
+		if arg == "test=base64_audio":
 			play_base64_audio()
 			return
-		if arg == "--test=vector2":
+		if arg == "test=vector2":
 			run_vector2()
 			self.quit()
 			return
-		var path_arg: String = "--path="
+		var path_arg: String = "path="
 		if arg.begins_with(path_arg):
 			start(arg)
 			self.quit()
@@ -109,11 +109,11 @@ func help() -> void:
 	print("Usage: main [options]")
 	print("\n")
 	print("Options:")
-	print("  " + "version" + "                     " + "show program's version number and exit")
-	print("  " + "help" + "                        " + "show this help message and exit")
-	print("  " + "--path=../path/to/file.gd" + "   " + "path to GDScript file")
-	print("  " + "--test=base64_audio" + "         " + "play base64 encoded audio file")
-	print("  " + "--test=vector2" + "              " + "testing Vector2 implementation")
+	print("  " + "version" + "                   " + "show program's version number and exit")
+	print("  " + "help" + "                      " + "show this help message and exit")
+	print("  " + "path=../path/to/file.gd" + "   " + "path to GDScript file")
+	print("  " + "test=base64_audio" + "         " + "play base64 encoded audio file")
+	print("  " + "test=vector2" + "              " + "testing Vector2 implementation")
 
 
 ## Function for setting the value which segfaults Godot
