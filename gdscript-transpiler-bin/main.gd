@@ -21,7 +21,9 @@ func _init() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	elif OS.get_cmdline_args().size() != 0:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+	var index: int = -1
 	for arg in OS.get_cmdline_args():
+		index += 1
 		if arg == "version":
 			version()
 			self.quit()
@@ -39,7 +41,7 @@ func _init() -> void:
 			return
 		var path_arg: String = "path="
 		if arg.begins_with(path_arg):
-			start(arg)
+			start(arg, index)
 			self.quit()
 			return
 	help()
@@ -48,12 +50,13 @@ func _init() -> void:
 
 
 ## Function for transpiling script (by path)
-func start(arg: String) -> void:
-	var path: String = "res://" + arg.split("=")[1]
-	var args = arg.split("=")[1].split(".")
+func start(arg: String, index: int) -> void:
+	var path_end: String = arg.split("=")[1]
+	var path: String = "res://" + path_end
+	var args = path_end.split(".")
 	var c: int = args.size()
 	var pathstr: String = ""
-	for path_str in arg.split("=")[1].split("."):
+	for path_str in args:
 		c -= 1
 		if c != 0:
 			pathstr += path_str + "."
@@ -66,20 +69,42 @@ func start(arg: String) -> void:
 		print(out)
 	transpiler.save(path2, out)
 	var stdout: Array = []
-	var str: String = "import autopep8;"
-	str += "import sys;"
-	str += "x='python';"
-	str += "y='-i';"
-	str += "z='"
-	str += pathstr
-	str += "py"
-	str += "';"
-	str += "sys.argv=[x,y,z]"
+	var imp: String = "import autopep8;"
+	imp += "import sys;"
+	imp += "x='python';"
+	imp += "y='-i';"
+	imp += "z='"
+	imp += pathstr
+	imp += "py"
+	imp += "';"
+	imp += "sys.argv=[x,y,z]"
 	print("Formatting " + pathstr + "py...")
-	OS.execute('python',['-c',str+ ';sys.exit(autopep8.main())'],stdout,true,false)
-	var output : String = stdout[0].split("\n")[0]
-	if output.length() > 0:
-		print(output)
+	OS.execute('python',['-m','xpython','-c',imp+ ';autopep8.main()'],stdout,true,false)
+	stdout.clear()
+	var xpy: String = "import xpython.__main__;"
+	xpy += "import sys;"
+	xpy += "x='python';"
+	xpy += "y='"
+	xpy += pathstr
+	xpy += "py"
+	xpy += "';"
+	xpy += "sys.argv=[x,y"
+	var add_args: Array = []
+	var new_args: Array = OS.get_cmdline_args()
+	while (new_args.size()-1 > index):
+		index += 1
+		add_args.append(OS.get_cmdline_args()[index])
+	for some_arg in add_args:
+		xpy += ","
+		xpy += "'"
+		xpy += some_arg
+		xpy += "'"
+	xpy += "]"
+	print("Running " + pathstr + "py...")
+	OS.execute('python',['-m','xpython','-c',xpy+ ';xpython.__main__.main()'],stdout,true,false)
+	for out_str in stdout[0].split("\n"):
+		if out_str.length() > 0:
+			print(out_str)
 
 
 ## Prints Python and Godot Engine version information to console
@@ -93,15 +118,16 @@ func version() -> void:
 	print("GDScript2PythonTranspiler")
 	print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
-	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
+	
+	OS.execute('python',['-m','xpython','-c','import sys;print(sys.version)'],stdout,true,false)
 	print("Python: " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str1: String = "from nuitka import Version"
-	OS.execute('python',['-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
+	OS.execute('python',['-m','xpython','-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
 	print("Nuitka: " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str2: String = "import autopep8"
-	OS.execute('python',['-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
+	OS.execute('python',['-m','xpython','-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
 	print("autopep8: " + stdout[0].split("\n")[0])
 
 ## Help function which prints all possible commands

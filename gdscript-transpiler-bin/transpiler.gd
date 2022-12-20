@@ -32,16 +32,17 @@ func transpile(content: String) -> String:
 		t += "\n"
 		t += "    return s[len(s)-amount:]"
 		t += "\n"
-	t += "i"
-	t += "f"
-	t += " __name__=="
-	t += '"'
-	t += "__main__"
-	t += '"'
-	t += ":"
-	t += "\n"
-	t += "    _init()"
-	t += "\n"
+	if props.init_def:
+		t += "i"
+		t += "f"
+		t += " __name__=="
+		t += '"'
+		t += "__main__"
+		t += '"'
+		t += ":"
+		t += "\n"
+		t += "    _init()"
+		t += "\n"
 	return t
 
 
@@ -133,7 +134,6 @@ func dict(arg: String) -> String:
 	elif (
 		arg
 		in [
-			"_ready():",
 			"func",
 			"true",
 			"false",
@@ -142,7 +142,8 @@ func dict(arg: String) -> String:
 			"sys;print(sys.version)'],stdout,true,false)",
 			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
 			"';print(autopep8.__version__)'],stdout,true,false)",
-			"';sys.exit(autopep8.main())'],stdout,true,false)",
+			"';autopep8.main()'],stdout,true,false)",
+			"';xpython.__main__.main()'],stdout,true,false)",
 			"self.root.has_node(player):",
 			"self.root.add_child(player)",
 			"player",
@@ -155,21 +156,30 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		e += " "
 		return e
-	elif arg == "OS.execute('python',['-c','import":
+	elif arg.begins_with("_ready()") or arg.begins_with("_init()"):
+		e += props.repl_dict[arg]
+		e += " "
+		props.init_def = true
+		return e
+	elif arg == "OS.execute('python',['-m','xpython','-c','import":
 		e += props.repl_dict[arg]
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str1+":
+	elif arg == "OS.execute('python',['-m','xpython','-c',import_str1+":
 		e += props.repl_dict[arg]
 		props.nuitka_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str2+":
+	elif arg == "OS.execute('python',['-m','xpython','-c',import_str2+":
 		e += props.repl_dict[arg]
 		props.autopep8_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',str+":
+	elif arg == "OS.execute('python',['-m','xpython','-c',imp+":
 		e += props.repl_dict[arg]
 		props.autopep8_imp = true
+		return e
+	elif arg == "OS.execute('python',['-m','xpython','-c',xpy+":
+		e += props.repl_dict[arg]
+		props.xpython_imp = true
 		return e
 	elif arg == "quit()" or arg == "self.quit()":
 		e += props.repl_dict[arg]
@@ -187,6 +197,9 @@ func dict(arg: String) -> String:
 		if props.autopep8_imp:
 			e += "\n"
 			e += "import autopep8"
+		if props.xpython_imp:
+			e += "\n"
+			e += "import xpython.__main__"
 		if props.audio_imp:
 			e += "\n"
 			e += "from os import remove"
@@ -269,7 +282,7 @@ func dict(arg: String) -> String:
 		arg = "import " + arg
 		con = true
 	while arg.contains(".clear()"):
-		arg = arg.replace(".clear()", "[:] = []")
+		arg = arg.replace(".clear()", " = []")
 		con = true
 	while arg.contains("_self,"):
 		arg = arg.replace("_self,", "")
