@@ -80,7 +80,8 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
         run: |
           python -m pip install --upgrade pip requests autopep8 wheel
-          python -m pip install git+https://github.com/LinuxUserGD/x-python
+          python -m pip install git+https://github.com/rocky/python-xdis
+          python -m pip install git+https://github.com/rocky/x-python
           cd gdscript-transpiler-bin
           ./godot-bin --headless --verbose -s main.gd path=transpiler.gd
           ./godot-bin --headless --verbose -s main.gd path=props.gd
@@ -157,7 +158,8 @@ jobs:
           sudo python3.10 -m pip install wheel
           sudo python3.10 -m pip install ordered-set
           sudo python3.10 -m pip install -r requirements.txt
-          sudo python3.10 -m pip install git+https://github.com/LinuxUserGD/x-python
+          sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis
+          sudo python3.10 -m pip install git+https://github.com/rocky/x-python
           python3.10 main.py path=transpiler.gd
           python3.10 main.py path=props.gd
           python3.10 main.py path=vector2.gd
