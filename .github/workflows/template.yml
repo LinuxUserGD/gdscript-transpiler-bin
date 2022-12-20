@@ -85,11 +85,11 @@ jobs:
           wget https://raw.githubusercontent.com/hhatto/autopep8/main/autopep8.py
           python autopep8.py -i pycodestyle.py
           python autopep8.py -i autopep8.py
-          ./godot-bin --headless --verbose -s main.gd --path=main.gd
-          ./godot-bin --headless --verbose -s main.gd --path=transpiler.gd
-          ./godot-bin --headless --verbose -s main.gd --path=props.gd
-          ./godot-bin --headless --verbose -s main.gd --path=vector2.gd
-          ./godot-bin --headless --verbose -s main.gd --path=audio.gd
+          ./godot-bin --headless --verbose -s main.gd path=main.gd
+          ./godot-bin --headless --verbose -s main.gd path=transpiler.gd
+          ./godot-bin --headless --verbose -s main.gd path=props.gd
+          ./godot-bin --headless --verbose -s main.gd path=vector2.gd
+          ./godot-bin --headless --verbose -s main.gd path=audio.gd
           mv ../.github/workflows/api.py .
           echo "Uploading main.py, transpiler.py, props.py, vector2.py, audio.py to gist..."
           python api.py
@@ -160,11 +160,11 @@ jobs:
           sudo python3.10 -m pip install wheel
           sudo python3.10 -m pip install ordered-set
           sudo python3.10 -m pip install -r requirements.txt
-          python3.10 main.py --path=main.gd
-          python3.10 main.py --path=transpiler.gd
-          python3.10 main.py --path=props.gd
-          python3.10 main.py --path=vector2.gd
-          python3.10 main.py --path=audio.gd
+          python3.10 main.py path=main.gd
+          python3.10 main.py path=transpiler.gd
+          python3.10 main.py path=props.gd
+          python3.10 main.py path=vector2.gd
+          python3.10 main.py path=audio.gd
           python3.10 -m nuitka --static-libpython=no --standalone --lto=yes main.py
           cd main.dist
           echo ${PWD}
