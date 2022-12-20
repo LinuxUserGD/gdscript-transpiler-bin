@@ -99,7 +99,7 @@ var repl_dict: Dictionary = {
 	"OS.execute('python',['-c',imp+": "",
 	"OS.execute('python',['-c',xpy+": "",
 	"';print(Version.getNuitkaVersion())'],stdout,true,false)":
-	"    stdout = [Version.getNuitkaVersion()]",
+	"stdout = [Version.getNuitkaVersion()]",
 	"';print(autopep8.__version__)'],stdout,true,false)":
 	"    stdout = [autopep8.__version__]",
 	"';autopep8.main()'],stdout,true,false)":

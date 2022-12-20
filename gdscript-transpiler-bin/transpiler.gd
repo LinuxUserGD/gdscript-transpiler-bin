@@ -165,7 +165,7 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',[-c',import_str1+":
+	elif arg == "OS.execute('python',['-c',import_str1+":
 		e += props.repl_dict[arg]
 		props.nuitka_imp = true
 		return e
