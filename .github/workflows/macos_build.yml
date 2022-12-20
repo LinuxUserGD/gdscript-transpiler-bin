@@ -42,11 +42,11 @@ jobs:
 
       - name: Generate Python Script
         run: |
-          python main.py --path=main.gd
-          python main.py --path=transpiler.gd
-          python main.py --path=props.gd
-          python main.py --path=vector2.gd
-          python main.py --path=audio.gd
+          python main.py path=main.gd
+          python main.py path=transpiler.gd
+          python main.py path=props.gd
+          python main.py path=vector2.gd
+          python main.py path=audio.gd
 
       - name: Build Executable
         uses: LinuxUserGD/Nuitka-Action@v0.5
