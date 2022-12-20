@@ -161,23 +161,23 @@ func dict(arg: String) -> String:
 		e += " "
 		props.init_def = true
 		return e
-	elif arg == "OS.execute('python',['-m','xpython','-c','import":
+	elif arg == "OS.execute('python',['-c','import":
 		e += props.repl_dict[arg]
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',['-m','xpython','-c',import_str1+":
+	elif arg == "OS.execute('python',[-c',import_str1+":
 		e += props.repl_dict[arg]
 		props.nuitka_imp = true
 		return e
-	elif arg == "OS.execute('python',['-m','xpython','-c',import_str2+":
+	elif arg == "OS.execute('python',['-c',import_str2+":
 		e += props.repl_dict[arg]
 		props.autopep8_imp = true
 		return e
-	elif arg == "OS.execute('python',['-m','xpython','-c',imp+":
+	elif arg == "OS.execute('python',['-c',imp+":
 		e += props.repl_dict[arg]
 		props.autopep8_imp = true
 		return e
-	elif arg == "OS.execute('python',['-m','xpython','-c',xpy+":
+	elif arg == "OS.execute('python',['-c',xpy+":
 		e += props.repl_dict[arg]
 		props.xpython_imp = true
 		return e

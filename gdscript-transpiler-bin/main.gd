@@ -41,18 +41,21 @@ func _init() -> void:
 			return
 		var path_arg: String = "path="
 		if arg.begins_with(path_arg):
-			start(arg, index)
+			start(arg)
+			self.quit()
+			return
+		var run_arg = "run="
+		if arg.begins_with(run_arg):
+			run(arg, index)
 			self.quit()
 			return
 	help()
 	self.quit()
 	return
 
-
-## Function for transpiling script (by path)
-func start(arg: String, index: int) -> void:
+## Function for running python script (by path)
+func run(arg: String, index: int) -> void:
 	var path_end: String = arg.split("=")[1]
-	var path: String = "res://" + path_end
 	var args = path_end.split(".")
 	var c: int = args.size()
 	var pathstr: String = ""
@@ -60,27 +63,7 @@ func start(arg: String, index: int) -> void:
 		c -= 1
 		if c != 0:
 			pathstr += path_str + "."
-	print("Transpiling " + pathstr + "gd...")
-	var path2: String = "res://" + pathstr + "py"
-	var transpiler = Transpiler.new()
-	var content: String = transpiler.read(path)
-	var out: String = transpiler.transpile(content)
-	if transpiler.props.verbose:
-		print(out)
-	transpiler.save(path2, out)
-	var stdout: Array = []
-	var imp: String = "import autopep8;"
-	imp += "import sys;"
-	imp += "x='python';"
-	imp += "y='-i';"
-	imp += "z='"
-	imp += pathstr
-	imp += "py"
-	imp += "';"
-	imp += "sys.argv=[x,y,z]"
-	print("Formatting " + pathstr + "py...")
-	OS.execute('python',['-m','xpython','-c',imp+ ';autopep8.main()'],stdout,true,false)
-	stdout.clear()
+	print("Running " + pathstr + "py...")
 	var xpy: String = "import xpython.__main__;"
 	xpy += "import sys;"
 	xpy += "x='python';"
@@ -100,11 +83,43 @@ func start(arg: String, index: int) -> void:
 		xpy += some_arg
 		xpy += "'"
 	xpy += "]"
-	print("Running " + pathstr + "py...")
-	OS.execute('python',['-m','xpython','-c',xpy+ ';xpython.__main__.main()'],stdout,true,false)
+	var stdout: Array = []
+	OS.execute('python',['-c',xpy+ ';xpython.__main__.main()'],stdout,true,false)
 	for out_str in stdout[0].split("\n"):
 		if out_str.length() > 0:
 			print(out_str)
+
+## Function for transpiling script (by path)
+func start(arg: String) -> void:
+	var path_end: String = arg.split("=")[1]
+	var path: String = "res://" + path_end
+	var args = path_end.split(".")
+	var c: int = args.size()
+	var pathstr: String = ""
+	for path_str in args:
+		c -= 1
+		if c != 0:
+			pathstr += path_str + "."
+	print("Transpiling " + pathstr + "gd...")
+	var path2: String = "res://" + pathstr + "py"
+	var transpiler = Transpiler.new()
+	var content: String = transpiler.read(path)
+	var out: String = transpiler.transpile(content)
+	if transpiler.props.verbose:
+		print(out)
+	transpiler.save(path2, out)
+	print("Formatting " + pathstr + "py...")
+	var stdout: Array = []
+	var imp: String = "import autopep8;"
+	imp += "import sys;"
+	imp += "x='python';"
+	imp += "y='-i';"
+	imp += "z='"
+	imp += pathstr
+	imp += "py"
+	imp += "';"
+	imp += "sys.argv=[x,y,z]"
+	OS.execute('python',['-c',imp+ ';autopep8.main()'],stdout,true,false)
 
 
 ## Prints Python and Godot Engine version information to console
@@ -119,15 +134,15 @@ func version() -> void:
 	print("Godot: " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
 	
-	OS.execute('python',['-m','xpython','-c','import sys;print(sys.version)'],stdout,true,false)
+	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
 	print("Python: " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str1: String = "from nuitka import Version"
-	OS.execute('python',['-m','xpython','-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
+	OS.execute('python',['-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
 	print("Nuitka: " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str2: String = "import autopep8"
-	OS.execute('python',['-m','xpython','-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
+	OS.execute('python',['-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
 	print("autopep8: " + stdout[0].split("\n")[0])
 
 ## Help function which prints all possible commands

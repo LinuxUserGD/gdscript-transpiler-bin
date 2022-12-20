@@ -90,12 +90,12 @@ var repl_dict: Dictionary = {
 	"extends": "",
 	"class_name": "",
 	"File": "",
-	"OS.execute('python',['-m','xpython','-c','import": "",
+	"OS.execute('python',['-c','import": "",
 	"sys;print(sys.version)'],stdout,true,false)": "stdout = [sys.version]",
-	"OS.execute('python',['-m','xpython','-c',import_str1+": "",
-	"OS.execute('python',['-m','xpython','-c',import_str2+": "",
-	"OS.execute('python',['-m','xpython','-c',imp+": "",
-	"OS.execute('python',['-m','xpython','-c',xpy+": "",
+	"OS.execute('python',['-c',import_str1+": "",
+	"OS.execute('python',['-c',import_str2+": "",
+	"OS.execute('python',['-c',imp+": "",
+	"OS.execute('python',['-c',xpy+": "",
 	"';print(Version.getNuitkaVersion())'],stdout,true,false)":
 	"    stdout = [Version.getNuitkaVersion()]",
 	"';print(autopep8.__version__)'],stdout,true,false)":
