@@ -11,8 +11,6 @@
 
 Minimal Scripts can be transpiled to Python.
 
-Compatible with Python `2.6`, `2.7`, `3.3`, `3.4`, `3.5`, `3.6`, `3.7`, `3.8`, `3.9`, `3.10`.
-
 Binary builds are compiled with [Nuitka](https://github.com/Nuitka/Nuitka):
 
 - [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin)
