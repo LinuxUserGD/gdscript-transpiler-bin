@@ -7,7 +7,7 @@
 
 [![Icon](gdscript-transpiler-bin/icon.svg)](gdscript-transpiler-bin/icon.svg) 
 
-`gdscript-transpiler-bin` is a GDScript compiler and Python runtime environment.
+`gdscript-transpiler-bin` is a [GDScript](https://docs.godotengine.org/en/latest/tutorials/scripting/gdscript/gdscript_basics.html) compiler and [x-python](https://github.com/rocky/x-python) runtime environment.
 
 Minimal Scripts can be transpiled to Python.
 
