@@ -12,8 +12,3 @@ func _ready() -> void:
 		engine_version_label.text = "Godot %s.%s.%s.%s" % [version.major, version.minor, version.patch, version.status]
 	else:
 		engine_version_label.text = "Godot %s.%s.%s" % [version.major, version.minor, version.status]
-
-	# Upscale everything if the display requires it (crude hiDPI support).
-	# This prevents UI elements from being too small on hiDPI displays.
-	if DisplayServer.screen_get_dpi() >= 192 and DisplayServer.screen_get_size().x >= 2048:
-		get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_DISABLED, SceneTree.STRETCH_ASPECT_IGNORE, Vector2(), 2)

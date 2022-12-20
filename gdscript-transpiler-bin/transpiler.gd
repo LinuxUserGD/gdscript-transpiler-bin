@@ -65,10 +65,10 @@ func save(path: String, content: String) -> void:
 ## Function for splitting lines (excluding double quoted Strings) into readable GDScript syntax expressions which later can be converted
 func analyze(l: String) -> String:
 	var out: String = ""
-	var str: String = "'"
-	str += '"'
-	str += "'"
-	var string_prev: Array = l.split(str)
+	var quote: String = "'"
+	quote += '"'
+	quote += "'"
+	var string_prev: Array = l.split(quote)
 	var c: int = 0
 	for ii in range(0, string_prev.size()):
 		var string: Array = string_prev[ii].split('"')
