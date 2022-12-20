@@ -10,6 +10,10 @@ concurrency:
   group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-windows
   cancel-in-progress: true
 
+env:
+  GODOT_VERSION: "4.0"
+  RELEASE_NAME: beta9
+
 jobs:
   build-windows:
     runs-on: windows-2022
@@ -64,8 +68,6 @@ jobs:
           mklink opengl32.dll "x64\opengl32.dll"
           mklink libglapi.dll "x64\libglapi.dll"
           move .godot gdscript-transpiler-bin/
-          echo "GODOT_VERSION=4.0" >> $env:GITHUB_ENV
-          echo "RELEASE_NAME=beta9" >> $env:GITHUB_ENV
           echo "${{ env.GODOT_VERSION }}"
           echo "${{ env.RELEASE_NAME }}"
           move "Godot_v${{ env.GODOT_VERSION }}-${{ env.RELEASE_NAME }}_win64.exe" gdscript-transpiler-bin/godot.exe
