@@ -16,7 +16,7 @@ var file : FileAccess
 enum FileOpts {READ, WRITE, WRITE_READ, READ_WRITE}
 
 ## Constructor call
-func _init():
+func _init() -> void:
 	file = null
 
 ## "Open" function for compatibility
