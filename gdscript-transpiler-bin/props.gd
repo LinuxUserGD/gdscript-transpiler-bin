@@ -81,6 +81,8 @@ var repl_dict: Dictionary = {
 	"SceneTree": "",
 	"_ready()": "_init()",
 	"_init()": "_init()",
+	"_ready():": "_init():",
+	"_init():": "_init():",
 	"func": "def",
 	"true": "True",
 	"false": "False",

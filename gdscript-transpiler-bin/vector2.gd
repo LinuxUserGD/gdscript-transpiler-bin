@@ -5,7 +5,7 @@ var y : float = 0
 
 
 ## Constructor call, for API see https://docs.godotengine.org/de/latest/classes/index.html
-func _init():
+func _init() -> void:
 	self.x = 0
 	self.y = 0
 
