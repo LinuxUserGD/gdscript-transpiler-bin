@@ -1,0 +1,8 @@
+[submodule "godot"]
+	path = godot
+	url = https://github.com/godotengine/godot.git
+	shallow = true
+[submodule "toolkit"]
+	path = toolkit
+	url = https://github.com/LinuxUserGD/toolkit.git
+	shallow = true

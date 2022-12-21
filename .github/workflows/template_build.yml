@@ -1,0 +1,98 @@
+name: Template Build
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Template"]
+    types:
+      - completed
+
+concurrency:
+  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-windows
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.0"
+  RELEASE_NAME: beta9
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    name: ${{ matrix.name }}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v2.5.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install urllib3
+
+      - name: Download Godot_export_templates.tpz
+        env:
+          INPUT_TOKEN: ${{ secrets.TOKEN }}
+          INPUT_ARTIFACT_NAME: Godot_export_templates.tpz
+          INPUT_RENAME: Godot_export_templates.tpz.zip
+          INPUT_REPO: LinuxUserGD/gdscript-transpiler-bin
+          INPUT_WAIT_SECONDS: 10
+        shell: cmd
+        run: |
+          curl.exe -L --output main.py --url https://raw.githubusercontent.com/bettermarks/action-artifact-download/master/main.py
+          python main.py
+          "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_export_templates.tpz
+
+      - name: Download Godot_win64.exe.zip
+        env:
+          INPUT_TOKEN: ${{ secrets.TOKEN }}
+          INPUT_ARTIFACT_NAME: Godot_win64.exe.zip
+          INPUT_RENAME: Godot_win64.exe.zip.zip
+          INPUT_REPO: LinuxUserGD/gdscript-transpiler-bin
+          INPUT_WAIT_SECONDS: 10
+        shell: cmd
+        run: |
+          python main.py
+          "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip.zip
+          "C:\Program Files\7-Zip\7z.exe" x Godot_win64.exe.zip
+
+      - name: Setup
+        shell: cmd
+        run: |
+          curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
+          "C:\Program Files\7-Zip\7z.exe" x mesa.7z
+          mklink opengl32.dll "x64\opengl32.dll"
+          mklink libglapi.dll "x64\libglapi.dll"
+          move .godot gdscript-transpiler-bin/
+          echo "${{ env.GODOT_VERSION }}"
+          echo "${{ env.RELEASE_NAME }}"
+          move "Godot_v${{ env.GODOT_VERSION }}-${{ env.RELEASE_NAME }}_win64.exe" gdscript-transpiler-bin/godot.exe
+          md "%USERPROFILE%\AppData\Roaming\Godot\export_templates\${{ env.GODOT_VERSION }}.${{ env.RELEASE_NAME }}"
+          dir
+          cd templates
+          move version.txt "%USERPROFILE%\AppData\Roaming\Godot\export_templates\${{ env.GODOT_VERSION }}.${{ env.RELEASE_NAME }}"
+          move web_release.zip "%USERPROFILE%\AppData\Roaming\Godot\export_templates\${{ env.GODOT_VERSION }}.${{ env.RELEASE_NAME }}"
+          move web_debug.zip "%USERPROFILE%\AppData\Roaming\Godot\export_templates\${{ env.GODOT_VERSION }}.${{ env.RELEASE_NAME }}"
+          move web_dlink_release.zip "%USERPROFILE%\AppData\Roaming\Godot\export_templates\${{ env.GODOT_VERSION }}.${{ env.RELEASE_NAME }}"
+          move web_dlink_debug.zip "%USERPROFILE%\AppData\Roaming\Godot\export_templates\${{ env.GODOT_VERSION }}.${{ env.RELEASE_NAME }}"
+          cd ..
+          cd gdscript-transpiler-bin
+          curl.exe -L --output full-size.html --url https://raw.githubusercontent.com/godotengine/godot/master/misc/dist/html/full-size.html
+          md dist
+          md temp
+
+      - name: Run file with timeout
+        shell: cmd
+        timeout-minutes: 2 # Times out after 1 minute
+        run: |
+          python D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\.github/workflows/godot.py
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: html5
+          path: gdscript-transpiler-bin/dist

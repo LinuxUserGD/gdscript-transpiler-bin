@@ -1,0 +1,33 @@
+name: "godot-ci download"
+on:
+  workflow_dispatch
+
+env:
+  GODOT_VERSION: "4.0"
+  RELEASE_NAME: beta9
+
+jobs:
+  export-templates:
+    name: Templates Export
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Setup
+        run: |
+          curl https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_linux.x86_64.zip -o Godot_linux.x86_64.zip
+          curl https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_win64.exe.zip -o Godot_win64.exe.zip
+          curl https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}${SUBDIR}/${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz -o Godot_export_templates.tpz
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot_linux.x86_64.zip
+          path: Godot_linux.x86_64.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot_win64.exe.zip
+          path: Godot_win64.exe.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Godot_export_templates.tpz
+          path: Godot_export_templates.tpz
