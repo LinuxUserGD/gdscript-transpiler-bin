@@ -1,0 +1,226 @@
+name: Template
+on: push
+
+# Global Settings
+env:
+  # Only used for the cache key. Increment version to force clean build.
+  GODOT_BASE_BRANCH: master-v2
+  SCONSFLAGS: verbose=yes warnings=extra werror=no module_text_server_fb_enabled=no
+
+concurrency:
+  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-linux
+  cancel-in-progress: true
+
+jobs:
+  build-linux:
+    permissions: write-all
+    runs-on: ubuntu-22.04
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Minimal Template (target=template_release, tools=no, everything disabled)
+            cache-name: linux-template-minimal
+            target: template_release
+            tools: false
+            tests: false
+            sconsflags: module_text_server_adv_enabled=no deprecated=no minizip=no disable_3d=yes use_llvm=yes module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_3d=yes disable_advanced_gui=yes deprecated=no minizip=no openxr=no opengl3=no use_static_cpp=yes linker=lld alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=no module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_freetype_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
+            artifact: true
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: Update repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          export commit=$(git ls-remote https://github.com/godotengine/godot.git  HEAD | awk '{ print $1}')
+          git update-index --cacheinfo 160000,${commit},godot
+          git submodule init
+          git submodule update
+          cd godot && mv ../.github/workflows/headless-build.patch .
+          git apply headless-build.patch && cd -
+
+      - name: Linux dependencies
+        shell: bash
+        run: |
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
+          sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
+          sudo apt-get update && sudo apt-get install build-essential pkg-config yasm xvfb wget unzip libfreetype-dev libfreetype6 libfreetype6-dev
+          sudo rm -rf /usr/include/freetype && sudo ln -sf /usr/include/freetype2 /usr/include/freetype
+
+      - name: Setup Godot build cache
+        uses: ./.github/actions/godot-cache
+        with:
+          cache-name: ${{ matrix.cache-name }}
+        continue-on-error: true
+
+      - name: Setup Python and Scons
+        uses: ./.github/actions/godot-deps
+
+      - name: Compilation
+        uses: ./.github/actions/godot-build
+        with:
+          sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
+          platform: linuxbsd
+          target: ${{ matrix.target }}
+          tools: ${{ matrix.tools }}
+          tests: ${{ matrix.tests }}
+
+      - name: Prepare artifact
+        if: ${{ matrix.artifact }}
+        run: |
+          strip godot/bin/godot.*
+          chmod +x godot/bin/godot.*
+          mv godot/bin/godot.* gdscript-transpiler-bin/godot-bin
+
+      - name: Install Dependencies
+        env:
+          github_token: ${{ secrets.TOKEN }}
+        run: |
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
+          python -m pip install --upgrade pip requests autopep8 wheel
+          python -m pip install -r requirements.txt
+          python -m pip install git+https://github.com/rocky/python-xdis.git
+          python -m pip install git+https://github.com/rocky/x-python.git
+          cd gdscript-transpiler-bin
+          ./godot-bin --headless --verbose -s __main__.gd path=version.gd
+          ./godot-bin --headless --verbose -s __main__.gd path=props.gd
+          ./godot-bin --headless --verbose -s __main__.gd path=audio.gd
+          ./godot-bin --headless --verbose -s __main__.gd path=vector2.gd
+          ./godot-bin --headless --verbose -s __main__.gd path=transpiler.gd
+          ./godot-bin --headless --verbose -s __main__.gd path=__main__.gd
+          mv ../.github/workflows/api.py .
+          echo "Uploading __main__.py, transpiler.py, props.py, vector2.py, audio.py, version.py to gist..."
+          python api.py
+
+
+      - name: Setup latest Alpine Linux
+        uses: jirutka/setup-alpine@v1
+        with:
+          branch: edge
+          arch: x86_64
+          packages: >
+            alsa-lib-dev
+            libffi-dev
+            ncurses-dev
+            tcl-dev
+            tk-dev
+            zlib-dev
+            gettext-dev
+            wget
+            curl
+            perl
+            libgcc
+            gcc
+            clang15-dev
+            clang15-extra-tools
+            clang15-libclang
+            clang15-libs
+            clang15-static
+            llvm15-dev
+            llvm-runtimes
+            llvm-libunwind-dev
+            llvm-libunwind-static
+            llvm15-libs
+            llvm15-static
+            compiler-rt
+            musl-dev
+            openssl-dev
+            linux-headers
+            patchelf
+            pkgconf
+            make
+            git
+            bash
+            tar
+            file
+            gzip
+            sudo
+            xz
+          shell-name: alpine.sh
+
+      - name: Run script inside Alpine chroot
+        run: |
+          export PYTHON_VERSION=3.10.9
+          export REQUESTS_VERSION=2.28.1-r1-1
+          export OPENSSL_VERSION=1.1.1s
+          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/python-${PYTHON_VERSION}.tar.xz
+          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/requests-${REQUESTS_VERSION}.tar.xz
+          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/openssl-${OPENSSL_VERSION}.tar.xz
+          sudo mv python-${PYTHON_VERSION}.tar.xz /
+          sudo mv requests-${REQUESTS_VERSION}.tar.xz /
+          sudo mv openssl-${OPENSSL_VERSION}.tar.xz /
+          cd /
+          sudo tar xpvf python-${PYTHON_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
+          sudo tar xpvf requests-${REQUESTS_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
+          sudo tar xpvf openssl-${OPENSSL_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
+          cd -
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/__main__.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/props.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/vector2.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/version.py
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/__main__.gd
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/vector2.gd
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/version.gd
+          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd
+          wget https://bootstrap.pypa.io/pip/get-pip.py
+          sudo python3.10 get-pip.py
+          sudo python3.10 -m pip install -r requirements.txt
+          sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
+          sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
+          python3.10 __main__.py path=transpiler.gd
+          python3.10 __main__.py path=props.gd
+          python3.10 __main__.py path=vector2.gd
+          python3.10 __main__.py path=version.gd
+          python3.10 __main__.py path=audio.gd
+          python3.10 __main__.py path=__main__.gd
+          cd ..
+          python3.10 -m nuitka --static-libpython=no --onefile --lto=yes gdscript-transpiler-bin/__main__.py -o gds
+          echo ${PWD}
+        shell: alpine.sh {0}
+
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Linux Build
+          path: /home/runner/work/gdscript-transpiler-bin/gds
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: Upload
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: Build
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: Template
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_pattern: OSSAR

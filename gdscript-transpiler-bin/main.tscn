@@ -1,0 +1,153 @@
+[gd_scene load_steps=8 format=3 uid="uid://bb4hpvw0tq6yt"]
+
+[ext_resource type="Script" path="res://script_editor.gd" id="2"]
+[ext_resource type="Script" path="res://run_button.gd" id="3"]
+[ext_resource type="Theme" uid="uid://bwuol0nxm8rsj" path="res://resources/theme.tres" id="4"]
+[ext_resource type="FontFile" uid="uid://decvm47txmafw" path="res://fonts/noto_sans_regular.ttf" id="4_5pn77"]
+[ext_resource type="Script" path="res://main_window.gd" id="5"]
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_wdykl"]
+number_color = Color(1, 0.666667, 0.137255, 1)
+symbol_color = Color(1, 1, 1, 1)
+function_color = Color(0.27451, 0.47451, 0.65098, 1)
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_r1olw"]
+number_color = Color(1, 0.666667, 0.137255, 1)
+symbol_color = Color(1, 1, 1, 1)
+function_color = Color(0.27451, 0.47451, 0.65098, 1)
+
+[node name="MainWindow" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4")
+script = ExtResource("5")
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+split_offset = 640
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
+layout_mode = 2
+
+[node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4")
+text = "extends Node
+
+func _ready():
+	pass"
+highlight_all_occurrences = true
+highlight_current_line = true
+draw_tabs = true
+syntax_highlighter = SubResource("CodeHighlighter_wdykl")
+caret_blink = true
+script = ExtResource("2")
+
+[node name="RunButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 33.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("4_5pn77")
+text = "Run"
+script = ExtResource("3")
+metadata/_edit_layout_mode = 1
+
+[node name="TranspileButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_top = 39.0
+offset_bottom = 72.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("4_5pn77")
+text = "Transpile"
+script = ExtResource("3")
+metadata/_edit_layout_mode = 1
+
+[node name="ok" type="HSplitContainer" parent="HSplitContainer"]
+layout_mode = 2
+split_offset = 640
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HSplitContainer/ok"]
+layout_mode = 2
+
+[node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/ok/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("4")
+text = "extends Node
+
+func _ready():
+       print(\"Hello world!\")
+"
+editable = false
+highlight_all_occurrences = true
+highlight_current_line = true
+draw_tabs = true
+syntax_highlighter = SubResource("CodeHighlighter_r1olw")
+caret_blink = true
+script = ExtResource("2")
+
+[node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 33.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("4_5pn77")
+text = "Run"
+script = ExtResource("3")
+metadata/_edit_layout_mode = 1
+
+[node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok"]
+layout_mode = 2
+
+[node name="ErrorLabel" type="Label" parent="HSplitContainer/ok/OutputPanel"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.772549, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_5pn77")
+clip_text = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer/ok/OutputPanel"]
+layout_mode = 2
+focus_mode = 2
+scroll_following = true
+selection_enabled = true
+
+[node name="EngineVersion" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0.501961)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -132.0
+offset_top = 9.0
+offset_right = -15.0
+offset_bottom = 46.0
+grow_horizontal = 0
+metadata/_edit_layout_mode = 1
+
+[connection signal="text_changed" from="HSplitContainer/VBoxContainer/ScriptEditor" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_on_script_editor_text_changed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/ScriptEditor/RunButton" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_run_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/ScriptEditor/TranspileButton" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_on_transpile_button_pressed"]
+[connection signal="pressed" from="HSplitContainer/ok/VBoxContainer2/ScriptEditor/RunButton2" to="HSplitContainer/ok/VBoxContainer2/ScriptEditor" method="_on_run_button_2_pressed"]

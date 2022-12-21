@@ -1,0 +1,84 @@
+name: Upload
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Template"]
+    types:
+      - completed
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    name: Linux itch.io Upload
+    steps:
+      - name: Pause until all workflows are completed
+        uses: willgarcia/workflow-wait-action@0.1.0
+        with:
+          initial_delay: 220
+          interval: 10
+
+      - uses: actions/checkout@master
+      - name: Download artifact from build
+
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Linux Build
+          rename: linux.zip
+          wait_seconds: 10
+
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: MacOS Build
+          rename: macOS.zip
+          wait_seconds: 10
+
+      - name: Download artifact from build
+        uses: bettermarks/action-artifact-download@0.3.0
+        with:
+          repo: LinuxUserGD/gdscript-transpiler-bin
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: Windows Build
+          rename: windows.zip
+          wait_seconds: 10
+
+      - name: Linux dependencies
+        shell: bash
+        run: |
+          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
+          sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
+          sudo apt-get update && sudo apt-get install unzip
+          unzip linux.zip
+          unzip macOS.zip
+          unzip windows.zip
+
+      - name: Upload to itch.io
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: linux
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: gds
+
+      - name: Upload to itch.io
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: mac
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: gds.bin
+
+      - name: Upload to itch.io
+        uses: manleydev/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: windows
+          ITCH_GAME: gdscript-transpiler-bin
+          ITCH_USER: linuxusergd
+          PACKAGE: gds.exe

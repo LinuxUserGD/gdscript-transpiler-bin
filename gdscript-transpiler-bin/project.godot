@@ -1,0 +1,109 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+_global_script_classes=[{
+"base": "RefCounted",
+"class": &"Audio",
+"language": &"GDScript",
+"path": "res://audio.gd"
+}, {
+"base": "RefCounted",
+"class": &"File",
+"language": &"GDScript",
+"path": "res://file.gd"
+}, {
+"base": "SceneTree",
+"class": &"Main",
+"language": &"GDScript",
+"path": "res://__main__.gd"
+}, {
+"base": "RefCounted",
+"class": &"Props",
+"language": &"GDScript",
+"path": "res://props.gd"
+}, {
+"base": "RefCounted",
+"class": &"Transpiler",
+"language": &"GDScript",
+"path": "res://transpiler.gd"
+}, {
+"base": "RefCounted",
+"class": &"VECTOR2",
+"language": &"GDScript",
+"path": "res://vector2.gd"
+}, {
+"base": "RefCounted",
+"class": &"Version",
+"language": &"GDScript",
+"path": "res://version.gd"
+}]
+_global_script_class_icons={
+"Audio": "",
+"File": "",
+"Main": "",
+"Props": "",
+"Transpiler": "",
+"VECTOR2": "",
+"Version": ""
+}
+
+[application]
+
+config/name="GDScript2PythonTranspiler"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.0")
+run/low_processor_mode=true
+config/icon="res://icon.png"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/mode=4
+window/energy_saving/keep_screen_on=false
+window/handheld/orientation="sensor_landscape"
+window/size/width=1280
+window/size/height=720
+window/vsync/use_vsync=false
+
+[editor]
+
+movie_writer/mjpeg_quality=1.0
+movie_writer/movie_file="/home/user/Videos/godot.avi"
+
+[input]
+
+run_script={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":16777226,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+]
+}
+toggle_comment={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":16777238,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+]
+}
+tab={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194306,"physical_keycode":0,"unicode":0,"echo":false,"script":null)
+]
+}
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+quality/driver/driver_name="GLES2"
+quality/intended_usage/framebuffer_allocation=1
+quality/intended_usage/framebuffer_allocation.mobile=1
+vram_compression/import_etc=true
+vram_compression/import_etc2=false
+environment/default_clear_color=Color(0.1245, 0.142775, 0.15, 1)
+environment/default_environment="res://default_env.tres"
