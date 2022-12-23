@@ -46,12 +46,12 @@ jobs:
 
       - name: Generate Python Script
         run: |
-          python __main__.py path=transpiler.gd
-          python __main__.py path=props.gd
-          python __main__.py path=vector2.gd
-          python __main__.py path=version.gd
-          python __main__.py path=audio.gd
-          python __main__.py path=__main__.gd
+          python __main__.py run=transpiler.gd
+          python __main__.py run=props.gd
+          python __main__.py run=vector2.gd
+          python __main__.py run=version.gd
+          python __main__.py run=audio.gd
+          python __main__.py run=__main__.gd
           mv __main__.py gds
       
       - name: Set up Clang

@@ -10,7 +10,7 @@ class_name Main
 ## using search-and-replace syntax
 ##
 ##
-## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d
+## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-__main__-py
 
 
 ## Runs once when executed, prints different output to console depending on argument
@@ -25,7 +25,7 @@ func _init() -> void:
 	for arg in OS.get_cmdline_args():
 		index += 1
 		if arg == "version":
-			version()
+			version_info()
 			self.quit()
 			return
 		if arg == "help":
@@ -39,19 +39,55 @@ func _init() -> void:
 			run_vector2()
 			self.quit()
 			return
-		var path_arg: String = "path="
+		var path_arg: String = "run="
 		if arg.begins_with(path_arg):
-			start(arg, index)
+			start(arg)
+			run(arg, index)
 			self.quit()
 			return
-		var run_arg = "run="
-		if arg.begins_with(run_arg):
-			run(arg, index)
+		var path_exp_arg: String = "path_exp="
+		if arg.begins_with(path_exp_arg):
+			start_exp(arg)
+			self.quit()
+			return
+		var compile_arg = "compile="
+		if arg.begins_with(compile_arg):
+			start(arg)
+			compile(arg, index)
 			self.quit()
 			return
 	help()
 	self.quit()
 	return
+
+## Function for compiling python script (by path)
+func compile(arg: String, index: int) -> void:
+	var path_end: String = arg.split("=")[1]
+	var args = path_end.split(".")
+	var c: int = args.size()
+	var pathstr: String = ""
+	for path_str in args:
+		c -= 1
+		if c != 0:
+			pathstr += path_str + "."
+	var nuitka: String = "import nuitka.__main__;"
+	nuitka += "import sys;"
+	nuitka += "x='python';"
+	nuitka += "y='"
+	nuitka += pathstr
+	nuitka += "py"
+	nuitka += "';"
+	nuitka += "z='"
+	nuitka += "--onefile"
+	nuitka += "';"
+	nuitka += "sys.argv=[x,y,z]"
+	var stdout: Array = []
+	print("Compiling " + pathstr + "py...")
+	OS.execute('python',['-m','xpython','-c',nuitka+ ';nuitka.__main__.main()'],stdout,true,false)
+	if stdout.size() > 0:
+		for out_str in stdout[0].split("\n"):
+			if out_str.length() > 0:
+				print(out_str)
 
 ## Function for running python script (by path)
 func run(arg: String, index: int) -> void:
@@ -89,8 +125,19 @@ func run(arg: String, index: int) -> void:
 		if out_str.length() > 0:
 			print(out_str)
 
+## Alternative function for transpiling script (by path)
+func start_exp(arg: String) -> void:
+	var path_end: String = arg.split("=")[1]
+	var path: String = "res://" + path_end
+	var transpiler = Transpiler.new()
+	var content: String = transpiler.read(path)
+	var tokenizer = Tokenizer.new()
+	for line in content.split("\n"):
+		var tokens : Array = tokenizer.tokenize(line)
+		print(tokens)
+
 ## Function for transpiling script (by path)
-func start(arg: String, index: int) -> void:
+func start(arg: String) -> void:
 	var path_end: String = arg.split("=")[1]
 	var path: String = "res://" + path_end
 	var args = path_end.split(".")
@@ -119,12 +166,11 @@ func start(arg: String, index: int) -> void:
 	imp += "py"
 	imp += "';"
 	imp += "sys.argv=[x,y,z]"
-	OS.execute('python',['-c',imp+ ';autopep8.main()'],stdout,true,false)
-	run(arg, index)
+	OS.execute('python',['-m','xpython','-c',imp+ ';autopep8.main()'],stdout,true,false)
 
 
 ## Prints Python and Godot Engine version information to console
-func version() -> void:
+func version_info() -> void:
 	var info: Dictionary = Engine.get_version_info()
 	var major: int = info.get("major")
 	var minor: int = info.get("minor")
@@ -136,16 +182,17 @@ func version() -> void:
 	print("Godot " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
 	
-	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
+	OS.execute('python',['-m','xpython','-c','import sys;print(sys.version)'],stdout,true,false)
 	print("Python " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str1: String = "from nuitka import Version"
-	OS.execute('python',['-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
+	OS.execute('python',['-m','xpython','-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
 	print("Nuitka " + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str2: String = "import autopep8"
-	OS.execute('python',['-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
+	OS.execute('python',['-m','xpython','-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
 	print("autopep8 " + stdout[0].split("\n")[0])
+	stdout.clear()
 
 ## Help function which prints all possible commands
 func help() -> void:
@@ -154,7 +201,8 @@ func help() -> void:
 	print("Options:")
 	print("  " + "version" + "                   " + "show program's version number and exit")
 	print("  " + "help" + "                      " + "show this help message and exit")
-	print("  " + "path=../path/to/file.gd" + "   " + "path to GDScript file")
+	print("  " + "run=../path/to/file.gd" + "   " + "run GDScript file directly using x-python")
+	print("  " + "compile=../path/to/file.gd" + "   " + "compile GDScript file to binary using GCC/Nuitka")
 	print("  " + "test=base64_audio" + "         " + "play base64 encoded audio file")
 	print("  " + "test=vector2" + "              " + "testing Vector2 implementation")
 

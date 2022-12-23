@@ -15,6 +15,11 @@ _global_script_classes=[{
 "path": "res://audio.gd"
 }, {
 "base": "RefCounted",
+"class": &"Dummy",
+"language": &"GDScript",
+"path": "res://test/class_name.gd"
+}, {
+"base": "RefCounted",
 "class": &"File",
 "language": &"GDScript",
 "path": "res://file.gd"
@@ -28,6 +33,11 @@ _global_script_classes=[{
 "class": &"Props",
 "language": &"GDScript",
 "path": "res://props.gd"
+}, {
+"base": "RefCounted",
+"class": &"Tokenizer",
+"language": &"GDScript",
+"path": "res://tokenizer.gd"
 }, {
 "base": "RefCounted",
 "class": &"Transpiler",
@@ -46,9 +56,11 @@ _global_script_classes=[{
 }]
 _global_script_class_icons={
 "Audio": "",
+"Dummy": "",
 "File": "",
 "Main": "",
 "Props": "",
+"Tokenizer": "",
 "Transpiler": "",
 "VECTOR2": "",
 "Version": ""
