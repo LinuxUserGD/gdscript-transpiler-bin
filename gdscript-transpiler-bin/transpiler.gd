@@ -20,8 +20,24 @@ func transpile(content: String) -> String:
 	for line in content.split("\n"):
 		if not line.begins_with("##"):
 			t += analyze(line)
+	if props.sys_imp:
+		t = "import sys" + "\n" + t
 	if props.math_imp:
 		t = "import math" + "\n" + t
+	if props.nuitka_imp:
+		t = "from nuitka import Version" + "\n" + t
+	if props.autopep8_imp:
+		t = "import autopep8" + "\n" + t
+	if props.xpython_imp:
+		t = "import xpython.__main__" + "\n" + t
+	if props.audio_imp:
+		t = "from os import remove" + "\n" + t
+		t = "from base64 import b64decode" + "\n" + t
+		t = "from pydub import AudioSegment" + "\n" + t
+		t = "from pydub.playback import play" + "\n" + t
+		t = "from io import BytesIO" + "\n" + t
+	if props.py_imp:
+		t = "#!/usr/bin/env python" + "\n" + t
 	if props.left_def:
 		t += "def left(s, amount):"
 		t += "\n"
@@ -124,6 +140,7 @@ func dict(arg: String) -> String:
 			"Audio",
 			"Version",
 			"Transpiler",
+			"Tokenizer",
 			"VECTOR2",
 			"extends",
 			"class_name",
@@ -145,6 +162,7 @@ func dict(arg: String) -> String:
 			"';print(autopep8.__version__)'],stdout,true,false)",
 			"';autopep8.main()'],stdout,true,false)",
 			"';xpython.__main__.main()'],stdout,true,false)",
+			"';nuitka.__main__.main()'],stdout,true,false)",
 			"self.root.has_node(player):",
 			"self.root.add_child(player)",
 			"player",
@@ -162,23 +180,35 @@ func dict(arg: String) -> String:
 		e += " "
 		props.init_def = true
 		return e
-	elif arg == "OS.execute('python',['-c','import":
+	elif arg == "OS.execute('python',['-m','xpython','-c','import":
 		e += props.repl_dict[arg]
+		props.xpython_imp = true
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str1+":
+	elif arg == "OS.execute('python',['-m','xpython','-c',import_str1+":
 		e += props.repl_dict[arg]
+		props.xpython_imp = true
 		props.nuitka_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str2+":
+	elif arg == "OS.execute('python',['-m','xpython','-c',nuitka+":
 		e += props.repl_dict[arg]
+		props.xpython_imp = true
+		return e
+	elif arg == "OS.execute('python',['-m','xpython','-c',import_str2+":
+		e += props.repl_dict[arg]
+		props.xpython_imp = true
 		props.autopep8_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',imp+":
+	elif arg == "OS.execute('python',['-m','xpython','-c',imp+":
 		e += props.repl_dict[arg]
+		props.xpython_imp = true
 		props.autopep8_imp = true
 		return e
 	elif arg == "OS.execute('python',['-c',xpy+":
+		e += props.repl_dict[arg]
+		props.xpython_imp = true
+		return e
+	elif arg == "OS.execute('python',['-m','xpython','-c',nuitka+":
 		e += props.repl_dict[arg]
 		props.xpython_imp = true
 		return e
@@ -189,29 +219,7 @@ func dict(arg: String) -> String:
 		return e
 	elif arg == "#!/usr/bin/godot":
 		e += props.repl_dict[arg]
-		if props.sys_imp:
-			e += "\n"
-			e += "import sys"
-		if props.nuitka_imp:
-			e += "\n"
-			e += "from nuitka import Version"
-		if props.autopep8_imp:
-			e += "\n"
-			e += "import autopep8"
-		if props.xpython_imp:
-			e += "\n"
-			e += "import xpython.__main__"
-		if props.audio_imp:
-			e += "\n"
-			e += "from os import remove"
-			e += "\n"
-			e += "from base64 import b64decode"
-			e += "\n"
-			e += "from pydub import AudioSegment"
-			e += "\n"
-			e += "from pydub.playback import play"
-			e += "\n"
-			e += "from io import BytesIO"
+		props.py_imp = true
 		e += " "
 		return e
 	elif arg == "File.new()":
@@ -381,6 +389,8 @@ func translate(e: String) -> String:
 		e = ""
 	while e.contains("transpiler = import Transpiler"):
 		e = e.replace("transpiler = import Transpiler", "import transpiler")
+	while e.contains("tokenizer = import Tokenizer"):
+		e = e.replace("tokenizer = import Tokenizer", "import tokenizer")
 	while e.contains("props = import Props"):
 		e = e.replace("props = import Props", "import props")
 	while e.contains("audio = import Audio"):

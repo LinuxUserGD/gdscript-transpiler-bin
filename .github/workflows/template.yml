@@ -85,12 +85,12 @@ jobs:
           python -m pip install git+https://github.com/rocky/python-xdis.git
           python -m pip install git+https://github.com/rocky/x-python.git
           cd gdscript-transpiler-bin
-          ./godot-bin --headless --verbose -s __main__.gd path=version.gd
-          ./godot-bin --headless --verbose -s __main__.gd path=props.gd
-          ./godot-bin --headless --verbose -s __main__.gd path=audio.gd
-          ./godot-bin --headless --verbose -s __main__.gd path=vector2.gd
-          ./godot-bin --headless --verbose -s __main__.gd path=transpiler.gd
-          ./godot-bin --headless --verbose -s __main__.gd path=__main__.gd
+          ./godot-bin --headless --verbose -s __main__.gd run=version.gd
+          ./godot-bin --headless --verbose -s __main__.gd run=props.gd
+          ./godot-bin --headless --verbose -s __main__.gd run=audio.gd
+          ./godot-bin --headless --verbose -s __main__.gd run=vector2.gd
+          ./godot-bin --headless --verbose -s __main__.gd run=transpiler.gd
+          ./godot-bin --headless --verbose -s __main__.gd run=__main__.gd
           mv ../.github/workflows/api.py .
           echo "Uploading __main__.py, transpiler.py, props.py, vector2.py, audio.py, version.py to gist..."
           python api.py
@@ -175,12 +175,12 @@ jobs:
           sudo python3.10 -m pip install -r requirements.txt
           sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
-          python3.10 __main__.py path=transpiler.gd
-          python3.10 __main__.py path=props.gd
-          python3.10 __main__.py path=vector2.gd
-          python3.10 __main__.py path=version.gd
-          python3.10 __main__.py path=audio.gd
-          python3.10 __main__.py path=__main__.gd
+          python3.10 __main__.py run=transpiler.gd
+          python3.10 __main__.py run=props.gd
+          python3.10 __main__.py run=vector2.gd
+          python3.10 __main__.py run=version.gd
+          python3.10 __main__.py run=audio.gd
+          python3.10 __main__.py run=__main__.gd
           cd ..
           python3.10 -m nuitka --static-libpython=no --onefile --lto=yes gdscript-transpiler-bin/__main__.py -o gds
           echo ${PWD}
