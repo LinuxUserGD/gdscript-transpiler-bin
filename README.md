@@ -5,41 +5,80 @@
 [![MIT license](blue.svg)](LICENSE)
 [![Python](python.svg)](https://www.python.org/)
 
-[![Icon](gdscript-transpiler-bin/icon.svg)](gdscript-transpiler-bin/icon.svg) 
+[![Icon](icon.svg)](icon.svg) 
 
-`gdscript-transpiler-bin` is a [GDScript](https://docs.godotengine.org/en/latest/tutorials/scripting/gdscript/gdscript_basics.html) compiler and [Python](https://www.python.org/) runtime environment using [x-python](https://github.com/rocky/x-python).
+- GDScript compiler (using [Nuitka](https://github.com/Nuitka/Nuitka))
+- GDScript runtime environment (using [x-python](https://github.com/rocky/x-python))
 
 Minimal Scripts can be transpiled to Python.
 
-Binary builds are compiled with [Nuitka](https://github.com/Nuitka/Nuitka):
+Binary builds are compiled using [GitHub Actions](https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions) and available at [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin).
 
-- [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin)
-
-- [GitHub Actions](https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions)
-
-For Python script generated from [`__main__.gd`](gdscript-transpiler-bin/__main__.gd), see [`__main__.py`](https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-__main__-py).
+Also see [generated Python source from GDScript](https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-__main__-py).
 
 [![Video](preview.gif)](preview.gif)
 
 ## Example
 
-### Godot Engine 4 command line
+```
+git clone https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git
 
-- `./godot4 -s __main__.gd --headless help`
+cd gdscript-transpiler-bin
+```
 
-- `./godot4 -s __main__.gd --headless path=__main__.gd` (audio.gd, transpiler.gd, props.gd)
+### Godot Engine 4 command line (stage0)
 
-### Python environment
+- `./godot4 -s bin/gds.gd --headless help`
 
-- `python __main__.py help`
+- `./godot4 -s bin/gds.gd --headless run=bin/gds.gd` (for running GDScript directly using x-python)
 
-- `python __main__.py path=__main__.gd`
+- `./godot4 -s bin/gds.gd --headless format=bin/gds.gd` (for generating Python project used in stage1)
 
-### Nuitka compiled binary
+- `./godot4 -s bin/gds.gd --headless compile=bin/gds.gd` (for compiling GDScript to binary using Clang/Nuitka used in stage2)
 
-- `./gds help`
+### Python environment (stage1)
 
-- `./gds path=__main__.gd`
+- `python -m pip install -e .` (for installing python project)
+
+- `python -m gds help`
+
+- `python -m gds run=bin/gds.gd`
+
+- `python -m gds format=bin/gds.gd`
+
+- `python -m gds compile=bin/gds.gd`
+
+### Nuitka compiled binary (stage2)
+
+- `./gds[.exe] help`
+
+- `./gds[.exe] run=bin/gds.gd`
+
+- `./gds[.exe] format=bin/gds.gd`
+
+- `./gds[.exe] compile=bin/gds.gd`
+
+## Benchmark
+
+Time for running GDScript code:
+
+```gdscript
+func string() -> int:
+	var x : String = ""
+	for i in range(0, 300000):
+		x += " "
+	return x.length()
+
+func add() -> int:
+	var x := -100000000
+	for i in range(0, 100000000):
+		x += 1
+	return x
+```
+
+|              | Godot      | Python     | Nuitka
+|--------------|------------|------------|------------
+| benchmark.gd | 11.639s    | 4.678s     | 1.857s
 
 ## License
 

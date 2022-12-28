@@ -12,7 +12,7 @@ _global_script_classes=[{
 "base": "RefCounted",
 "class": &"Audio",
 "language": &"GDScript",
-"path": "res://audio.gd"
+"path": "res://gds/audio.gd"
 }, {
 "base": "RefCounted",
 "class": &"Dummy",
@@ -22,54 +22,66 @@ _global_script_classes=[{
 "base": "RefCounted",
 "class": &"File",
 "language": &"GDScript",
-"path": "res://file.gd"
+"path": "res://gds/file.gd"
 }, {
 "base": "SceneTree",
-"class": &"Main",
+"class": &"GDS",
 "language": &"GDScript",
-"path": "res://__main__.gd"
+"path": "res://bin/gds.gd"
 }, {
 "base": "RefCounted",
 "class": &"Props",
 "language": &"GDScript",
-"path": "res://props.gd"
+"path": "res://gds/props.gd"
 }, {
 "base": "RefCounted",
 "class": &"Tokenizer",
 "language": &"GDScript",
-"path": "res://tokenizer.gd"
+"path": "res://gds/tokenizer.gd"
 }, {
 "base": "RefCounted",
 "class": &"Transpiler",
 "language": &"GDScript",
-"path": "res://transpiler.gd"
+"path": "res://gds/transpiler.gd"
 }, {
 "base": "RefCounted",
 "class": &"VECTOR2",
 "language": &"GDScript",
-"path": "res://vector2.gd"
+"path": "res://gds/vector2.gd"
 }, {
 "base": "RefCounted",
 "class": &"Version",
 "language": &"GDScript",
-"path": "res://version.gd"
+"path": "res://gds/version.gd"
+}, {
+"base": "RefCounted",
+"class": &"__Init__",
+"language": &"GDScript",
+"path": "res://gds/__init__.gd"
+}, {
+"base": "RefCounted",
+"class": &"__Main__",
+"language": &"GDScript",
+"path": "res://gds/__main__.gd"
 }]
 _global_script_class_icons={
 "Audio": "",
 "Dummy": "",
 "File": "",
-"Main": "",
+"GDS": "",
 "Props": "",
 "Tokenizer": "",
 "Transpiler": "",
 "VECTOR2": "",
-"Version": ""
+"Version": "",
+"__Init__": "",
+"__Main__": ""
 }
 
 [application]
 
 config/name="GDScript2PythonTranspiler"
-run/main_scene="res://main.tscn"
+run/main_scene="res://gds/main.tscn"
 config/features=PackedStringArray("4.0")
 run/low_processor_mode=true
 config/icon="res://icon.png"

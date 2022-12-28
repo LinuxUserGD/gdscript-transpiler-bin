@@ -19,9 +19,5 @@ logs/
 
 # Exported files
 dist/
-gdscript-transpiler-bin/__pycache__/audio.cpython-310.pyc
-gdscript-transpiler-bin/__pycache__/main.cpython-310.pyc
-gdscript-transpiler-bin/__pycache__/props.cpython-310.pyc
-gdscript-transpiler-bin/__pycache__/transpiler.cpython-310.pyc
-gdscript-transpiler-bin/__pycache__/vector2.cpython-310.pyc
-gdscript-transpiler-bin/__pycache__/version.cpython-310.pyc
+gds/__pycache__/
+bin/__pycache__/

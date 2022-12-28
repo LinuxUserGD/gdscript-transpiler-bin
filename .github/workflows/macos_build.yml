@@ -17,52 +17,39 @@ jobs:
     steps:
       - name: Update script
         run: |
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/__main__.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/props.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/vector2.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/version.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/audio.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/__main__.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/vector2.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/version.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd
+          git clone https://gist.github.com/73d8e030a44eb7f91bdeaea96a321f6d.git
+          mv 73d8e030a44eb7f91bdeaea96a321f6d/* .
+          rm -r 73d8e030a44eb7f91bdeaea96a321f6d
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10.8'
+          python-version: '3.10.9'
           architecture: 'x64'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
           pip install git+https://github.com/rocky/x-python.git
-
-      - name: Generate Python Script
-        run: |
-          python __main__.py run=transpiler.gd
-          python __main__.py run=props.gd
-          python __main__.py run=vector2.gd
-          python __main__.py run=version.gd
-          python __main__.py run=audio.gd
-          python __main__.py run=__main__.gd
-          mv __main__.py gds
+          mkdir gds
+          mkdir bin
+          mv *.py gds/
+          mv *.gd gds/
+          mv gds/gds.py bin/
+          mv gds/gds.gd bin/
+          mv gds/setup.py .
+          python -m pip install -e .
 
       - name: Build Executable
-        uses: LinuxUserGD/Nuitka-Action@v0.5
-        with:
-          script-name: gds
-          onefile: true
-          clang: true
+        run: |
+          python -m gds compile=bin/gds.gd
+          mv gds.bin bin/gds
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
           name: MacOS Build
-          path: build/gds.bin
+          path: /Users/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/bin/gds
