@@ -22,12 +22,14 @@ func transpile(content: String) -> String:
 			t += analyze(line)
 	if props.sys_imp:
 		t = "import sys" + "\n" + t
+	if props.os_imp:
+		t = "import os" + "\n" + t
 	if props.math_imp:
 		t = "import math" + "\n" + t
 	if props.nuitka_imp:
 		t = "from nuitka import Version" + "\n" + t
-	if props.autopep8_imp:
-		t = "import autopep8" + "\n" + t
+	if props.black_imp:
+		t = "import black" + "\n" + t
 	if props.xpython_imp:
 		t = "import xpython.__main__" + "\n" + t
 	if props.audio_imp:
@@ -123,9 +125,22 @@ func dict(arg: String) -> String:
 		e += arg
 		e += " "
 		return e
+	elif arg == "File.new()":
+		e += props.repl_dict[arg]
+		e += '"'
+		e += '"'
+		e += " "
+		return e
 	while arg.begins_with("	"):
 		e += "	"
 		arg = arg.right(arg.length() - 1)
+	var con: bool = false
+	while arg.contains(".new()"):
+		arg = arg.replace(".new()", "")
+		if not arg in props.gd_class && not arg in props.gds_class && not arg in props.gds_deps:
+			props.gds_deps.append(arg)
+		arg = "import " + arg
+		con = true
 	if arg in props.types:
 		return e
 	elif (
@@ -135,19 +150,14 @@ func dict(arg: String) -> String:
 			"var",
 			"Node",
 			"SceneTree",
-			"Main",
-			"Props",
-			"Audio",
-			"Version",
-			"Transpiler",
-			"Tokenizer",
-			"VECTOR2",
 			"extends",
 			"class_name",
 			"File"
 		]
 	):
 		e += props.repl_dict[arg]
+		return e
+	elif arg in props.gds_deps:
 		return e
 	elif (
 		arg
@@ -159,8 +169,8 @@ func dict(arg: String) -> String:
 			"||",
 			"sys;print(sys.version)'],stdout,true,false)",
 			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
-			"';print(autopep8.__version__)'],stdout,true,false)",
-			"';autopep8.main()'],stdout,true,false)",
+			"';print(black.__version__)'],stdout,true,false)",
+			"';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)",
 			"';xpython.__main__.main()'],stdout,true,false)",
 			"';nuitka.__main__.main()'],stdout,true,false)",
 			"self.root.has_node(player):",
@@ -197,12 +207,12 @@ func dict(arg: String) -> String:
 	elif arg == "OS.execute('python',['-m','xpython','-c',import_str2+":
 		e += props.repl_dict[arg]
 		props.xpython_imp = true
-		props.autopep8_imp = true
+		props.black_imp = true
 		return e
 	elif arg == "OS.execute('python',['-m','xpython','-c',imp+":
 		e += props.repl_dict[arg]
 		props.xpython_imp = true
-		props.autopep8_imp = true
+		props.black_imp = true
 		return e
 	elif arg == "OS.execute('python',['-c',xpy+":
 		e += props.repl_dict[arg]
@@ -222,13 +232,16 @@ func dict(arg: String) -> String:
 		props.py_imp = true
 		e += " "
 		return e
-	elif arg == "File.new()":
-		e += props.repl_dict[arg]
-		e += '"'
-		e += '"'
-		e += " "
-		return e
-	var con: bool = false
+	while arg.contains(".to_lower()"):
+		arg = arg.replace(".to_lower()", ".lower()")
+		con = true
+	while arg.contains(".to_upper()"):
+		arg = arg.replace(".to_upper()", ".upper()")
+		con = true
+	while arg.contains("printraw("):
+		arg = arg.replace("printraw(", "sys.stdout.write(")
+		props.sys_imp = true
+		con = true
 	while arg.contains(".size()"):
 		arg = arg.replace(".size()", ")")
 		if arg.contains("("):
@@ -285,10 +298,6 @@ func dict(arg: String) -> String:
 		con = true
 	while arg.contains(".store_string"):
 		arg = arg.replace(".store_string", ".write")
-		con = true
-	while arg.contains(".new()"):
-		arg = arg.replace(".new()", "")
-		arg = "import " + arg
 		con = true
 	while arg.contains(".clear()"):
 		arg = arg.replace(".clear()", " = []")
@@ -357,6 +366,9 @@ func translate(e: String) -> String:
 		return ","
 	if e == "":
 		return ""
+	if e.contains("class_name"):
+		var script_name : String = e.split(" ")[1]
+		props.gds_deps.append(script_name)
 	var args: Array = e.split(" ")
 	e = ""
 	for arg in args:
@@ -387,16 +399,26 @@ func translate(e: String) -> String:
 		e = ""
 	while e.contains("~delete~"):
 		e = ""
-	while e.contains("transpiler = import Transpiler"):
-		e = e.replace("transpiler = import Transpiler", "import transpiler")
-	while e.contains("tokenizer = import Tokenizer"):
-		e = e.replace("tokenizer = import Tokenizer", "import tokenizer")
-	while e.contains("props = import Props"):
-		e = e.replace("props = import Props", "import props")
-	while e.contains("audio = import Audio"):
-		e = e.replace("audio = import Audio", "import audio")
-	while e.contains("version = import Version"):
-		e = e.replace("version = import Version", "import version")
-	while e.contains("vector2 = import VECTOR2"):
-		e = e.replace("vector2 = import VECTOR2", "import vector2")
+	var index : int = 0
+	for gds_name in props.gds_deps:
+		while e.contains(gds_name.to_lower() + " = import " + gds_name):
+			e = e.replace(gds_name.to_lower() + " = import " + gds_name, "import " + gds_name.to_lower())
+			if e.contains("."):
+				var imp : String = e.split(".")[1]
+				var imp_b : String = imp.split(" ")[1]
+				var package : String = e.split(".")[0]
+				props.os_imp = true
+				e = "    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))"
+				e += "\n"
+				while package.contains(" "):
+					e += " "
+					package = package.right(package.length() - 1)
+				e += "import " + package + "." + imp_b
+				e += "\n"
+				e += "    " + package + "." + imp_b + "." + "_init()"
+				props.gds_deps[index] = "../" + package + "/" + imp_b
+			else:
+				# TODO: detect package import, otherwise use regular import
+				e = e.replace("import " + gds_name.to_lower(), "import gds." + gds_name.to_lower() + " as " + gds_name.to_lower())
+		index += 1
 	return e

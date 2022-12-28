@@ -35,7 +35,11 @@ func open(path : String, fo : FileOpts) -> void:
 
 ## "Get as text" function for compatibility
 func get_as_text() -> String:
-	return file.get_as_text()
+	if file != null:
+		return file.get_as_text()
+	else:
+		print("Error: File does not exist")
+		return ""
 
 ## "Store string" function for compatibility
 func store_string(string : String) -> void:

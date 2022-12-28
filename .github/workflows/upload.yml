@@ -46,17 +46,17 @@ jobs:
           rename: windows.zip
           wait_seconds: 10
 
-      - name: Linux dependencies
+      - name: Extracting linux.zip
         shell: bash
         run: |
+          rm -rf gds
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
           sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
           sudo apt-get update && sudo apt-get install unzip
           unzip linux.zip
-          unzip macOS.zip
-          unzip windows.zip
+          rm linux.zip
 
-      - name: Upload to itch.io
+      - name: Uploading linux binary
         uses: manleydev/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
@@ -65,16 +65,30 @@ jobs:
           ITCH_USER: linuxusergd
           PACKAGE: gds
 
-      - name: Upload to itch.io
+      - name: Extracting macOS.zip
+        shell: bash
+        run: |
+          rm gds
+          unzip macOS.zip
+          rm macOS.zip
+
+      - name: Uploading macOS binary
         uses: manleydev/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: mac
           ITCH_GAME: gdscript-transpiler-bin
           ITCH_USER: linuxusergd
-          PACKAGE: gds.bin
+          PACKAGE: gds
 
-      - name: Upload to itch.io
+      - name: Extracting windows.zip
+        shell: bash
+        run: |
+          rm gds
+          unzip windows.zip
+          rm windows.zip
+
+      - name: Uploading windows binary
         uses: manleydev/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}

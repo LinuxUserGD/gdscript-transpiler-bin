@@ -1,7 +1,4 @@
-#!/usr/bin/godot -s
-
-extends SceneTree
-class_name Main
+class_name __Main__
 
 ## GDScript Transpiler Script
 ##
@@ -15,6 +12,7 @@ class_name Main
 
 ## Runs once when executed, prints different output to console depending on argument
 func _init() -> void:
+	var __init__ = __Init__.new()
 	var editor: String = OS.get_cmdline_args()[0]
 	var editor_compare: String = "res://main.tscn"
 	if editor == editor_compare && OS.get_cmdline_args().size() == 1:
@@ -26,42 +24,42 @@ func _init() -> void:
 		index += 1
 		if arg == "version":
 			version_info()
-			self.quit()
 			return
 		if arg == "help":
 			help()
-			self.quit()
 			return
 		if arg == "test=base64_audio":
 			play_base64_audio()
 			return
 		if arg == "test=vector2":
 			run_vector2()
-			self.quit()
+			return
+		var path_format_arg: String = "format="
+		if arg.begins_with(path_format_arg):
+			var format: bool = true
+			start_stages(arg, format)
 			return
 		var path_arg: String = "run="
 		if arg.begins_with(path_arg):
-			start(arg)
+			var format: bool = false
+			start_stages(arg, format)
 			run(arg, index)
-			self.quit()
 			return
-		var path_exp_arg: String = "path_exp="
+		var path_exp_arg: String = "exp="
 		if arg.begins_with(path_exp_arg):
 			start_exp(arg)
-			self.quit()
 			return
 		var compile_arg = "compile="
 		if arg.begins_with(compile_arg):
-			start(arg)
-			compile(arg, index)
-			self.quit()
+			var format: bool = true
+			start_stages(arg, format)
+			compile(arg)
 			return
 	help()
-	self.quit()
 	return
 
 ## Function for compiling python script (by path)
-func compile(arg: String, index: int) -> void:
+func compile(arg: String) -> void:
 	var path_end: String = arg.split("=")[1]
 	var args = path_end.split(".")
 	var c: int = args.size()
@@ -80,7 +78,19 @@ func compile(arg: String, index: int) -> void:
 	nuitka += "z='"
 	nuitka += "--onefile"
 	nuitka += "';"
-	nuitka += "sys.argv=[x,y,z]"
+	nuitka += "a='"
+	nuitka += "--lto=yes"
+	nuitka += "';"
+	nuitka += "b='"
+	nuitka += "--static-libpython=no"
+	nuitka += "';"
+	nuitka += "c='"
+	nuitka += "--clang"
+	nuitka += "';"
+	nuitka += "d='"
+	nuitka += "--assume-yes-for-downloads"
+	nuitka += "';"
+	nuitka += "sys.argv=[x,y,z,a,b,c,d]"
 	var stdout: Array = []
 	print("Compiling " + pathstr + "py...")
 	OS.execute('python',['-m','xpython','-c',nuitka+ ';nuitka.__main__.main()'],stdout,true,false)
@@ -136,8 +146,19 @@ func start_exp(arg: String) -> void:
 		var tokens : Array = tokenizer.tokenize(line)
 		print(tokens)
 
+## Wrapper function for start()
+func start_stages(argum: String, format: bool) -> void:
+	var f: bool = false
+	start(argum, f)
+	start(argum, format)
+
+## Format function
+func form(stdout: Array, imp: String, _imp_string: String):
+	OS.execute('python',['-m','xpython','-c',imp+ ';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)
+	return stdout
+
 ## Function for transpiling script (by path)
-func start(arg: String) -> void:
+func start(arg: String, stage2: bool) -> void:
 	var path_end: String = arg.split("=")[1]
 	var path: String = "res://" + path_end
 	var args = path_end.split(".")
@@ -147,7 +168,27 @@ func start(arg: String) -> void:
 		c -= 1
 		if c != 0:
 			pathstr += path_str + "."
-	print("Transpiling " + pathstr + "gd...")
+	if pathstr.contains("/.."):
+		var paths: Array = pathstr.split("/")
+		pathstr = ""
+		var index: int = 0
+		for path_arg in paths:
+			if path_arg == ".." and index > 0:
+				var path_size: int = pathstr.length()
+				var previous: String = paths[index-1]
+				var previous_size: int = previous.length()
+				# remove "/"
+				pathstr = pathstr.left(path_size-1)
+				path_size = pathstr.length()
+				# remove previous path
+				pathstr = pathstr.left(path_size-previous_size)
+			else:
+				pathstr += path_arg
+				pathstr += "/"
+			index += 1
+		pathstr = pathstr.left(pathstr.length()-1)
+	if stage2:
+		print("Transpiling " + pathstr + "gd...")
 	var path2: String = "res://" + pathstr + "py"
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
@@ -155,18 +196,55 @@ func start(arg: String) -> void:
 	if transpiler.props.verbose:
 		print(out)
 	transpiler.save(path2, out)
-	print("Formatting " + pathstr + "py...")
+	var deps : Array = []
+	for dep in transpiler.props.gds_deps:
+		deps.append(dep)
+	transpiler.props.gds_deps.clear()
+	if stage2:
+		print("Formatting " + pathstr + "py...")
 	var stdout: Array = []
-	var imp: String = "import autopep8;"
-	imp += "import sys;"
-	imp += "x='python';"
-	imp += "y='-i';"
-	imp += "z='"
-	imp += pathstr
-	imp += "py"
-	imp += "';"
-	imp += "sys.argv=[x,y,z]"
-	OS.execute('python',['-m','xpython','-c',imp+ ';autopep8.main()'],stdout,true,false)
+	var imp_string: String = "import black"
+	imp_string += ";versions=set()"
+	imp_string += ";mode=black.mode.Mode(target_versions=versions,line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,experimental_string_processing=False,preview=False,python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
+	imp_string += ";write_back = black.WriteBack.from_configuration"
+	imp_string += "("
+	imp_string += "check="
+	imp_string += "False"
+	imp_string += ","
+	imp_string += "di"
+	imp_string += "ff"
+	imp_string += "=False,color="
+	imp_string += "False);report=black.report.Report"
+	imp_string += "("
+	imp_string += "check="
+	imp_string += "False"
+	imp_string += ","
+	imp_string += "di"
+	imp_string += "ff"
+	imp_string += "=False,quiet="
+	imp_string += "True,verbose="
+	imp_string += "False);src=black.Path"
+	imp_string += "("
+	imp_string += "'"
+	imp_string += pathstr
+	imp_string += "'"
+	imp_string += "+'py"
+	imp_string += "')"
+	
+	if stage2:
+		stdout = form(stdout, imp_string, pathstr)
+	for dep in deps:
+		if dep != deps[0]:
+			var path_arr : Array = pathstr.split("/")
+			var size : int = path_arr.size()
+			path_arr[size-1] = dep.to_lower() + "."
+			var result_str = ""
+			for string in path_arr:
+				result_str += string
+				result_str += "/"
+			result_str = result_str.left(result_str.length()-1)
+			result_str += "gd"
+			start("dep=" + result_str, stage2)
 
 
 ## Prints Python and Godot Engine version information to console
@@ -189,9 +267,9 @@ func version_info() -> void:
 	OS.execute('python',['-m','xpython','-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
 	print("Nuitka " + stdout[0].split("\n")[0])
 	stdout.clear()
-	var import_str2: String = "import autopep8"
-	OS.execute('python',['-m','xpython','-c',import_str2+ ';print(autopep8.__version__)'],stdout,true,false)
-	print("autopep8 " + stdout[0].split("\n")[0])
+	var import_str2: String = "import black"
+	OS.execute('python',['-m','xpython','-c',import_str2+ ';print(black.__version__)'],stdout,true,false)
+	print("Black " + stdout[0].split("\n")[0])
 	stdout.clear()
 
 ## Help function which prints all possible commands
@@ -199,12 +277,14 @@ func help() -> void:
 	print("Usage: gds [options]")
 	print("\n")
 	print("Options:")
-	print("  " + "version" + "                   " + "show program's version number and exit")
-	print("  " + "help" + "                      " + "show this help message and exit")
-	print("  " + "run=../path/to/file.gd" + "   " + "run GDScript file directly using x-python")
-	print("  " + "compile=../path/to/file.gd" + "   " + "compile GDScript file to binary using GCC/Nuitka")
-	print("  " + "test=base64_audio" + "         " + "play base64 encoded audio file")
-	print("  " + "test=vector2" + "              " + "testing Vector2 implementation")
+	print("  " + "version" + "                     " + "show program's version number and exit")
+	print("  " + "help" + "                        " + "show this help message and exit")
+	print("  " + "format=../path/to/file.gd" + "   " + "transpile and format GDScript files recursively")
+	print("  " + "run=../path/to/file.gd" + "      " + "run GDScript file directly using x-python")
+	print("  " + "compile=../path/to/file.gd" + "  " + "compile GDScript file to binary using Clang/Nuitka")
+	print("  " + "exp=../path/to/file.gd" + "      " + "experimental option to tokenize GDScript file")
+	print("  " + "test=base64_audio" + "           " + "play base64 encoded audio file")
+	print("  " + "test=vector2" + "                " + "testing Vector2 implementation")
 
 
 ## Function for setting the value which segfaults Godot

@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://bb4hpvw0tq6yt"]
 
-[ext_resource type="Script" path="res://script_editor.gd" id="2"]
-[ext_resource type="Script" path="res://run_button.gd" id="3"]
-[ext_resource type="Theme" uid="uid://bwuol0nxm8rsj" path="res://resources/theme.tres" id="4"]
-[ext_resource type="FontFile" uid="uid://decvm47txmafw" path="res://fonts/noto_sans_regular.ttf" id="4_5pn77"]
-[ext_resource type="Script" path="res://main_window.gd" id="5"]
+[ext_resource type="Script" path="res://gds/main_window.gd" id="2_t62c0"]
+[ext_resource type="Script" path="res://gds/script_editor.gd" id="3_w331m"]
+[ext_resource type="Theme" uid="uid://bwuol0nxm8rsj" path="res://gds/resources/theme.tres" id="4"]
+[ext_resource type="FontFile" uid="uid://decvm47txmafw" path="res://gds/fonts/noto_sans_regular.ttf" id="4_5pn77"]
+[ext_resource type="Script" path="res://gds/run_button.gd" id="5_mjqvg"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_wdykl"]
 number_color = Color(1, 0.666667, 0.137255, 1)
@@ -24,7 +24,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("4")
-script = ExtResource("5")
+script = ExtResource("2_t62c0")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
 layout_mode = 1
@@ -51,7 +51,7 @@ highlight_current_line = true
 draw_tabs = true
 syntax_highlighter = SubResource("CodeHighlighter_wdykl")
 caret_blink = true
-script = ExtResource("2")
+script = ExtResource("3_w331m")
 
 [node name="RunButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
 layout_mode = 1
@@ -63,7 +63,7 @@ offset_bottom = 33.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("4_5pn77")
 text = "Run"
-script = ExtResource("3")
+script = ExtResource("5_mjqvg")
 metadata/_edit_layout_mode = 1
 
 [node name="TranspileButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
@@ -78,7 +78,6 @@ offset_bottom = 72.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("4_5pn77")
 text = "Transpile"
-script = ExtResource("3")
 metadata/_edit_layout_mode = 1
 
 [node name="ok" type="HSplitContainer" parent="HSplitContainer"]
@@ -103,7 +102,7 @@ highlight_current_line = true
 draw_tabs = true
 syntax_highlighter = SubResource("CodeHighlighter_r1olw")
 caret_blink = true
-script = ExtResource("2")
+script = ExtResource("3_w331m")
 
 [node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor"]
 layout_mode = 1
@@ -115,7 +114,7 @@ offset_bottom = 33.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("4_5pn77")
 text = "Run"
-script = ExtResource("3")
+script = ExtResource("5_mjqvg")
 metadata/_edit_layout_mode = 1
 
 [node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok"]

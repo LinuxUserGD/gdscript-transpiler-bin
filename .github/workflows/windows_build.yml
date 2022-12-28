@@ -17,42 +17,32 @@ jobs:
     steps:
       - name: Update script
         run: |
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/__main__.py -OutFile '__main__.py'
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py -OutFile 'transpiler.py'
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/props.py -OutFile 'props.py'
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/vector2.py -OutFile 'vector2.py'
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/version.py -OutFile 'version.py'
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/audio.py -OutFile 'audio.py'
-          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -OutFile 'requirements.txt'
-          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/__main__.gd -OutFile '__main__.gd'
-          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd -OutFile 'transpiler.gd'
-          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd -OutFile 'props.gd'
-          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/vector2.gd -OutFile 'vector2.gd'
-          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/version.gd -OutFile 'version.gd'
-          Invoke-WebRequest https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd -OutFile 'audio.gd'
+          git clone https://gist.github.com/73d8e030a44eb7f91bdeaea96a321f6d.git
+          cd 73d8e030a44eb7f91bdeaea96a321f6d
+          mv * ..
+          cd ..
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10.8'
+          python-version: '3.10.9'
           architecture: 'x64'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
           pip install git+https://github.com/rocky/x-python.git
-
-      - name: Generate Python Script
-        run: |
-          python __main__.py run=transpiler.gd
-          python __main__.py run=props.gd
-          python __main__.py run=vector2.gd
-          python __main__.py run=version.gd
-          python __main__.py run=audio.gd
-          python __main__.py run=__main__.gd
-          mv __main__.py gds
+          mkdir gds
+          mkdir bin
+          mv *.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\
+          mv *.gd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\
+          mv D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\gds.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\
+          mv D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\gds.gd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\
+          mv D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\setup.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\
+          python -m pip install -e .
       
       - name: Set up Clang
         uses: egor-tensin/setup-clang@v1
@@ -61,14 +51,13 @@ jobs:
           platform: x64
 
       - name: Build Executable
-        uses: LinuxUserGD/Nuitka-Action@v0.5
-        with:
-          script-name: gds
-          onefile: true
-          clang: true
+        run: |
+          cd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\
+          python -m gds compile=gds.gd
+          python -m nuitka gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
           name: Windows Build
-          path: build/gds.exe
+          path: D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\gds.exe

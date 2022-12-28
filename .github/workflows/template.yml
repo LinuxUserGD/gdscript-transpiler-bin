@@ -73,26 +73,25 @@ jobs:
         run: |
           strip godot/bin/godot.*
           chmod +x godot/bin/godot.*
-          mv godot/bin/godot.* gdscript-transpiler-bin/godot-bin
+          mv godot/bin/godot.* gds/godot-bin
 
       - name: Install Dependencies
         env:
           github_token: ${{ secrets.TOKEN }}
         run: |
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
-          python -m pip install --upgrade pip requests autopep8 wheel
+          python -m pip install --upgrade pip requests
           python -m pip install -r requirements.txt
+          python -m pip install git+https://github.com/Nuitka/Nuitka.git
           python -m pip install git+https://github.com/rocky/python-xdis.git
           python -m pip install git+https://github.com/rocky/x-python.git
-          cd gdscript-transpiler-bin
-          ./godot-bin --headless --verbose -s __main__.gd run=version.gd
-          ./godot-bin --headless --verbose -s __main__.gd run=props.gd
-          ./godot-bin --headless --verbose -s __main__.gd run=audio.gd
-          ./godot-bin --headless --verbose -s __main__.gd run=vector2.gd
-          ./godot-bin --headless --verbose -s __main__.gd run=transpiler.gd
-          ./godot-bin --headless --verbose -s __main__.gd run=__main__.gd
-          mv ../.github/workflows/api.py .
-          echo "Uploading __main__.py, transpiler.py, props.py, vector2.py, audio.py, version.py to gist..."
+          ./gds/godot-bin --headless --verbose -s bin/gds.gd format=bin/gds.gd
+          mv .github/workflows/api.py .
+          mv gds/*.py .
+          mv bin/*.py .
+          mv gds/*.gd .
+          mv bin/*.gd .
+          echo "Uploading files to gist..."
           python api.py
 
 
@@ -157,32 +156,28 @@ jobs:
           sudo tar xpvf requests-${REQUESTS_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
           sudo tar xpvf openssl-${OPENSSL_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
           cd -
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/__main__.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/transpiler.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/props.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/vector2.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/version.py
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/__main__.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/transpiler.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/props.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/vector2.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/version.gd
-          wget https://raw.githubusercontent.com/LinuxUserGD/GDScript2PythonTranspiler/dev/gdscript-transpiler-bin/audio.gd
+          git clone https://gist.github.com/73d8e030a44eb7f91bdeaea96a321f6d.git
+          mv 73d8e030a44eb7f91bdeaea96a321f6d/* .
+          rm -r 73d8e030a44eb7f91bdeaea96a321f6d
           wget https://bootstrap.pypa.io/pip/get-pip.py
           sudo python3.10 get-pip.py
           sudo python3.10 -m pip install -r requirements.txt
+          sudo python3.10 -m pip install git+https://github.com/Nuitka/Nuitka.git
           sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
-          python3.10 __main__.py run=transpiler.gd
-          python3.10 __main__.py run=props.gd
-          python3.10 __main__.py run=vector2.gd
-          python3.10 __main__.py run=version.gd
-          python3.10 __main__.py run=audio.gd
-          python3.10 __main__.py run=__main__.gd
-          cd ..
-          python3.10 -m nuitka --static-libpython=no --onefile --lto=yes gdscript-transpiler-bin/__main__.py -o gds
+          rm -rf gds && mkdir gds
+          rm -rf bin && mkdir bin
+          rm *.import
+          rm project.godot
+          mv *.py gds/
+          mv *.gd gds/
+          mv gds/gds.py bin/
+          mv gds/gds.gd bin/
+          mv gds/setup.py .
+          sudo ln -sf /usr/bin/python3.10 /usr/bin/python
+          sudo python3.10 -m pip install -e .
+          python3.10 -m gds compile=bin/gds.gd
+          mv gds.bin bin/gds
           echo ${PWD}
         shell: alpine.sh {0}
 
@@ -190,7 +185,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Linux Build
-          path: /home/runner/work/gdscript-transpiler-bin/gds
+          path: /home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/bin/gds
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
