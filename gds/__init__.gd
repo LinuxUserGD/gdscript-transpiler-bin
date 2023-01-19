@@ -1,5 +1,3 @@
-class_name __Init__
-
 ## GDScript Init Dummy File
 ##
 ## Dummy file

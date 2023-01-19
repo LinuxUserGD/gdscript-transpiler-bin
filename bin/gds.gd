@@ -1,6 +1,6 @@
 #!/usr/bin/godot -s
+class_name GDScriptTranspiler
 extends SceneTree
-class_name GDS
 
 ## GDScript Wrapper
 ##
@@ -11,7 +11,7 @@ class_name GDS
 
 ## Run main application
 func _init() -> void:
-	var gds: Dictionary = {"__main__" : ""}
+	var gds: Dictionary = {}
 	gds.__main__ = __Main__.new()
-	self.quit()
-	return
+	gds.__main__._ready()
+	quit()

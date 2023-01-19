@@ -20,12 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Minimal Template (target=template_release, tools=no, everything disabled)
+          - name: Minimal Template (target=editor, everything disabled)
             cache-name: linux-template-minimal
-            target: template_release
-            tools: false
+            target: editor
             tests: false
-            sconsflags: module_text_server_adv_enabled=no deprecated=no minizip=no disable_3d=yes use_llvm=yes module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_3d=yes disable_advanced_gui=yes deprecated=no minizip=no openxr=no opengl3=no use_static_cpp=yes linker=lld alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=no module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_freetype_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
+            sconsflags: dev_build=no module_text_server_adv_enabled=no deprecated=no minizip=no disable_3d=no use_llvm=yes module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_advanced_gui=no deprecated=no minizip=no openxr=no opengl3=no use_static_cpp=yes linker=lld alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=no module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_freetype_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
             artifact: true
     steps:
       - name: Check-out repository
@@ -65,7 +64,6 @@ jobs:
           sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
           platform: linuxbsd
           target: ${{ matrix.target }}
-          tools: ${{ matrix.tools }}
           tests: ${{ matrix.tests }}
 
       - name: Prepare artifact
@@ -85,12 +83,18 @@ jobs:
           python -m pip install git+https://github.com/Nuitka/Nuitka.git
           python -m pip install git+https://github.com/rocky/python-xdis.git
           python -m pip install git+https://github.com/rocky/x-python.git
+          mv .github/workflows/monitor-import.sh .
+          chmod +x monitor-import.sh
+          ./gds/godot-bin ./project.godot --editor --headless & sleep 5 && ./monitor-import.sh
           ./gds/godot-bin --headless --verbose -s bin/gds.gd format=bin/gds.gd
+          ./gds/godot-bin --headless --verbose -s bin/gds.gd setup=setup.py
           mv .github/workflows/api.py .
           mv gds/*.py .
           mv bin/*.py .
+          mv test/*.py .
           mv gds/*.gd .
           mv bin/*.gd .
+          mv test/*.gd .
           echo "Uploading files to gist..."
           python api.py
 
@@ -167,6 +171,7 @@ jobs:
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
           rm -rf gds && mkdir gds
           rm -rf bin && mkdir bin
+          rm -rf test && mkdir test
           rm *.import
           rm project.godot
           mv *.py gds/
@@ -174,6 +179,122 @@ jobs:
           mv gds/gds.py bin/
           mv gds/gds.gd bin/
           mv gds/setup.py .
+
+          cp gds/__init__.gd test/
+          cp gds/__init__.py test/
+          mv gds/advanced_expression_matching.gd test/
+          mv gds/advanced_expression_matching.py test/
+          mv gds/arrays.gd test/
+          mv gds/arrays.py test/
+          mv gds/arrays_dictionaries_nested_const.gd test/
+          mv gds/arrays_dictionaries_nested_const.py test/
+          mv gds/basic_expression_matching.gd test/
+          mv gds/basic_expression_matching.py test/
+          mv gds/benchmark.gd test/
+          mv gds/benchmark.py test/
+          mv gds/bitwise_operators.gd test/
+          mv gds/bitwise_operators.py test/
+          mv gds/concatenation.gd test/
+          mv gds/concatenation.py test/
+          mv gds/constants.gd test/
+          mv gds/constants.py test/
+          mv gds/dictionaries.gd test/
+          mv gds/dictionaries.py test/
+          mv gds/dictionary_lua_style.gd test/
+          mv gds/dictionary_lua_style.py test/
+          mv gds/dictionary_mixed_syntax.gd test/
+          mv gds/dictionary_mixed_syntax.py test/
+          mv gds/dollar_and_percent_get_node.gd test/
+          mv gds/dollar_and_percent_get_node.py test/
+          mv gds/dollar_node_paths.gd test/
+          mv gds/dollar_node_paths.py test/
+          mv gds/enums.gd test/
+          mv gds/enums.py test/
+          mv gds/export_variable.gd test/
+          mv gds/export_variable.py test/
+          mv gds/float_notation.gd test/
+          mv gds/float_notation.py test/
+          mv gds/for_range.gd test/
+          mv gds/for_range.py test/
+          mv gds/function_default_parameter_type_inference.gd test/
+          mv gds/function_default_parameter_type_inference.py test/
+          mv gds/function_many_parameters.gd test/
+          mv gds/function_many_parameters.py test/
+          mv gds/if_after_lambda.gd test/
+          mv gds/if_after_lambda.py test/
+          mv gds/ins.gd test/
+          mv gds/ins.py test/
+          mv gds/lambda_callable.gd test/
+          mv gds/lambda_callable.py test/
+          mv gds/lambda_capture_callable.gd test/
+          mv gds/lambda_capture_callable.py test/
+          mv gds/lambda_default_parameter_capture.gd test/
+          mv gds/lambda_default_parameter_capture.py test/
+          mv gds/lambda_named_callable.gd test/
+          mv gds/lambda_named_callable.py test/
+          mv gds/match_bind_unused.gd test/
+          mv gds/match_bind_unused.py test/
+          mv gds/match_dictionary.gd test/
+          mv gds/match_dictionary.py test/
+          mv gds/match_multiple_patterns_with_array.gd test/
+          mv gds/match_multiple_patterns_with_array.py test/
+          mv gds/match_multiple_variable_binds_in_pattern.gd test/
+          mv gds/match_multiple_variable_binds_in_pattern.py test/
+          mv gds/matches.gd test/
+          mv gds/matches.py test/
+          mv gds/multiline_arrays.gd test/
+          mv gds/multiline_arrays.py test/
+          mv gds/multiline_dictionaries.gd test/
+          mv gds/multiline_dictionaries.py test/
+          mv gds/multiline_if.gd test/
+          mv gds/multiline_if.py test/
+          mv gds/multiline_strings.gd test/
+          mv gds/multiline_strings.py test/
+          mv gds/multiline_vector.gd test/
+          mv gds/multiline_vector.py test/
+          mv gds/nested_arithmetic.gd test/
+          mv gds/nested_arithmetic.py test/
+          mv gds/nested_array.gd test/
+          mv gds/nested_array.py test/
+          mv gds/nested_dictionary.gd test/
+          mv gds/nested_dictionary.py test/
+          mv gds/nested_function_calls.gd test/
+          mv gds/nested_function_calls.py test/
+          mv gds/nested_if.gd test/
+          mv gds/nested_if.py test/
+          mv gds/nested_match.gd test/
+          mv gds/nested_match.py test/
+          mv gds/nested_parentheses.gd test/
+          mv gds/nested_parentheses.py test/
+          mv gds/number_separators.gd test/
+          mv gds/number_separators.py test/
+          mv gds/operator_assign.gd test/
+          mv gds/operator_assign.py test/
+          mv gds/property_setter_getter.gd test/
+          mv gds/property_setter_getter.py test/
+          mv gds/semicolon_as_end_statement.gd test/
+          mv gds/semicolon_as_end_statement.py test/
+          mv gds/semicolon_as_terminator.gd test/
+          mv gds/semicolon_as_terminator.py test/
+          mv gds/signal_declaration.gd test/
+          mv gds/signal_declaration.py test/
+          mv gds/static_typing.gd test/
+          mv gds/static_typing.py test/
+          mv gds/str_preserves_case.gd test/
+          mv gds/str_preserves_case.py test/
+          mv gds/string_formatting.gd test/
+          mv gds/string_formatting.py test/
+          mv gds/trailing_comma_in_function_args.gd test/
+          mv gds/trailing_comma_in_function_args.py test/
+          mv gds/truthiness.gd test/
+          mv gds/truthiness.py test/
+          mv gds/typed_arrays.gd test/
+          mv gds/typed_arrays.py test/
+          mv gds/variable_declaration.gd test/
+          mv gds/variable_declaration.py test/
+          mv gds/whiles.gd test/
+          mv gds/whiles.py test/
+
           sudo ln -sf /usr/bin/python3.10 /usr/bin/python
           sudo python3.10 -m pip install -e .
           python3.10 -m gds compile=bin/gds.gd

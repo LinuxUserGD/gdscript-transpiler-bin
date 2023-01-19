@@ -28,13 +28,13 @@ cd gdscript-transpiler-bin
 
 ### Godot Engine 4 command line (stage0)
 
-- `./godot4 -s bin/gds.gd --headless help`
+- `./godot4 -s bin/gds.gd --quit --headless help`
 
-- `./godot4 -s bin/gds.gd --headless run=bin/gds.gd` (for running GDScript directly using x-python)
+- `./godot4 -s bin/gds.gd --quit --headless run=bin/gds.gd` (for running GDScript directly using x-python)
 
-- `./godot4 -s bin/gds.gd --headless format=bin/gds.gd` (for generating Python project used in stage1)
+- `./godot4 -s bin/gds.gd --quit --headless format=bin/gds.gd` (for generating Python project used in stage1)
 
-- `./godot4 -s bin/gds.gd --headless compile=bin/gds.gd` (for compiling GDScript to binary using Clang/Nuitka used in stage2)
+- `./godot4 -s bin/gds.gd --quit --headless compile=bin/gds.gd` (for compiling GDScript to binary using Clang/Nuitka used in stage2)
 
 ### Python environment (stage1)
 

@@ -24,20 +24,18 @@ func transpile(content: String) -> String:
 		t = "import sys" + "\n" + t
 	if props.os_imp:
 		t = "import os" + "\n" + t
+	if props.rand_imp:
+		t = "import random" + "\n" + t
 	if props.math_imp:
 		t = "import math" + "\n" + t
 	if props.nuitka_imp:
 		t = "from nuitka import Version" + "\n" + t
 	if props.black_imp:
 		t = "import black" + "\n" + t
+	if props.datetime_imp:
+		t = "import datetime" + "\n" + t
 	if props.xpython_imp:
 		t = "import xpython.__main__" + "\n" + t
-	if props.audio_imp:
-		t = "from os import remove" + "\n" + t
-		t = "from base64 import b64decode" + "\n" + t
-		t = "from pydub import AudioSegment" + "\n" + t
-		t = "from pydub.playback import play" + "\n" + t
-		t = "from io import BytesIO" + "\n" + t
 	if props.py_imp:
 		t = "#!/usr/bin/env python" + "\n" + t
 	if props.left_def:
@@ -49,6 +47,21 @@ func transpile(content: String) -> String:
 		t += "def right(s, amount):"
 		t += "\n"
 		t += "    return s[len(s)-amount:]"
+		t += "\n"
+	if props.resize_def:
+		t += "def resize(arr, size):"
+		t += "\n"
+		t += "    i"
+		t += "f"
+		t += " len(arr)=="
+		t += "0"
+		t += ":"
+		t += "\n"
+		t += "        arr.append(None)"
+		t += "\n"
+		t += "    arr *= size"
+		t += "\n"
+		t += "    return arr"
 		t += "\n"
 	if props.init_def:
 		t += "i"
@@ -72,6 +85,11 @@ func read(path: String) -> String:
 	file.close()
 	return string
 
+func generate_setup(path: String) -> void:
+	var content: String = ""
+	for line in props.setup:
+		content += line + "\n"
+	save(path, content)
 
 ## Function to write final output to a file using File compatibility class
 func save(path: String, content: String) -> void:
@@ -81,8 +99,57 @@ func save(path: String, content: String) -> void:
 	file.close()
 
 
+func check_match(l: String):
+	var out: String = ""
+	for i in l:
+		if i != " " && i != "	":
+			out += i
+	if out.ends_with(":") and not out.begins_with("for") and not out.begins_with("while") and not out.begins_with("if") and not out.contains("(") and not out.contains(")") and not out.contains("match") and not out.begins_with("else") and not out.contains("elif"):
+		var args: Array = l.split("	")
+		var count = 0
+		for arg_str in args:
+			if arg_str != "":
+				l = arg_str
+			else:
+				count+=1
+		l = "case " + l
+		while count > 0:
+			l = "	" + l
+			count -= 1
+	return l
+
+
+func check_new(l: String):
+	var name: String = "load("
+	name += '"'
+	name += "res://"
+	var search: String = ".gd"
+	search += '"'
+	search += ").new()"
+	while l.contains(".new()") && l.contains(name) && l.contains(search):
+		l = l.replace(name, "")
+		l = l.replace(search, "")
+		name = l.split("=")[1]
+		name = name.replace(" ", "")
+		name = name.replace("//", "")
+		var check2: String = name.split("/")[0]
+		while check2.begins_with("res:"):
+			check2 = check2.replace("res:", "")
+		name = name.split("/")[1]
+		while l.contains(" = "):
+			l = l.split(" = ")[0]
+		while l.contains("="):
+			l = l.split("=")[0]
+		while not l.contains("var " + name):
+			l = l.replace(name, check2 + "." + name + " = " + name.to_upper() + ".new()")
+		while l.contains("var " + name):
+			l = l.replace("var " + name, check2 + "." + name + " = " + name.to_upper() + ".new()")
+	return l
+
 ## Function for splitting lines (excluding double quoted Strings) into readable GDScript syntax expressions which later can be converted
 func analyze(l: String) -> String:
+	l = check_match(l)
+	l = check_new(l)
 	var out: String = ""
 	var quote: String = "'"
 	quote += '"'
@@ -148,6 +215,7 @@ func dict(arg: String) -> String:
 		in [
 			"-s",
 			"var",
+			"const",
 			"Node",
 			"SceneTree",
 			"extends",
@@ -173,22 +241,30 @@ func dict(arg: String) -> String:
 			"';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)",
 			"';xpython.__main__.main()'],stdout,true,false)",
 			"';nuitka.__main__.main()'],stdout,true,false)",
-			"self.root.has_node(player):",
-			"self.root.add_child(player)",
-			"player",
-			"player.name",
-			"player.stream",
-			"player.stream.data",
-			"player.play()"
 		]
 	):
 		e += props.repl_dict[arg]
 		e += " "
 		return e
-	elif arg.begins_with("_ready()") or arg.begins_with("_init()"):
+	elif arg == "_ready()" or arg == "_init()":
 		e += props.repl_dict[arg]
 		e += " "
 		props.init_def = true
+		return e
+	elif arg.ends_with("_ready()"):
+		arg = arg.replace("_ready()", props.repl_dict["_ready()"])
+		e += arg
+		e += " "
+		return e
+	elif arg.ends_with("_init()"):
+		arg = arg.replace("_init()", props.repl_dict["_init()"])
+		e += arg
+		e += " "
+		return e
+	elif arg.contains("null"):
+		arg = arg.replace("null", props.repl_dict["null"])
+		e += arg
+		e += " "
 		return e
 	elif arg == "OS.execute('python',['-m','xpython','-c','import":
 		e += props.repl_dict[arg]
@@ -242,6 +318,15 @@ func dict(arg: String) -> String:
 		arg = arg.replace("printraw(", "sys.stdout.write(")
 		props.sys_imp = true
 		con = true
+	while arg.contains(".resize("):
+		arg = arg.replace("resize(", "")
+		props.resize_def = true
+		if arg.contains("("):
+			arg = arg.replace("(", "(resize(")
+		else:
+			arg = "resize(" + arg
+		arg = arg.replace(".", ", ")
+		con = true
 	while arg.contains(".size()"):
 		arg = arg.replace(".size()", ")")
 		if arg.contains("("):
@@ -293,6 +378,22 @@ func dict(arg: String) -> String:
 		w += '"'
 		arg = arg.replace("file.FileOpts.WRITE", w)
 		con = true
+	while arg.contains("print()"):
+		arg = arg.replace("print()", "print('\\n')")
+		con = true
+	while arg.contains("randi()"):
+		arg = arg.replace("randi()", "random.randint(0, 2147483647)")
+		props.rand_imp = true
+		con = true
+	while arg.contains(".push_back("):
+		arg = arg.replace(".push_back(", ".append(")
+		con = true
+	while arg.contains(".pop_front()"):
+		arg = arg.replace(".pop_front()", ".pop(0)")
+		con = true
+	while arg.contains(".remove_at("):
+		arg = arg.replace(".remove_at(", ".pop(")
+		con = true
 	while arg.contains(".get_as_text"):
 		arg = arg.replace(".get_as_text", ".read")
 		con = true
@@ -307,6 +408,10 @@ func dict(arg: String) -> String:
 		con = true
 	while arg.contains("_self"):
 		arg = arg.replace("_self", "self")
+		con = true
+	while arg.contains("Time.get_ticks_msec()"):
+		arg = arg.replace("Time.get_ticks_msec()", "round(datetime.datetime.utcnow().timestamp() * 1000)")
+		props.datetime_imp = true
 		con = true
 	while arg.contains("OS.get_cmdline_args()"):
 		arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
@@ -329,15 +434,6 @@ func dict(arg: String) -> String:
 	while arg.contains("cos(") and not arg.contains("math.cos("):
 		arg = arg.replace("cos(", "math.cos(")
 		props.math_imp = true
-		con = true
-	while arg.contains("Marshalls.base64_to_raw"):
-		arg = arg.replace("Marshalls.base64_to_raw", "AudioSegment.from_file(BytesIO(b64decode")
-		arg += "), format="
-		arg += '"'
-		arg += "mp3"
-		arg += '"'
-		arg += ")"
-		props.audio_imp = true
 		con = true
 	var found: bool = false
 	for type in props.types:
@@ -389,34 +485,38 @@ func translate(e: String) -> String:
 		e = e.replace(":,", ",")
 	while e.contains(" -> "):
 		e = e.replace(" -> ", "")
-	while e.contains("segfault"):
-		e = ""
 	while e.contains("DisplayServer"):
 		e = ""
 	while e.contains("OS"):
-		e = ""
-	while e.contains("connect"):
-		e = ""
-	while e.contains("~delete~"):
 		e = ""
 	var index : int = 0
 	for gds_name in props.gds_deps:
 		while e.contains(gds_name.to_lower() + " = import " + gds_name):
 			e = e.replace(gds_name.to_lower() + " = import " + gds_name, "import " + gds_name.to_lower())
 			if e.contains("."):
-				var imp : String = e.split(".")[1]
-				var imp_b : String = imp.split(" ")[1]
-				var package : String = e.split(".")[0]
-				props.os_imp = true
-				e = "    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))"
-				e += "\n"
-				while package.contains(" "):
-					e += " "
-					package = package.right(package.length() - 1)
-				e += "import " + package + "." + imp_b
-				e += "\n"
-				e += "    " + package + "." + imp_b + "." + "_init()"
-				props.gds_deps[index] = "../" + package + "/" + imp_b
+				if e.contains("gds"):
+					var imp : String = e.split(".")[1]
+					var imp_b : String = imp.split(" ")[1]
+					var package : String = e.split(".")[0]
+					props.os_imp = true
+					e = "    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))"
+					e += "\n"
+					while package.contains(" "):
+						e += " "
+						package = package.right(package.length() - 1)
+					e += "import " + package + "." + imp_b
+					props.gds_deps[index] = "../" + package + "/" + imp_b
+				elif e.contains("test"):
+					var imp : String = e.split(".")[1]
+					var imp_b : String = imp.split(" ")[1]
+					var package : String = e.split(".")[0]
+					props.os_imp = true
+					e = ""
+					while package.contains(" "):
+						e += " "
+						package = package.right(package.length() - 1)
+					e += "import " + package + "." + imp_b
+					props.gds_deps[index] = "../" + package + "/" + imp_b
 			else:
 				# TODO: detect package import, otherwise use regular import
 				e = e.replace("import " + gds_name.to_lower(), "import gds." + gds_name.to_lower() + " as " + gds_name.to_lower())
