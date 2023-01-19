@@ -9,18 +9,15 @@ class_name File
 
 
 ## Internal File variable (using FileAccess)
-var file : FileAccess
-
+var file: FileAccess = null
+var path: String = ""
 
 ## FileOpts enum options for different FileAccess types
 enum FileOpts {READ, WRITE, WRITE_READ, READ_WRITE}
 
-## Constructor call
-func _init() -> void:
-	file = null
-
 ## "Open" function for compatibility
-func open(path : String, fo : FileOpts) -> void:
+func open(path_str : String, fo : FileOpts) -> void:
+	self.path = path_str
 	var opts
 	match fo:
 		FileOpts.READ:
@@ -31,19 +28,19 @@ func open(path : String, fo : FileOpts) -> void:
 			opts = FileAccess.WRITE_READ
 		FileOpts.READ_WRITE:
 			opts = FileAccess.READ_WRITE
-	file = FileAccess.open(path, opts)
+	self.file = FileAccess.open(self.path, opts)
 
 ## "Get as text" function for compatibility
 func get_as_text() -> String:
-	if file != null:
-		return file.get_as_text()
+	if self.file != null:
+		return self.file.get_as_text()
 	else:
-		print("Error: File does not exist")
+		print("Error: File '" + self.path + "' does not exist")
 		return ""
 
 ## "Store string" function for compatibility
 func store_string(string : String) -> void:
-	file.store_string(string)
+	self.file.store_string(string)
 
 ## "Close" function for compatibility
 func close() -> void:

@@ -1,5 +1,4 @@
 class_name __Main__
-
 ## GDScript Transpiler Script
 ##
 ## Wrapper script using transpiler for converting any GDScript code to Python
@@ -11,14 +10,9 @@ class_name __Main__
 
 
 ## Runs once when executed, prints different output to console depending on argument
-func _init() -> void:
-	var __init__ = __Init__.new()
-	var editor: String = OS.get_cmdline_args()[0]
-	var editor_compare: String = "res://main.tscn"
-	if editor == editor_compare && OS.get_cmdline_args().size() == 1:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	elif OS.get_cmdline_args().size() != 0:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+func _ready() -> void:
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+	var __init__ = load("res://gds/__init__.gd").new()
 	var index: int = -1
 	for arg in OS.get_cmdline_args():
 		index += 1
@@ -28,11 +22,14 @@ func _init() -> void:
 		if arg == "help":
 			help()
 			return
-		if arg == "test=base64_audio":
-			play_base64_audio()
-			return
 		if arg == "test=vector2":
 			run_vector2()
+			return
+		if arg == "benchmark":
+			run_benchmark()
+			return
+		if arg == "test=parser":
+			run_parser()
 			return
 		var path_format_arg: String = "format="
 		if arg.begins_with(path_format_arg):
@@ -54,6 +51,10 @@ func _init() -> void:
 			var format: bool = true
 			start_stages(arg, format)
 			compile(arg)
+			return
+		var setup_arg: String = "setup="
+		if arg.begins_with(setup_arg):
+			setup(arg)
 			return
 	help()
 	return
@@ -90,7 +91,11 @@ func compile(arg: String) -> void:
 	nuitka += "d='"
 	nuitka += "--assume-yes-for-downloads"
 	nuitka += "';"
-	nuitka += "sys.argv=[x,y,z,a,b,c,d]"
+	nuitka += "e='"
+	# bugfix "No such file or directory: Grammar3.10.9.final.0.pickle"
+	nuitka += "--include-package-data=blib2to3"
+	nuitka += "';"
+	nuitka += "sys.argv=[x,y,z,a,b,c,d,e]"
 	var stdout: Array = []
 	print("Compiling " + pathstr + "py...")
 	OS.execute('python',['-m','xpython','-c',nuitka+ ';nuitka.__main__.main()'],stdout,true,false)
@@ -156,6 +161,39 @@ func start_stages(argum: String, format: bool) -> void:
 func form(stdout: Array, imp: String, _imp_string: String):
 	OS.execute('python',['-m','xpython','-c',imp+ ';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)
 	return stdout
+
+## Function for saving setup.py
+func setup(arg: String) -> void:
+	var path_end: String = arg.split("=")[1]
+	var args = path_end.split(".")
+	var c: int = args.size()
+	var pathstr: String = ""
+	for path_str in args:
+		c -= 1
+		if c != 0:
+			pathstr += path_str + "."
+	if pathstr.contains("/.."):
+		var paths: Array = pathstr.split("/")
+		pathstr = ""
+		var index: int = 0
+		for path_arg in paths:
+			if path_arg == ".." and index > 0:
+				var path_size: int = pathstr.length()
+				var previous: String = paths[index-1]
+				var previous_size: int = previous.length()
+				# remove "/"
+				pathstr = pathstr.left(path_size-1)
+				path_size = pathstr.length()
+				# remove previous path
+				pathstr = pathstr.left(path_size-previous_size)
+			else:
+				pathstr += path_arg
+				pathstr += "/"
+			index += 1
+		pathstr = pathstr.left(pathstr.length()-1)
+	var path2: String = "res://" + pathstr + "py"
+	var transpiler = Transpiler.new()
+	transpiler.generate_setup(path2)
 
 ## Function for transpiling script (by path)
 func start(arg: String, stage2: bool) -> void:
@@ -275,7 +313,7 @@ func version_info() -> void:
 ## Help function which prints all possible commands
 func help() -> void:
 	print("Usage: gds [options]")
-	print("\n")
+	print()
 	print("Options:")
 	print("  " + "version" + "                     " + "show program's version number and exit")
 	print("  " + "help" + "                        " + "show this help message and exit")
@@ -283,29 +321,130 @@ func help() -> void:
 	print("  " + "run=../path/to/file.gd" + "      " + "run GDScript file directly using x-python")
 	print("  " + "compile=../path/to/file.gd" + "  " + "compile GDScript file to binary using Clang/Nuitka")
 	print("  " + "exp=../path/to/file.gd" + "      " + "experimental option to tokenize GDScript file")
-	print("  " + "test=base64_audio" + "           " + "play base64 encoded audio file")
+	print("  " + "setup=../path/setup.py" + "      " + "output a setup.py file to install python project")
 	print("  " + "test=vector2" + "                " + "testing Vector2 implementation")
+	print("  " + "test=parser" + "                 " + "running GDScript tests (not working yet)")
+	print("  " + "benchmark" + "                   " + "running benchmark to compare performance")
 
+## Testing benchmark
+func run_benchmark() -> void:
+	var test: Dictionary = {}
+	test.benchmark = Benchmark.new()
+	test.benchmark.run()
 
-## Function for setting the value which segfaults Godot
-func set_segfault(segfault_value) -> void:
-	segfault = segfault_value
-
-
-## Hack to quit Godot using segfault bug
-var segfault: int = 0:
-	set(segfault_value):
-		set_segfault(segfault_value)
-
-
-## Godot quits with segfault if function is run twice
-func segmentation_fault(message: String) -> void:
-	var player: String = "player"
-	if self.root.has_node(player):
-		print(message)
-		self.quit()
-		segfault = 6
-		return
+## GDScript parser tests
+func run_parser() -> void:
+	var test: Dictionary = {}
+	test.advanced_expression_matching = Advanced_expression_matching.new()
+	test.advanced_expression_matching.test()
+	test.arrays = Arrays.new()
+	test.arrays.test()
+	test.arrays_dictionaries_nested_const = Arrays_dictionaries_nested_const.new()
+	test.arrays_dictionaries_nested_const.test()
+	test.basic_expression_matching = Basic_expression_matching.new()
+	test.basic_expression_matching.test()
+	test.bitwise_operators = Bitwise_operators.new()
+	test.bitwise_operators.test()
+	test.concatenation = Concatenation.new()
+	test.concatenation.test()
+	test.constants = Constants.new()
+	test.constants.test()
+	test.dictionaries = Dictionaries.new()
+	test.dictionaries.test()
+	test.dictionary_lua_style = Dictionary_lua_style.new()
+	test.dictionary_lua_style.test()
+	test.dictionary_mixed_syntax = Dictionary_mixed_syntax.new()
+	test.dictionary_mixed_syntax.test()
+	test.dollar_and_percent_get_node = Dollar_and_percent_get_node.new()
+	test.dollar_and_percent_get_node.test()
+	test.dollar_node_paths = Dollar_node_paths.new()
+	test.dollar_node_paths.test()
+	test.enums = Enums.new()
+	test.enums.test()
+	test.export_variable = Export_variable.new()
+	test.export_variable.test()
+	test.float_notation = Float_notation.new()
+	test.float_notation.test()
+	test.for_range = For_range.new()
+	test.for_range.test()
+	test.function_default_parameter_type_inference = Function_default_parameter_type_inference.new()
+	test.function_default_parameter_type_inference.test()
+	test.function_many_parameters = Function_many_parameters.new()
+	test.function_many_parameters.test()
+	test.if_after_lambda = If_after_lambda.new()
+	test.if_after_lambda.test()
+	test.ins = Ins.new()
+	test.ins.test()
+	test.lambda_callable = Lambda_callable.new()
+	test.lambda_callable.test()
+	test.lambda_capture_callable = Lambda_capture_callable.new()
+	test.lambda_capture_callable.test()
+	test.lambda_default_parameter_capture = Lambda_default_parameter_capture.new()
+	test.lambda_default_parameter_capture.test()
+	test.lambda_named_callable = Lambda_named_callable.new()
+	test.lambda_named_callable.test()
+	test.matches = Matches.new()
+	test.matches.test()
+	test.match_bind_unused = Match_bind_unused.new()
+	test.match_bind_unused.test()
+	test.match_dictionary = Match_dictionary.new()
+	test.match_dictionary.test()
+	test.match_multiple_patterns_with_array = Match_multiple_patterns_with_array.new()
+	test.match_multiple_patterns_with_array.test()
+	test.match_multiple_variable_binds_in_pattern = Match_multiple_variable_binds_in_pattern.new()
+	test.match_multiple_variable_binds_in_pattern.test()
+	test.multiline_arrays = Multiline_arrays.new()
+	test.multiline_arrays.test()
+	test.multiline_dictionaries = Multiline_dictionaries.new()
+	test.multiline_dictionaries.test()
+	test.multiline_if = Multiline_if.new()
+	test.multiline_if.test()
+	test.multiline_strings = Multiline_strings.new()
+	test.multiline_strings.test()
+	test.multiline_vector = Multiline_vector.new()
+	test.multiline_vector.test()
+	test.nested_arithmetic = Nested_arithmetic.new()
+	test.nested_arithmetic.test()
+	test.nested_array = Nested_array.new()
+	test.nested_array.test()
+	test.nested_dictionary = Nested_dictionary.new()
+	test.nested_dictionary.test()
+	test.nested_function_calls = Nested_function_calls.new()
+	test.nested_function_calls.test()
+	test.nested_if = Nested_if.new()
+	test.nested_if.test()
+	test.nested_match = Nested_match.new()
+	test.nested_match.test()
+	test.nested_parentheses = Nested_parentheses.new()
+	test.nested_parentheses.test()
+	test.number_separators = Number_separators.new()
+	test.number_separators.test()
+	test.operator_assign = Operator_assign.new()
+	test.operator_assign.test()
+	test.property_setter_getter = Property_setter_getter.new()
+	test.property_setter_getter.test()
+	test.semicolon_as_end_statement = Semicolon_as_end_statement.new()
+	test.semicolon_as_end_statement.test()
+	test.semicolon_as_terminator = Semicolon_as_terminator.new()
+	test.semicolon_as_terminator.test()
+	test.signal_declaration = Signal_declaration.new()
+	test.signal_declaration.test()
+	test.static_typing = Static_typing.new()
+	test.static_typing.test()
+	test.string_formatting = String_formatting.new()
+	test.string_formatting.test()
+	test.str_preserves_case = Str_preserves_case.new()
+	test.str_preserves_case.test()
+	test.trailing_comma_in_function_args = Trailing_comma_in_function_args.new()
+	test.trailing_comma_in_function_args.test()
+	test.truthiness = Truthiness.new()
+	test.truthiness.test()
+	test.typed_arrays = Typed_arrays.new()
+	test.typed_arrays.test()
+	test.variable_declaration = Variable_declaration.new()
+	test.variable_declaration.test()
+	test.whiles = Whiles.new()
+	test.whiles.test()
 
 ## Testing Vector2 implementation
 func run_vector2() -> void:
@@ -343,19 +482,3 @@ func run_vector2() -> void:
 	vector2.y = 5
 	var vec_lim = vector2.limit_length(vector2, 2)
 	print("limit_length() -> " + "(" + str(vec_lim.x) + ", " + str(vec_lim.y) + ")")
-
-
-## Method for decoding and playing base64 audio
-func play_base64_audio() -> void:
-	var progress: String = "..."
-	segmentation_fault("Closing Godot with segfault" + progress)
-	var player = AudioStreamPlayer.new()
-	player.name = 'player'
-	player.stream = AudioStreamMP3.new()
-	var audio = Audio.new()
-	player.stream.data = Marshalls.base64_to_raw(audio.getData())
-	self.root.add_child(player)
-	player.connect('finished',Callable(self,'play_base64_audio'))
-	var song: String = "Free Software Song"
-	print("Playing " + '"' + song + '"' + progress)
-	player.play()

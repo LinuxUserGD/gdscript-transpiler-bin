@@ -4,9 +4,6 @@ inputs:
   target:
     description: The scons target (template_debug/editor/template_release).
     default: "editor"
-  tools:
-    description: If tools are to be built.
-    default: false
   tests:
     description: If tests are to be built.
     default: false
@@ -35,7 +32,6 @@ runs:
       run: |
         cd godot
         echo "Building with flags:" ${{ env.SCONSFLAGS }}
-        if ! ${{ inputs.tools }}; then rm -rf editor; fi  # Ensure we don't include editor code.
-        scons p=${{ inputs.platform }} target=${{ inputs.target }} tools=${{ inputs.tools }} tests=${{ inputs.tests }} ${{ env.SCONSFLAGS }}
+        scons p=${{ inputs.platform }} target=${{ inputs.target }} tests=${{ inputs.tests }} ${{ env.SCONSFLAGS }}
         ls -l bin/
         cd -

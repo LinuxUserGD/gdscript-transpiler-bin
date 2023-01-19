@@ -83,22 +83,34 @@ func cross(vector2, p_other) -> float:
 
 ## Returns a new vector with each component set to one or negative one, depending on the signs of the components.
 func sign():
-	return self.new(sign(x), sign(y))
+	var sign: VECTOR2 = self
+	sign.x = sign(x)
+	sign.y = sign(y)
+	return sign
 
 
 ## Returns a new vector with all components rounded down (towards negative infinity).
 func floor():
-	return self.new(floor(x), floor(y))
+	var floor: VECTOR2 = self
+	floor.x = floor(x)
+	floor.y = floor(y)
+	return floor
 
 
 ## Returns a new vector with all components rounded up (towards positive infinity).
 func ceil():
-	return self.new(ceil(x), ceil(y))
+	var ceil: VECTOR2 = self
+	ceil.x = ceil(x)
+	ceil.y = ceil(y)
+	return ceil
 
 
 ## Returns a new vector with all components rounded to the nearest integer, with halfway cases rounded away from zero.
 func round():
-	return self.new(round(x), round(y))
+	var round: VECTOR2 = self
+	round.x = round(x)
+	round.y = round(y)
+	return round
 
 
 ## Returns the vector rotated by angle (in radians).

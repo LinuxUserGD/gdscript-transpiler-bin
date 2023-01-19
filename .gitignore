@@ -11,6 +11,9 @@ data_*/
 # Python
 *.py
 
+# Nuitka
+*.bin
+
 # GitHub Workflows
 .github/
 
@@ -21,3 +24,8 @@ logs/
 dist/
 gds/__pycache__/
 bin/__pycache__/
+test/__pycache__/
+gds.egg-info/
+gds.dist/
+gds.onefile-build/
+gds.build/

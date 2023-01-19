@@ -6,7 +6,7 @@ extends Control
 
 
 func _ready() -> void:
-	var version := Engine.get_version_info()
+	var version: Dictionary = Engine.get_version_info()
 	# Mimic the official version numbering.
 	if version.patch >= 1:
 		engine_version_label.text = "Godot %s.%s.%s.%s" % [version.major, version.minor, version.patch, version.status]

@@ -6,6 +6,66 @@ class_name Props
 ##
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-props-py
 
+## Godot built-in errors
+const GDTEST_ANALYZER_ERROR: Dictionary = {
+	"assign_signal": "Cannot assign a new value to a constant.",
+	"bitwise_float_left_operand": "Invalid operands to operator <operator>, <type> and <type2>.",
+	"bitwise_float_right_operand.out": "Invalid operands to operator <operator>, <type> and <type2>.",
+	"class_name_shadows_builtin_type": "Class '<class>' hides a built-in type.",
+	"constant_name_shadows_builtin_type": "The member '<member>' cannot have the same name as a builtin type.",
+	"constant_used_as_function": "Member '<member>' is not a function.",
+	"constructor_call_type": "Expression is of type '<type>' so it can't be of type '<type2>'.",
+	"cyclic_inheritance": "Cyclic inheritance.",
+	"cyclic_ref_const": "Could not resolve member '<member>': Cyclic reference.",
+	"cyclic_ref_enum": "Could not resolve member '<member>': Cyclic reference.",
+	"cyclic_ref_enum_value": "Could not resolve member <member>: Cyclic reference.",
+	"cyclic_ref_external": "Could not resolve member '<member>'.",
+	"cyclic_ref_func": "Could not resolve member '<member>': Cyclic reference.",
+	"cyclic_ref_override": "Could not resolve member '<member>': Cyclic reference.",
+	"cyclic_ref_var": "Could not resolve member '<member>': Cyclic reference.",
+	"dictionary_duplicate_key_lua": "Key '<key>' was already used in this dictionary (at line <line>).",
+	"dictionary_duplicate_key_lua_with_string": "Key '<key>' was already used in this dictionary (at line <line>).",
+	"dictionary_duplicate_key_python": "Key '<key>' was already used in this dictionary (at line <line>).",
+	"dictionary_string_stringname_equivalent": "Key '<key>' was already used in this dictionary (at line <line>).",
+	"enum_class_var_assign_with_wrong_enum_type": "Cannot assign a value of type '<member> (<type>)' to a target of type '<member2> (<type>)'.",
+	"enum_class_var_init_with_wrong_enum_type": "Cannot assign a value of type '<member> (<type>)' to a target of type '<member2> (<type>)'.",
+	"enum_name_shadows_builtin_type": "The member '<member>' cannot have the same name as a builtin type.",
+	"enum_string_value": "Enum values must be integers.",
+	"function_dont_match_parent_signature_parameter_count_less": "The function signature doesn't match the parent. Parent signature is '<func_sign>'.",
+	"function_dont_match_parent_signature_parameter_count_more": "The function signature doesn't match the parent. Parent signature is '<func_sign>'.",
+	"function_dont_match_parent_signature_parameter_default_values": "The function signature doesn't match the parent. Parent signature is '<func_sign>'.",
+	"function_dont_match_parent_signature_parameter_type": "The function signature doesn't match the parent. Parent signature is '<func_sign>'.",
+	"function_dont_match_parent_signature_return_type": "The function signature doesn't match the parent. Parent signature is '<func_sign>'.",
+	"function_used_as_property": "Cannot assign a new value to a constant.",
+	"invalid_array_index": "Cannot get index '<index>' from '<value>'.",
+	"invalid_concatenation_bool": "Invalid operands to operator <operator>, <type> and <type2>.",
+	"invalid_concatenation_dictionary": "Invalid operands to operator <operator>, <type> and <type2>.",
+	"invalid_concatenation_mixed": "Invalid operands '<type>' and '<type2>' for '<operator>' operator.",
+	"invalid_constant": "Assigned value for constant '<member>' isn't a constant expression.",
+	"leading_number_separator": "Identifier '<member>' not declared in the current scope.",
+	"missing_argument": "Too few arguments for '<func>' call. Expected at least <arg> but received <arg2>.",
+	"outer_class_lookup": "Cannot find member '<member>' in base '<member2>'.",
+	"overload_script_variable": "Member '<member>' redefined (original in native class '<class>')",
+	"params_default_forward_reference": "Identifier '<member>' not declared in the current scope.",
+	"property_function_get_type_error": "Function with return type '<type>' cannot be used as getter for a property of type '<type2>'.",
+	"property_function_set_type_error": "Function with argument type '<type>' cannot be used as setter for a property of type '<type2>'.",
+	"property_inline_get_type_error": "Cannot return value of type '<type>' because the function return type is '<type>'.",
+	"property_inline_set_type_error": "Cannot assign a value of type '<type>' to a target of type '<type>'.",
+	"property_used_as_function": "Member '<member>' is not a function.",
+	"redefine_class_constant": "Cannot assign a new value to a constant.",
+	"redefine_local_constant": "Cannot assign a new value to a constant.",
+	"return_null_in_void_func": "A void function cannot return a value.",
+	"return_variant_in_void_func": "A void function cannot return a value.",
+	"setter_parameter_uses_property_type": "Value of type '<type>' cannot be assigned to a variable of type '<type>'.",
+	"super_nonexistent_base_method": "Function '<func>' not found in base <member>.",
+	"use_value_of_void_function_builtin_method": "Cannot get return value of call to '<func>' because it returns '<type>'.",
+	"use_value_of_void_function_custom_method": "Cannot get return value of call to '<func>' because it returns '<type>'.",
+	"use_value_of_void_function_gd_utility": "Cannot get return value of call to '<func>' because it returns '<type>'.",
+	"use_value_of_void_function_native_method": "Cannot get return value of call to '<func>' because it returns '<type>'.",
+	"use_value_of_void_function_utility": "Cannot get return value of call to '<func>' because it returns '<type>'.",
+	"variable_name_shadows_builtin_type": "The member '<member>' cannot have the same name as a builtin type.",
+	"variable_overloads_superclass_function.out": "The member '<member>' already exists in parent class <class>.",
+}
 
 ## Godot built-in types
 var types: Array = [
@@ -48,7 +108,7 @@ var types: Array = [
 	"void"
 ]
 ## Common gdscript operations (for parsing)
-var op: Array = [
+const op: Array = [
 	"",
 	",",
 	"[",
@@ -70,9 +130,10 @@ var op: Array = [
 	"<="
 ]
 ## Dictionary to replace GDScript syntax with valid Python code
-var repl_dict: Dictionary = {
+const repl_dict: Dictionary = {
 	"-s": "",
 	"var": "",
+	"const": "",
 	"Node": "",
 	"SceneTree": "",
 	"_ready()": "_init()",
@@ -82,6 +143,7 @@ var repl_dict: Dictionary = {
 	"func": "def",
 	"true": "True",
 	"false": "False",
+	"null": "None",
 	"&&": "and",
 	"||": "or",
 	":": "",
@@ -104,19 +166,200 @@ var repl_dict: Dictionary = {
 	"';xpython.__main__.main()'],stdout,true,false)":
 	"sys.argv=['python',pathstr+'py']" + "\n" + "    stdout = [xpython.__main__.main()]",
 	"';nuitka.__main__.main()'],stdout,true,false)":
-	"import subprocess" + "\n" + "    x=sys.executable" + "\n" + "    xx=" + "'" + "-m" + "'" + "\n" + "    xxx=" + "'" + "nuitka" + "'" + "\n" + "    y=pathstr+" + "'" + "py" + "'" + "\n" + "    z=" + "'" + "--onefile" + "'" + "\n" + "    a=" + "'" + "--lto=yes" + "'" + "\n" + "    b=" + "'" + "--static-libpython=no" + "'" + "\n" + "    c=" + "'" + "--clang" + "'" + "\n" + "    d=" + "'" + "--assume-yes-for-downloads" + "'" + "\n" + "    args=[x + ' ' + xx + ' ' + xxx + ' ' + y + ' ' + z + ' ' + a + ' ' + b + ' ' + c + ' ' + d]" + "\n" + "    proc = subprocess.Popen(args, shell = True)" + "\n" + "    proc.communicate()" + "\n" + "    stdout = []",
+	"import subprocess" + "\n" + "    x=sys.executable" + "\n" + "    xx=" + "'" + "-m" + "'" + "\n" + "    xxx=" + "'" + "nuitka" + "'" + "\n" + "    y=pathstr+" + "'" + "py" + "'" + "\n" + "    z=" + "'" + "--onefile" + "'" + "\n" + "    a=" + "'" + "--lto=yes" + "'" + "\n" + "    b=" + "'" + "--static-libpython=no" + "'" + "\n" + "    c=" + "'" + "--clang" + "'" + "\n" + "    d=" + "'" + "--assume-yes-for-downloads" + "'" + "\n" + "    e=" + "'" + "--include-package-data=blib2to3" + "'" + "\n" + "    args=[x + ' ' + xx + ' ' + xxx + ' ' + y + ' ' + z + ' ' + a + ' ' + b + ' ' + c + ' ' + d + ' ' + e]" + "\n" + "    proc = subprocess.Popen(args, shell = True)" + "\n" + "    proc.communicate()" + "\n" + "    stdout = []",
 	"quit()": "sys.exit()",
 	"self.quit()": "sys.exit()",
 	"#!/usr/bin/godot": "",
 	"File.new()": "",
-	"self.root.has_node(player):": "False:",
-	"self.root.add_child(player)": "",
-	"player": "~delete~",
-	"player.name": "~delete~",
-	"player.stream": "~delete~",
-	"player.stream.data": "data",
-	"player.play()": "play(data)"
 }
+
+const setup: Array = [
+	"#!/usr/bin/env python",
+	"from setuptools import setup, find_packages",
+	"# Parse version number from gds/version.py:",
+	"with open('gds/version.py') as f:",
+	"    info = {}",
+	"    for line in f:",
+	"        if line.startswith('__version__'):",
+	"            exec(line, info)",
+	"            break",
+	"setup_info = dict(",
+	"    name='gds',",
+	"    version=info['__version__'],",
+	"    author='LinuxUserGD',",
+	"    author_email='hugegameartgd@gmail.com',",
+	"    url='https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',",
+	"    download_url='https://linuxusergd.itch.io/gdscript-transpiler-bin',",
+	"    project_urls={",
+	"        'Documentation': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/wiki',",
+	"        'Source': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',",
+	"        'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',",
+	"    },",
+	"    description='GDScript and Python runtime environment',",
+	"    long_description=open('README.md').read(),",
+	"    long_description_content_type='text/markdown',",
+	"    license='MIT',",
+	"    classifiers=[",
+	"        'License :: OSI Approved :: MIT License',",
+	"        'Operating System :: MacOS :: MacOS X',",
+	"        'Operating System :: Microsoft :: Windows',",
+	"        'Operating System :: POSIX :: Linux',",
+	"        'Programming Language :: Python :: 2',",
+	"        'Programming Language :: Python :: 2.7',",
+	"        'Programming Language :: Python :: 3',",
+	"        'Programming Language :: Python :: 3.3',",
+	"        'Programming Language :: Python :: 3.4',",
+	"        'Programming Language :: Python :: 3.5',",
+	"        'Programming Language :: Python :: 3.6',",
+	"        'Programming Language :: Python :: 3.7',",
+	"        'Programming Language :: Python :: 3.8',",
+	"        'Programming Language :: Python :: 3.9',",
+	"        'Programming Language :: Python :: 3.10',",
+	"        'Topic :: Bootstrapping',",
+	"        'Topic :: Python :: GDScript :: Python Modules',",
+	"    ],",
+	"    # Package info",
+	"    packages=['gds'] + ['gds.' + pkg for pkg in find_packages('gds')],",
+	"    # Add _ prefix to the names of temporary build dirs",
+	"    options={'build': {'build_base': '_build'}, },",
+	"    zip_safe=True,",
+	")",
+	"setup(**setup_info)",
+]
+
+## Contains virtual functions that are automatically parsed as such
+const VIRTUAL_FUNCTIONS = [
+	# Object
+	"_init",
+	"_get",
+	"_set",
+	"_get_property_list",
+	"_notification",
+	"_to_string",
+	
+	# Node
+	"_ready",
+	"_process",
+	"_physics_process",
+	"_input",
+	"_unhandled_input",
+	"_unhandled_key_input",
+	"_enter_tree",
+	"_exit_tree",
+	"_get_configuration_warning",
+	
+	# Control
+	"_clips_input",
+	"_get_minimum_size",
+	"_gui_input",
+	"_make_custom_tooltip",
+	
+]
+
+## Contains all GDScript math operators
+const MATH_OPERATORS = [
+	"+",
+	"-",
+	"*",
+	"/",
+	"%",
+]
+
+## Contains all GDScript assignment operators
+const ASSIGNMENT_OPERATORS = [
+	"=",
+	"+=",
+	"-=",
+	"*=",
+	"/=",
+	"%=",
+	"&=",
+	"|=",
+]
+
+## Contains all GDScript comparison operators
+const COMPARISON_OPERATORS = [
+	"<",
+	">",
+	"==",
+	"!=",
+	">=",
+	"<=",
+]
+
+## Contains all bitwise operators
+const BITWISE_OPERATORS = [
+	"~",
+	"<<",
+	">>",
+	"&",
+	"^",
+	"|",
+]
+
+## Contains all method remaps (i.e. for methods using a namespace)
+const REMAP_METHODS = {
+	"assert": "Debug.Assert",
+	"print": "GD.Print",
+	"prints": "GD.PrintS",
+	"printt": "GD.PrintT",
+	"load": "GD.Load",
+	"preload": "GD.Load",
+	"abs": "Mathf.Abs",
+	"acos": "Mathf.Acos",
+	"asin": "Mathf.Asin",
+	"atan": "Mathf.Atan",
+	"atan2": "Mathf.Atan2",
+	"min": "Mathf.Min",
+	"ord": "char.GetNumericValue",
+	"push_error": "GD.PushError",
+	"push_warning": "GD.PushWarning",
+}
+
+## Contains all keyword remaps that are parsed as variables
+const REMAP_VARIABLES = {
+	"self": "this",
+	"event": "@event",
+}
+
+## Contains the needed usings, when using the specified method
+const METHOD_USINGS = {
+	"assert": "System.Diagnostics",
+}
+
+## Contains the builtin classes
+## value is how it should be handled
+## null -> normal
+## String -> value is used 1:1 for empty constructor
+## [String, String] -> 0: type, 1: not empty
+## 
+const BUILTIN_CLASSES = {
+	"String": null,
+	"Vector2": null,
+	"Rect2": null,
+	"Vector3": null,
+	"Transform2D": "Transform2D.Identity",
+	"Plane": null,
+	"Quat": "Quat.Identity",
+	"AABB": null,
+	"Basis": "Basis.Identity",
+	"Transform": null,
+	"Color": null,
+	"NodePath": null,
+	"RID": null,
+	"Array": ["Godot.Collections.Array", "Godot.Collections.Array{%s}"],
+	"Dictionary": ["Godot.Collections.Dictionary", "Godot.Collections.Dictionary{%s}"],
+	# Maybe convert those to typesafe Godot Arrays?
+	"PackedByteArray": ["byte[]", "byte[] {%s}"],
+	"PackedInt32Array": ["int[]", "int[] {%s}"],
+	"PackedInt64Array": ["Int64[]", "Int64[] {%s}"],
+	"PackedFloat32Array": ["float[]", "float[] {%s}"],
+	"PackedFloat64Array": ["double[], double[] {%s}"],
+	"PackedVector2Array": ["Vector2[]", "Vector2[] {%s}"],
+	"PackedVector3Array": ["Vector3[]", "Vector3[] {%s}"],
+	"PackedColorArray": ["Color[]", "Color[] {%s}"],
+}
+
 ## Add additional python import to transpiled script if required
 var py_imp: bool = false
 ## Print additional parsing information if true
@@ -125,6 +368,8 @@ var debug: bool = false
 var verbose: bool = false
 ## Add additional python code for _init() method to transpiled script if required
 var init_def: bool = false
+## Add additional python code for resize() method to transpiled script if required
+var resize_def: bool = false
 ## Add additional python code for right() method to transpiled script if required
 var right_def: bool = false
 ## Add additional python code for left() method to transpiled script if required
@@ -141,14 +386,16 @@ var black_imp: bool = false
 var xpython_imp: bool = false
 ## Add additional python math import to transpiled script if required
 var math_imp : bool = false
-## Add additional python simpleaudio import to transpiled script if required
-var audio_imp: bool = false
+## Add additional python random import to transpiled script if required
+var rand_imp : bool = false
+## Add additional python datetime import to transpiled script if required
+var datetime_imp: bool = false
 ## GDScript dependencies
 var gds_deps : Array = []
 ## Internal GDScript to exclude
 var gds_class : Array = ["File"]
 ## Godot classes to exclude
-var gd_class : Array = [ "@GDScript",
+const gd_class : Array = [ "@GDScript",
 	"@GlobalScope",
 	"Node",
 	"AcceptDialog",

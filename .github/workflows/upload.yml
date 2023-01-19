@@ -14,7 +14,7 @@ jobs:
       - name: Pause until all workflows are completed
         uses: willgarcia/workflow-wait-action@0.1.0
         with:
-          initial_delay: 220
+          initial_delay: 360
           interval: 10
 
       - uses: actions/checkout@master
@@ -26,7 +26,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: Linux Build
           rename: linux.zip
-          wait_seconds: 10
+          wait_seconds: 20
 
       - name: Download artifact from build
         uses: bettermarks/action-artifact-download@0.3.0
@@ -35,7 +35,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: MacOS Build
           rename: macOS.zip
-          wait_seconds: 10
+          wait_seconds: 20
 
       - name: Download artifact from build
         uses: bettermarks/action-artifact-download@0.3.0
@@ -44,7 +44,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: Windows Build
           rename: windows.zip
-          wait_seconds: 10
+          wait_seconds: 20
 
       - name: Extracting linux.zip
         shell: bash

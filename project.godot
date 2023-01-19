@@ -8,82 +8,14 @@
 
 config_version=5
 
-_global_script_classes=[{
-"base": "RefCounted",
-"class": &"Audio",
-"language": &"GDScript",
-"path": "res://gds/audio.gd"
-}, {
-"base": "RefCounted",
-"class": &"Dummy",
-"language": &"GDScript",
-"path": "res://test/class_name.gd"
-}, {
-"base": "RefCounted",
-"class": &"File",
-"language": &"GDScript",
-"path": "res://gds/file.gd"
-}, {
-"base": "SceneTree",
-"class": &"GDS",
-"language": &"GDScript",
-"path": "res://bin/gds.gd"
-}, {
-"base": "RefCounted",
-"class": &"Props",
-"language": &"GDScript",
-"path": "res://gds/props.gd"
-}, {
-"base": "RefCounted",
-"class": &"Tokenizer",
-"language": &"GDScript",
-"path": "res://gds/tokenizer.gd"
-}, {
-"base": "RefCounted",
-"class": &"Transpiler",
-"language": &"GDScript",
-"path": "res://gds/transpiler.gd"
-}, {
-"base": "RefCounted",
-"class": &"VECTOR2",
-"language": &"GDScript",
-"path": "res://gds/vector2.gd"
-}, {
-"base": "RefCounted",
-"class": &"Version",
-"language": &"GDScript",
-"path": "res://gds/version.gd"
-}, {
-"base": "RefCounted",
-"class": &"__Init__",
-"language": &"GDScript",
-"path": "res://gds/__init__.gd"
-}, {
-"base": "RefCounted",
-"class": &"__Main__",
-"language": &"GDScript",
-"path": "res://gds/__main__.gd"
-}]
-_global_script_class_icons={
-"Audio": "",
-"Dummy": "",
-"File": "",
-"GDS": "",
-"Props": "",
-"Tokenizer": "",
-"Transpiler": "",
-"VECTOR2": "",
-"Version": "",
-"__Init__": "",
-"__Main__": ""
-}
-
 [application]
 
 config/name="GDScript2PythonTranspiler"
 run/main_scene="res://gds/main.tscn"
 config/features=PackedStringArray("4.0")
 run/low_processor_mode=true
+boot_splash/image="res://screen.png"
+boot_splash/fullsize=false
 config/icon="res://icon.png"
 
 [display]
@@ -101,6 +33,7 @@ window/vsync/use_vsync=false
 
 movie_writer/mjpeg_quality=1.0
 movie_writer/movie_file="/home/user/Videos/godot.avi"
+export/convert_text_resources_to_binary=true
 
 [input]
 
