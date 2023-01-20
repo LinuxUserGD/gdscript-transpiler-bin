@@ -1,7 +1,8 @@
 name: Template
-on: push
-  branches:
-    - 'dev'
+on:
+  push:
+    branches:
+      - 'dev'
 
 # Global Settings
 env:
