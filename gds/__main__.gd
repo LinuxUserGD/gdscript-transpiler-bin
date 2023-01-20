@@ -95,7 +95,10 @@ func compile(arg: String) -> void:
 	# bugfix "No such file or directory: Grammar3.10.9.final.0.pickle"
 	nuitka += "--include-package-data=blib2to3"
 	nuitka += "';"
-	nuitka += "sys.argv=[x,y,z,a,b,c,d,e]"
+	nuitka += "f='"
+	nuitka += "--include-package-data=ziglang"
+	nuitka += "';"
+	nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f]"
 	var stdout: Array = []
 	print("Compiling " + pathstr + "py...")
 	OS.execute('python',['-m','xpython','-c',nuitka+ ';nuitka.__main__.main()'],stdout,true,false)
