@@ -16,6 +16,7 @@ jobs:
         with:
           initial_delay: 360
           interval: 10
+          timeout: 3000
 
       - uses: actions/checkout@master
       - name: Download artifact from build
