@@ -13,6 +13,7 @@ concurrency:
 jobs:
   build-windows:
     runs-on: windows-2022
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: ${{ matrix.name }}
     steps:
       - name: Update script
