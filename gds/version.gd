@@ -9,4 +9,4 @@ class_name Version
 
 
 ## Version info
-var __version__: String = "0.1.3"
+var __version__: String = "0.1.4"
