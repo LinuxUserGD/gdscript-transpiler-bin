@@ -298,19 +298,23 @@ func version_info() -> void:
 	var id: String = info.get("hash")
 	var version = Version.new()
 	print("GDScript2PythonTranspiler " + version.__version__ + "\n")
-	print("Godot " + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
+	print("Godot" + "\n" + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
-	
 	OS.execute('python',['-m','xpython','-c','import sys;print(sys.version)'],stdout,true,false)
-	print("Python " + stdout[0].split("\n")[0])
+	print("Python" + "\n" + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str1: String = "from nuitka import Version"
 	OS.execute('python',['-m','xpython','-c',import_str1+ ';print(Version.getNuitkaVersion())'],stdout,true,false)
-	print("Nuitka " + stdout[0].split("\n")[0])
+	print("Nuitka" + "\n" + stdout[0].split("\n")[0])
 	stdout.clear()
 	var import_str2: String = "import black"
 	OS.execute('python',['-m','xpython','-c',import_str2+ ';print(black.__version__)'],stdout,true,false)
-	print("Black " + stdout[0].split("\n")[0])
+	print("Black" + "\n" + stdout[0].split("\n")[0])
+	stdout.clear()
+	var import_str3: String = "import sys; sys.argv=['zig', 'version']; import ziglang.__main__"
+	print("Zig")
+	OS.execute('python',['-m','xpython','-c',import_str3+ ';ziglang.__main__'],stdout,true,false)
+	print(stdout[0].split("\n")[0])
 	stdout.clear()
 
 ## Help function which prints all possible commands

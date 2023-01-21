@@ -32,6 +32,8 @@ func transpile(content: String) -> String:
 		t = "from nuitka import Version" + "\n" + t
 	if props.black_imp:
 		t = "import black" + "\n" + t
+	if props.zig_imp:
+		t = "import ziglang.__main__" + "\n" + t
 	if props.datetime_imp:
 		t = "import datetime" + "\n" + t
 	if props.xpython_imp:
@@ -241,6 +243,7 @@ func dict(arg: String) -> String:
 			"';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)",
 			"';xpython.__main__.main()'],stdout,true,false)",
 			"';nuitka.__main__.main()'],stdout,true,false)",
+			"';ziglang.__main__'],stdout,true,false)",
 		]
 	):
 		e += props.repl_dict[arg]
@@ -284,6 +287,10 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		props.xpython_imp = true
 		props.black_imp = true
+		return e
+	elif arg == "OS.execute('python',['-m','xpython','-c',import_str3+":
+		e += props.repl_dict[arg]
+		props.sys_imp = true
 		return e
 	elif arg == "OS.execute('python',['-m','xpython','-c',imp+":
 		e += props.repl_dict[arg]

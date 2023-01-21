@@ -154,6 +154,7 @@ const repl_dict: Dictionary = {
 	"sys;print(sys.version)'],stdout,true,false)": "stdout = [sys.version]",
 	"OS.execute('python',['-m','xpython','-c',import_str1+": "",
 	"OS.execute('python',['-m','xpython','-c',import_str2+": "",
+	"OS.execute('python',['-m','xpython','-c',import_str3+": "",
 	"OS.execute('python',['-m','xpython','-c',imp+": "",
 	"OS.execute('python',['-c',xpy+": "",
 	"OS.execute('python',['-m','xpython','-c',nuitka+": "",
@@ -165,6 +166,8 @@ const repl_dict: Dictionary = {
 	"versions = set()" + "\n" + "    mode = black.mode.Mode(target_versions=versions,line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,experimental_string_processing=False,preview=False,python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)" + "\n" + "    report=black.report.Report(check=False,diff=False,quiet=True,verbose=False)" + "\n" + "    write_back=black.WriteBack.from_configuration(check=False,diff=False,color=False)" + "\n" + "    src=black.Path(_imp_string+'py')" + "\n" + "    black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)",
 	"';xpython.__main__.main()'],stdout,true,false)":
 	"sys.argv=['python',pathstr+'py']" + "\n" + "    stdout = [xpython.__main__.main()]",
+	"';ziglang.__main__'],stdout,true,false)":
+	"sys.argv=['zig','version']" + "\n" + "    import ziglang.__main__" + "\n" + "    stdout = [ziglang.__main__]",
 	"';nuitka.__main__.main()'],stdout,true,false)":
 	"import subprocess" + "\n" + "    x=sys.executable" + "\n" + "    xx=" + "'" + "-m" + "'" + "\n" + "    xxx=" + "'" + "nuitka" + "'" + "\n" + "    y=pathstr+" + "'" + "py" + "'" + "\n" + "    z=" + "'" + "--onefile" + "'" + "\n" + "    a=" + "'" + "--lto=yes" + "'" + "\n" + "    b=" + "'" + "--static-libpython=no" + "'" + "\n" + "    c=" + "'" + "--clang" + "'" + "\n" + "    d=" + "'" + "--assume-yes-for-downloads" + "'" + "\n" + "    e=" + "'" + "--include-package-data=blib2to3" + "'" + "\n" + "    f=" + "'" + "--include-package-data=ziglang" + "'" + "\n" + "    args=[x + ' ' + xx + ' ' + xxx + ' ' + y + ' ' + z + ' ' + a + ' ' + b + ' ' + c + ' ' + d + ' ' + e + ' ' + f]" + "\n" + "    proc = subprocess.Popen(args, shell = True)" + "\n" + "    proc.communicate()" + "\n" + "    stdout = []",
 	"quit()": "sys.exit()",
@@ -385,11 +388,13 @@ var black_imp: bool = false
 ## Add additional python math import to transpiled script if required
 var xpython_imp: bool = false
 ## Add additional python math import to transpiled script if required
-var math_imp : bool = false
+var math_imp: bool = false
 ## Add additional python random import to transpiled script if required
-var rand_imp : bool = false
+var rand_imp: bool = false
 ## Add additional python datetime import to transpiled script if required
 var datetime_imp: bool = false
+## Add additional python zig import to transpiled script if required
+var zig_imp: bool = false
 ## GDScript dependencies
 var gds_deps : Array = []
 ## Internal GDScript to exclude
