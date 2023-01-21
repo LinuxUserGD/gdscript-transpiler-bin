@@ -172,7 +172,7 @@ jobs:
         run: |
           cd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\
           python -m gds compile=gds.gd
-          python -m nuitka gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads
+          python -m nuitka gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
