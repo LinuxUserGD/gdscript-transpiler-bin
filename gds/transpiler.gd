@@ -122,30 +122,34 @@ func check_match(l: String):
 
 
 func check_new(l: String):
-	var name: String = "load("
-	name += '"'
-	name += "res://"
-	var search: String = ".gd"
-	search += '"'
-	search += ").new()"
-	while l.contains(".new()") && l.contains(name) && l.contains(search):
-		l = l.replace(name, "")
-		l = l.replace(search, "")
-		name = l.split("=")[1]
-		name = name.replace(" ", "")
-		name = name.replace("//", "")
-		var check2: String = name.split("/")[0]
-		while check2.begins_with("res:"):
-			check2 = check2.replace("res:", "")
-		name = name.split("/")[1]
-		while l.contains(" = "):
-			l = l.split(" = ")[0]
-		while l.contains("="):
-			l = l.split("=")[0]
-		while not l.contains("var " + name):
-			l = l.replace(name, check2 + "." + name + " = " + name.to_upper() + ".new()")
-		while l.contains("var " + name):
-			l = l.replace("var " + name, check2 + "." + name + " = " + name.to_upper() + ".new()")
+	const names: Array[String] = ["preload", "load"]
+	for n in names:
+		var name: String = n + "(" + '"'
+		name += "res://"
+		var search: String = ".gd" + '"'
+		search += ").new()"
+		while l.contains(name) && l.contains(search):
+			l = l.replace(name, "")
+			l = l.replace(search, "")
+			name = l.split("=")[1]
+			name = name.replace(" ", "")
+			name = name.replace("//", "")
+			search = name.split("/")[0]
+			while search.begins_with("res:"):
+				search = search.replace("res:", "")
+			name = name.split("/")[1]
+			while l.contains(" = "):
+				l = l.split(" = ")[0]
+			while l.contains("="):
+				l = l.split("=")[0]
+			while not l.contains("var " + name):
+				l = l.replace(name, search + "." + name + " = " + name.to_upper() + ".new()")
+			while l.contains("var " + name):
+				l = l.replace("var " + name, search + "." + name + " = " + name.to_upper() + ".new()")
+			name = n + "(" + '"'
+			name += "res://"
+			search = ".gd" + '"'
+			search += ").new()"
 	return l
 
 ## Function for splitting lines (excluding double quoted Strings) into readable GDScript syntax expressions which later can be converted

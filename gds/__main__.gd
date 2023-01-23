@@ -12,7 +12,7 @@ class_name __Main__
 ## Runs once when executed, prints different output to console depending on argument
 func _ready() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
-	var __init__ = load("res://gds/__init__.gd").new()
+	var __init__ = preload("res://gds/__init__.gd").new()
 	var index: int = -1
 	for arg in OS.get_cmdline_args():
 		index += 1
