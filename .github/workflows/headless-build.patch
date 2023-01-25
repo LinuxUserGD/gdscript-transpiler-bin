@@ -1,8 +1,8 @@
 diff --git a/platform/linuxbsd/os_linuxbsd.cpp b/platform/linuxbsd/os_linuxbsd.cpp
-index db9b3ed77f..4ed3d01011 100644
+index 75c23655f2..d173733a33 100644
 --- a/platform/linuxbsd/os_linuxbsd.cpp
 +++ b/platform/linuxbsd/os_linuxbsd.cpp
-@@ -246,13 +246,9 @@ String OS_LinuxBSD::get_version() const {
+@@ -244,13 +244,9 @@ String OS_LinuxBSD::get_version() const {
  }
  
  Vector<String> OS_LinuxBSD::get_video_adapter_driver_info() const {
@@ -19,3 +19,86 @@ index db9b3ed77f..4ed3d01011 100644
  
  	String vendor_device_id_mappings;
  	List<String> lspci_args;
+diff --git a/thirdparty/oidn/common/thread.cpp b/thirdparty/oidn/common/thread.cpp
+index 48c489c57b..91e9987660 100644
+--- a/thirdparty/oidn/common/thread.cpp
++++ b/thirdparty/oidn/common/thread.cpp
+@@ -195,7 +195,7 @@ namespace oidn {
+     const pthread_t thread = pthread_self();
+ 
+     // Save the current affinity
+-    if (pthread_getaffinity_np(thread, sizeof(cpu_set_t), &oldAffinities[threadIndex]) != 0)
++    if (sched_getaffinity(thread, sizeof(cpu_set_t), &oldAffinities[threadIndex]) != 0)
+     {
+       OIDN_WARNING("pthread_getaffinity_np failed");
+       oldAffinities[threadIndex] = affinities[threadIndex];
+@@ -203,7 +203,7 @@ namespace oidn {
+     }
+ 
+     // Set the new affinity
+-    if (pthread_setaffinity_np(thread, sizeof(cpu_set_t), &affinities[threadIndex]) != 0)
++    if (sched_setaffinity(thread, sizeof(cpu_set_t), &affinities[threadIndex]) != 0)
+       OIDN_WARNING("pthread_setaffinity_np failed");
+   }
+ 
+@@ -215,7 +215,7 @@ namespace oidn {
+     const pthread_t thread = pthread_self();
+ 
+     // Restore the original affinity
+-    if (pthread_setaffinity_np(thread, sizeof(cpu_set_t), &oldAffinities[threadIndex]) != 0)
++    if (sched_setaffinity(thread, sizeof(cpu_set_t), &oldAffinities[threadIndex]) != 0)
+       OIDN_WARNING("pthread_setaffinity_np failed");
+   }
+ 
+diff --git a/thirdparty/oidn/mkl-dnn/src/common/c_types_map.hpp b/thirdparty/oidn/mkl-dnn/src/common/c_types_map.hpp
+index 3d43a0fbee..9c3eec0f88 100644
+--- a/thirdparty/oidn/mkl-dnn/src/common/c_types_map.hpp
++++ b/thirdparty/oidn/mkl-dnn/src/common/c_types_map.hpp
+@@ -97,7 +97,7 @@ namespace data_type {
+ using scratchpad_mode_t = mkldnn_scratchpad_mode_t;
+ namespace scratchpad_mode {
+     const scratchpad_mode_t library = mkldnn_scratchpad_mode_library;
+-    const scratchpad_mode_t user = mkldnn_scratchpad_mode_user;
++    const scratchpad_mode_t user_oidn = mkldnn_scratchpad_mode_user;
+ }
+ 
+ using rnn_packed_format_t = mkldnn_rnn_packed_memory_format_t;
+diff --git a/thirdparty/oidn/mkl-dnn/src/common/primitive_attr.cpp b/thirdparty/oidn/mkl-dnn/src/common/primitive_attr.cpp
+index 9fd638842c..fa9f09e467 100644
+--- a/thirdparty/oidn/mkl-dnn/src/common/primitive_attr.cpp
++++ b/thirdparty/oidn/mkl-dnn/src/common/primitive_attr.cpp
+@@ -91,7 +91,7 @@ status_t primitive_attr_t::set_scratchpad_mode(
+         scratchpad_mode_t scratchpad_mode) {
+     using namespace mkldnn::impl::scratchpad_mode;
+ 
+-    const bool ok = one_of(scratchpad_mode, library, user);
++    const bool ok = one_of(scratchpad_mode, library, user_oidn);
+     if (!ok)
+         return invalid_arguments;
+ 
+diff --git a/thirdparty/oidn/mkl-dnn/src/common/primitive_desc.hpp b/thirdparty/oidn/mkl-dnn/src/common/primitive_desc.hpp
+index 536dcfa1d0..53c0de4fa7 100644
+--- a/thirdparty/oidn/mkl-dnn/src/common/primitive_desc.hpp
++++ b/thirdparty/oidn/mkl-dnn/src/common/primitive_desc.hpp
+@@ -82,7 +82,7 @@ struct mkldnn_primitive_desc: public mkldnn::impl::c_compatible {
+     }
+ 
+     virtual void init_scratchpad_md() {
+-        auto size = scratchpad_size(mkldnn::impl::scratchpad_mode::user);
++        auto size = scratchpad_size(mkldnn::impl::scratchpad_mode::user_oidn);
+         mkldnn::impl::dims_t dims = { size };
+         mkldnn_memory_desc_init_by_tag(&scratchpad_md_, size ? 1 : 0, dims,
+                 mkldnn::impl::data_type::u8, mkldnn_x);
+diff --git a/thirdparty/oidn/mkl-dnn/src/cpu/cpu_primitive.hpp b/thirdparty/oidn/mkl-dnn/src/cpu/cpu_primitive.hpp
+index 56127f36c2..3113cc56ad 100644
+--- a/thirdparty/oidn/mkl-dnn/src/cpu/cpu_primitive.hpp
++++ b/thirdparty/oidn/mkl-dnn/src/cpu/cpu_primitive.hpp
+@@ -59,7 +59,7 @@ struct cpu_primitive_t: public primitive_t {
+ protected:
+     memory_tracking::grantor_t scratchpad(const exec_ctx_t &ctx) const {
+         void *ptr = nullptr;
+-        if (pd()->attr()->scratchpad_mode_ == scratchpad_mode::user) {
++        if (pd()->attr()->scratchpad_mode_ == scratchpad_mode::user_oidn) {
+             ptr = CTX_OUT_MEM(void *, MKLDNN_ARG_SCRATCHPAD);
+         } else {
+             ptr = global_scratchpad_
