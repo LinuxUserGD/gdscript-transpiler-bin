@@ -41,8 +41,8 @@ jobs:
           git update-index --cacheinfo 160000,${commit},godot
           git submodule init
           git submodule update
-          cd godot && mv ../.github/workflows/headless-build.patch .
-          git apply headless-build.patch && cd -
+          cd godot && mv ../.github/workflows/godot.patch .
+          git apply godot.patch && cd -
 
       - name: Linux dependencies
         shell: bash
