@@ -118,6 +118,7 @@ jobs:
           rm project.godot
           mkdir binary && mv build.zip binary/
           cd binary && unzip build.zip
+          sudo chmod +x gds
           ./gds compile=../bin/gds.gd
           ./gds setup=../setup.py
           cd ..
