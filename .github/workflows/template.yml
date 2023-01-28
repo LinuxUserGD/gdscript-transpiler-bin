@@ -116,9 +116,11 @@ jobs:
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
           rm *.import
           rm project.godot
-          unzip build.zip
-          ./gds compile=bin/gds.gd
-          ./gds setup=setup.py
+          mkdir binary && mv build.zip binary/
+          cd binary && unzip build.zip
+          ./gds compile=../bin/gds.gd
+          ./gds setup=../setup.py
+          cd ..
           mv .github/workflows/api.py .
           mv gds/*.py .
           mv bin/*.py .
