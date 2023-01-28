@@ -121,15 +121,16 @@ jobs:
           mkdir binary && mv build.zip binary/
           cd binary && unzip build.zip
           sudo chmod +x gds
-          ./gds compile=../bin/gds.gd
+          ./gds format=../bin/gds.gd
           ./gds setup=../setup.py
           cd ..
+          python3.10 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang
           mv .github/workflows/api.py .
           mv gds/*.py .
           mv bin/*.py .
           mv test/*.py .
           echo "Uploading files to gist..."
-          python api.py
+          python3.10 api.py
           mv gds.bin bin/gds
           echo ${PWD}
         shell: alpine.sh {0}
