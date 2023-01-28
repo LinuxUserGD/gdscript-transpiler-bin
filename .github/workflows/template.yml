@@ -114,6 +114,8 @@ jobs:
           sudo python3.10 -m pip install git+https://github.com/Nuitka/Nuitka.git
           sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
+          sudo python3.10 -m pip install requests
+          sudo ln -sf /usr/bin/python3.10 /usr/bin/python
           rm *.import
           rm project.godot
           mkdir binary && mv build.zip binary/
