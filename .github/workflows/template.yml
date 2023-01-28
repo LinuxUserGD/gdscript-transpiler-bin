@@ -33,75 +33,6 @@ jobs:
       - name: Check-out repository
         uses: actions/checkout@v3
 
-      - name: Update repository
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          export commit=$(git ls-remote https://github.com/godotengine/godot.git  HEAD | awk '{ print $1}')
-          git update-index --cacheinfo 160000,${commit},godot
-          git submodule init
-          git submodule update
-          cd godot && mv ../.github/workflows/godot.patch .
-          git apply godot.patch && cd -
-
-      - name: Linux dependencies
-        shell: bash
-        run: |
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
-          sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
-          sudo apt-get update && sudo apt-get install build-essential pkg-config yasm xvfb wget unzip libfreetype-dev libfreetype6 libfreetype6-dev
-          sudo rm -rf /usr/include/freetype && sudo ln -sf /usr/include/freetype2 /usr/include/freetype
-
-      - name: Setup Godot build cache
-        uses: ./.github/actions/godot-cache
-        with:
-          cache-name: ${{ matrix.cache-name }}
-        continue-on-error: true
-
-      - name: Setup Python and Scons
-        uses: ./.github/actions/godot-deps
-
-      - name: Compilation
-        uses: ./.github/actions/godot-build
-        with:
-          sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
-          platform: linuxbsd
-          target: ${{ matrix.target }}
-          tests: ${{ matrix.tests }}
-
-      - name: Prepare artifact
-        if: ${{ matrix.artifact }}
-        run: |
-          strip godot/bin/godot.*
-          chmod +x godot/bin/godot.*
-          mv godot/bin/godot.* gds/godot-bin
-
-      - name: Install Dependencies
-        env:
-          github_token: ${{ secrets.TOKEN }}
-        run: |
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
-          python -m pip install --upgrade pip requests
-          python -m pip install -r requirements.txt
-          python -m pip install git+https://github.com/Nuitka/Nuitka.git
-          python -m pip install git+https://github.com/rocky/python-xdis.git
-          python -m pip install git+https://github.com/rocky/x-python.git
-          mv .github/workflows/monitor-import.sh .
-          chmod +x monitor-import.sh
-          ./gds/godot-bin ./project.godot --editor --headless & sleep 5 && ./monitor-import.sh
-          ./gds/godot-bin --headless --verbose -s bin/gds.gd format=bin/gds.gd
-          ./gds/godot-bin --headless --verbose -s bin/gds.gd setup=setup.py
-          mv .github/workflows/api.py .
-          mv gds/*.py .
-          mv bin/*.py .
-          mv test/*.py .
-          mv gds/*.gd .
-          mv bin/*.gd .
-          mv test/*.gd .
-          echo "Uploading files to gist..."
-          python api.py
-
-
       - name: Setup latest Alpine Linux
         uses: jirutka/setup-alpine@v1
         with:
@@ -148,6 +79,8 @@ jobs:
           shell-name: alpine.sh
 
       - name: Run script inside Alpine chroot
+        env:
+          github_token: ${{ secrets.TOKEN }}
         run: |
           export PYTHON_VERSION=3.10.9
           export REQUESTS_VERSION=2.28.1-r1-1
@@ -301,6 +234,15 @@ jobs:
           sudo ln -sf /usr/bin/python3.10 /usr/bin/python
           sudo python3.10 -m pip install -e .
           python3.10 -m gds compile=bin/gds.gd
+          mv .github/workflows/api.py .
+          mv gds/*.py .
+          mv bin/*.py .
+          mv test/*.py .
+          mv gds/*.gd .
+          mv bin/*.gd .
+          mv test/*.gd .
+          echo "Uploading files to gist..."
+          python api.py
           mv gds.bin bin/gds
           echo ${PWD}
         shell: alpine.sh {0}
