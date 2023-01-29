@@ -144,6 +144,7 @@ jobs:
           git add -A
           git commit -m "update archive.tar.xz"
           git push origin
+          cd ..
           mv gds.bin bin/gds
           echo ${PWD}
         shell: alpine.sh {0}
