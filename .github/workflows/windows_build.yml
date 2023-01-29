@@ -18,10 +18,7 @@ jobs:
     steps:
       - name: Update script
         run: |
-          git clone https://gist.github.com/73d8e030a44eb7f91bdeaea96a321f6d.git
-          cd 73d8e030a44eb7f91bdeaea96a321f6d
-          mv * ..
-          cd ..
+          Invoke-WebRequest https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/archive.tar.xz -OutFile 'archive.tar.xz'
           tar xpvf archive.tar.xz --numeric-owner
           rm archive.tar.xz
 
