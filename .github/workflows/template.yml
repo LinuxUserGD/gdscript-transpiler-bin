@@ -43,6 +43,7 @@ jobs:
           gameid=$(curl https://$username.itch.io/$repo/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/')
           uploadid=$(curl https://itch.io/api/1/$ITCH_API_KEY/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7)
           gameurl=$(curl https://itch.io/api/1/$ITCH_API_KEY/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
+          [[ $gameurl == *"errors"* ]] && gameid=$(curl https://$username.itch.io/$repo/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/') && uploadid=$(curl https://itch.io/api/1/$ITCH_API_KEY/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7) && gameurl=$(curl https://itch.io/api/1/$ITCH_API_KEY/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
           curl $gameurl -o build.zip
 
       - name: Setup latest Alpine Linux
