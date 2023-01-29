@@ -21,7 +21,7 @@ jobs:
           git clone https://gist.github.com/73d8e030a44eb7f91bdeaea96a321f6d.git
           mv 73d8e030a44eb7f91bdeaea96a321f6d/* .
           rm -r 73d8e030a44eb7f91bdeaea96a321f6d
-          tar xpvf archive.tar.xz --xattrs-include='*.*' --numeric-owner
+          tar xpvf archive.tar.xz --numeric-owner
           rm archive.tar.xz
 
       - name: Setup Python
