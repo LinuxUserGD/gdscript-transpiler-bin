@@ -32,8 +32,6 @@ jobs:
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
-
-      - name: Download build.zip
         with:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           repo: gdscript-transpiler-bin
