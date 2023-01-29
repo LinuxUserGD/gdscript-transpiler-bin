@@ -131,8 +131,8 @@ jobs:
           mv gds/*.py .
           mv bin/*.py .
           mv test/*.py .
-          tar -cJf archive.tar.xz *.py
-          rm *.py
+          tar -cJf archive.tar.xz *.py README.md
+          rm *.py README.md
           mv .github/workflows/api.py .
           echo "Uploading files to gist..."
           python3.10 api.py
