@@ -14,6 +14,9 @@ Minimal Scripts can be transpiled to Python.
 
 Binary builds are compiled using [GitHub Actions](https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions) and available at [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin).
 
+Also see [generated Python source from GDScript](https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-archive-tar-xz).
+
+
 [![Video](preview.gif)](preview.gif)
 
 ## Example
