@@ -35,7 +35,7 @@ jobs:
 
       - name: Download build.zip
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          ITCH_API_KEY: ${{ secrets.ITCH_API_KEY }}
           repo: gdscript-transpiler-bin
           username: linuxusergd
           artifact_name: gdscript-transpiler-bin-linux.zip
@@ -43,12 +43,10 @@ jobs:
           gameid=$(curl https://$username.itch.io/$repo/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/')
           echo "gameid:"
           echo $gameid
-          uploadid=$(curl https://itch.io/api/1/$BUTLER_CREDENTIALS/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7)
+          uploadid=$(curl https://itch.io/api/1/$ITCH_API_KEY/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7)
           echo "uploadid:"
           echo $uploadid
-          gameurl=$(curl https://itch.io/api/1/$BUTLER_CREDENTIALS/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
-          echo "gameurl:"
-          echo $gameurl
+          gameurl=$(curl https://itch.io/api/1/$ITCH_API_KEY/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
           curl $gameurl -o build.zip
 
       - name: Setup latest Alpine Linux
