@@ -129,6 +129,7 @@ jobs:
           mv bin/*.py .
           mv test/*.py .
           tar -cJf archive.tar.xz *.py
+          rm *.py
           mv .github/workflows/api.py .
           echo "Uploading files to gist..."
           python3.10 api.py
