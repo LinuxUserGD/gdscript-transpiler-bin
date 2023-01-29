@@ -82,7 +82,6 @@ jobs:
         env:
           github_token: ${{ secrets.TOKEN }}
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-        with:
           repo: gdscript-transpiler-bin
           username: linuxusergd
           artifact_name: gdscript-transpiler-bin-linux.zip
