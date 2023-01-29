@@ -21,8 +21,8 @@ jobs:
 
       - name: Update script
         run: |
-          Invoke-WebRequest https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/archive.tar.xz -OutFile 'archive.tar.xz'
-          Invoke-WebRequest https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -OutFile 'requirements.txt'
+          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/archive.tar.xz -OutFile 'archive.tar.xz'
+          Invoke-WebRequest https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -OutFile 'requirements.txt'
           tar xpvf archive.tar.xz --numeric-owner
           rm archive.tar.xz
 
