@@ -109,7 +109,7 @@ jobs:
           sudo tar xpvf requests-${REQUESTS_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
           sudo tar xpvf openssl-${OPENSSL_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
           cd -
-          curl https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -o 'requirements.txt'
+          curl https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -o 'requirements.txt'
           wget https://bootstrap.pypa.io/pip/get-pip.py
           sudo python3.10 get-pip.py
           sudo python3.10 -m pip install -r requirements.txt
