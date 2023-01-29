@@ -33,18 +33,6 @@ jobs:
       - name: Check-out repository
         uses: actions/checkout@v3
 
-      - name: Download artifact from build
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-        with:
-          repo: gdscript-transpiler-bin
-          username: linuxusergd
-          artifact_name: gdscript-transpiler-bin-linux.zip
-        run: |
-          gameid=$(curl https://${username}.itch.io/${repo}/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/')
-          uploadid=$(curl https://itch.io/api/1/${BUTLER_CREDENTIALS}/game/${gameid}/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$(echo ${artifact_name})" | cut -d: -f 2 | cut -b -7)
-          gameurl=$(curl https://itch.io/api/1/${BUTLER_CREDENTIALS}/upload/${uploadid}/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
-          curl $gameurl -o build.zip
       - name: Setup latest Alpine Linux
         uses: jirutka/setup-alpine@v1
         with:
@@ -93,6 +81,11 @@ jobs:
       - name: Run script inside Alpine chroot
         env:
           github_token: ${{ secrets.TOKEN }}
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+        with:
+          repo: gdscript-transpiler-bin
+          username: linuxusergd
+          artifact_name: gdscript-transpiler-bin-linux.zip
         run: |
           export PYTHON_VERSION=3.10.9
           export REQUESTS_VERSION=2.28.1-r1-1
@@ -121,6 +114,12 @@ jobs:
           sudo ln -sf /usr/bin/python3.10 /usr/bin/python
           rm *.import
           rm project.godot
+
+          gameid=$(curl https://${username}.itch.io/${repo}/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/')
+          uploadid=$(curl https://itch.io/api/1/${BUTLER_CREDENTIALS}/game/${gameid}/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$(echo ${artifact_name})" | cut -d: -f 2 | cut -b -7)
+          gameurl=$(curl https://itch.io/api/1/${BUTLER_CREDENTIALS}/upload/${uploadid}/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
+          curl $gameurl -o build.zip
+
           mkdir binary && mv build.zip binary/
           cd binary && unzip build.zip
           sudo chmod +x gds
