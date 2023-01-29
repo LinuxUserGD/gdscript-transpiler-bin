@@ -114,10 +114,9 @@ jobs:
           sudo ln -sf /usr/bin/python3.10 /usr/bin/python
           rm *.import
           rm project.godot
-
-          gameid=$(curl https://${username}.itch.io/${repo}/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/')
-          uploadid=$(curl https://itch.io/api/1/${BUTLER_CREDENTIALS}/game/${gameid}/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$(echo ${artifact_name})" | cut -d: -f 2 | cut -b -7)
-          gameurl=$(curl https://itch.io/api/1/${BUTLER_CREDENTIALS}/upload/${uploadid}/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
+          gameid=$(curl https://$username.itch.io/$repo/data.json | sed -E 's/.*"id":"?([^,"]*)"?.*/\1/')
+          uploadid=$(curl https://itch.io/api/1/$BUTLER_CREDENTIALS/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7)
+          gameurl=$(curl https://itch.io/api/1/$BUTLER_CREDENTIALS/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
           curl $gameurl -o build.zip
 
           mkdir binary && mv build.zip binary/
