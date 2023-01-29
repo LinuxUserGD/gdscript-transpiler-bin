@@ -125,10 +125,11 @@ jobs:
           ./gds setup=../setup.py
           cd ..
           python3.10 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang
-          mv .github/workflows/api.py .
           mv gds/*.py .
           mv bin/*.py .
           mv test/*.py .
+          tar -cJf archive.tar.xz *.py
+          mv .github/workflows/api.py .
           echo "Uploading files to gist..."
           python3.10 api.py
           mv gds.bin bin/gds
