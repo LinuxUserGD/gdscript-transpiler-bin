@@ -138,7 +138,8 @@ jobs:
           git config --global user.email "<>"
           [[ $md5 == $md5_compare ]] && echo "Archive identical" && mv ../archive.tar.xz archive_md5.tar.xz
           [[ $md5 != $md5_compare ]] && echo "New archive" && mv ../archive.tar.xz archive.tar.xz
-          git add -A && git commit -m "update archive.tar.xz" && git push origin && cd .. 
+          git add -A && git commit -m "update archive.tar.xz" && git push origin
+          cd .. 
           [[ $md5 == $md5_compare ]] && mv binary/gds bin/
           [[ $md5 != $md5_compare ]] && python3.10 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang && mv gds.bin bin/gds
           echo ${PWD}
