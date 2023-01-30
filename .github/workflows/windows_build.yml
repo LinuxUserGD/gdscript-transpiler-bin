@@ -34,9 +34,8 @@ jobs:
           python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
-          status="skip"
-          if (Test-Path "D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\archive.tar.xz") { status="deploy" }
-          echo "status=$status" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+          if (!(Test-Path "D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\archive.tar.xz")) { echo "status='skip'" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append }
+          if (Test-Path "D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\archive.tar.xz") { echo "status='deploy'" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append }   
 
   deploy:
     runs-on: windows-2022
