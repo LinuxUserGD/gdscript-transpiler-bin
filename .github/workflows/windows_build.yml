@@ -27,6 +27,8 @@ jobs:
 
       - name: Update script
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
           tar xpvf archive.tar.xz --numeric-owner
@@ -34,7 +36,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
