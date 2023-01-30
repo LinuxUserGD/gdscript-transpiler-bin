@@ -31,9 +31,9 @@ jobs:
           python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
-          &'C:\Program Files\7-Zip\7z.exe' x archive.tar.xz
+          &'C:\Program Files\7-Zip\7z.exe' x archive.tar.xz -aoa
           rm archive.tar.xz
-          &'C:\Program Files\7-Zip\7z.exe' x archive.tar
+          &'C:\Program Files\7-Zip\7z.exe' x archive.tar -aoa
           rm archive.tar
 
       - name: Install Dependencies
