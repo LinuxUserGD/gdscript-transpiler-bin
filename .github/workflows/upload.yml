@@ -41,8 +41,8 @@ jobs:
           python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
-          [ ! -f archive.tar.xz ] && echo "status='skip'" >> $GITHUB_OUTPUT
-          [ -f archive.tar.xz ] && echo "status='deploy'" >> $GITHUB_OUTPUT 
+          [ ! -f archive.tar.xz ] && echo "status=skip" >> $GITHUB_OUTPUT
+          [ -f archive.tar.xz ] && echo "status=deploy" >> $GITHUB_OUTPUT 
 
 
   deploy:
