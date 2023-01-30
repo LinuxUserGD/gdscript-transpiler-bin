@@ -48,9 +48,7 @@ jobs:
     needs: build-linux
     if: needs.build-linux.outputs.status == 'deploy'
 
-      - uses: actions/checkout@master
       - name: Download artifact from build
-
         uses: bettermarks/action-artifact-download@0.3.0
         with:
           repo: LinuxUserGD/gdscript-transpiler-bin
