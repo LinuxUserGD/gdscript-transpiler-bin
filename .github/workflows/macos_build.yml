@@ -15,6 +15,8 @@ jobs:
     runs-on: macos-12
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: ${{ matrix.name }}
+    outputs:
+      status: ${{ steps.early.outputs.status }}
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
@@ -31,11 +33,20 @@ jobs:
           python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
-          tar xpvf archive.tar.xz --numeric-owner
-          rm archive.tar.xz
+          [ ! -f archive.tar.xz ] && echo "status='skip'" >> $GITHUB_OUTPUT
+          [ -f archive.tar.xz ] && echo "status='deploy'" >> $GITHUB_OUTPUT
 
+  deploy:
+    runs-on: macos-12
+    name: Deploy
+    needs: build-macos
+    if: needs.build-macos.outputs.status == 'deploy'
+
+    steps:
       - name: Install Dependencies
         run: |
+          tar xpvf archive.tar.xz --numeric-owner
+          rm archive.tar.xz
           pip install -r requirements.txt
           pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
