@@ -82,7 +82,6 @@ jobs:
       - name: Extracting linux.zip
         shell: bash
         run: |
-          rm -rf gds
           wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
           sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
           sudo apt-get update && sudo apt-get install unzip
