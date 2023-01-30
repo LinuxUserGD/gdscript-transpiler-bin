@@ -1,15 +1,12 @@
-import requests
-import json
-import os
-import glob
+# https://stackoverflow.com/a/53153505
+import os,requests
+def download(url):
+    get_response = requests.get(url,stream=True)
+    file_name  = url.split("/")[-1]
+    with open(file_name, 'wb') as f:
+        for chunk in get_response.iter_content(chunk_size=1024):
+            if chunk: # filter out keep-alive new chunks
+                f.write(chunk)
 
-def upload(filename):
-    content = open(filename, "rb").read()
-    headers = {'Authorization': f'token {token}'}
-    requests.patch('https://api.github.com/gists/' + gist_id, data=json.dumps({'files': {filename: {"content": content}}}), headers=headers)
-
-token = os.environ["github_token"]
-gist_id = "73d8e030a44eb7f91bdeaea96a321f6d"
-path_py = "*.py"
-
-upload("archive.tar.xz")
+download("https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/archive.tar.xz")
+download("https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt")
