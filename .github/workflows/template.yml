@@ -127,6 +127,9 @@ jobs:
     if: needs.build-linux.outputs.status == 'deploy'
 
     steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
       - name: Setup latest Alpine Linux
         uses: jirutka/setup-alpine@v1
         with:
@@ -191,11 +194,19 @@ jobs:
           curl https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -o requirements.txt
           wget https://bootstrap.pypa.io/pip/get-pip.py
           sudo python3.10 get-pip.py
+          sudo ln -sf /usr/bin/python3.10 /usr/bin/python
+          sudo python3.10 -m pip install --upgrade pip
+          sudo python3.10 -m pip install requests
+          mv .github/workflows/api.py .
+          python3.10 api.py
+          tar xpvf archive.tar.xz --numeric-owner
+          rm archive.tar.xz
           sudo python3.10 -m pip install -r requirements.txt
           sudo python3.10 -m pip install git+https://github.com/Nuitka/Nuitka.git
           sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
-          sudo ln -sf /usr/bin/python3.10 /usr/bin/python
+          sudo python3.10 -m pip install -e .
+          python3.10 -m gds format=bin/gds.gd
           python3.10 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang && mv gds.bin bin/gds
         shell: alpine.sh {0}
       - name: Upload main.dist
