@@ -21,8 +21,8 @@ jobs:
 
       - name: Update script
         run: |
-          curl https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/archive.tar.xz -o 'archive.tar.xz'
-          curl https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -o 'requirements.txt'
+          curl https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/archive.tar.xz -o archive.tar.xz
+          curl https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt -o requirements.txt
           tar xpvf archive.tar.xz --numeric-owner
           rm archive.tar.xz
 
@@ -39,9 +39,7 @@ jobs:
           pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
           pip install git+https://github.com/rocky/x-python.git
-          mkdir gds
-          mkdir bin
-          mkdir test
+
           mv *.py gds/
           mv gds/gds.py bin/
           mv gds/setup.py .
