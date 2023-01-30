@@ -116,8 +116,8 @@ jobs:
           rm *.tar.xz
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>"
-          [[ $md5 == $md5_compare ]] && echo "Archive identical" && echo "status='skip'" >> $GITHUB_OUTPUT && mv ../archive.tar.xz archive_md5.tar.xz
-          [[ $md5 != $md5_compare ]]  && echo "New archive" && echo "status='deploy'" >> $GITHUB_OUTPUT && mv ../archive.tar.xz archive.tar.xz
+          [[ $md5 == $md5_compare ]] && echo "Archive identical" && echo "status=skip" >> $GITHUB_OUTPUT && mv ../archive.tar.xz archive_md5.tar.xz
+          [[ $md5 != $md5_compare ]]  && echo "New archive" && echo "status=deploy" >> $GITHUB_OUTPUT && mv ../archive.tar.xz archive.tar.xz
           git add -A && git commit -m "update archive.tar.xz" && git push origin
           cd .. 
           echo ${PWD}
