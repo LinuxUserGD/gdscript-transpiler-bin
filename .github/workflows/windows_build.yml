@@ -31,8 +31,10 @@ jobs:
           python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
-          tar xpvf archive.tar.xz --numeric-owner
+          "C:\Program Files\7-Zip\7z.exe" x archive.tar.xz
           rm archive.tar.xz
+          "C:\Program Files\7-Zip\7z.exe" x archive.tar
+          rm archive.tar
 
       - name: Install Dependencies
         run: |
