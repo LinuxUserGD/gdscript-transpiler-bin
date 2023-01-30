@@ -15,6 +15,8 @@ jobs:
     runs-on: windows-2022
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: ${{ matrix.name }}
+    outputs:
+      status: ${{ steps.early.outputs.status }}
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
@@ -26,23 +28,33 @@ jobs:
           architecture: 'x64'
 
       - name: Update script
+        id: early
         run: |
           python -m pip install --upgrade pip
           python -m pip install requests
           mv .github/workflows/api.py .
           python api.py
+          status="skip"
+          if (Test-Path "D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\archive.tar.xz") { status="deploy" }
+          echo "status=$status" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+  deploy:
+    runs-on: windows-2022
+    name: Deploy
+    needs: build-windows
+    if: needs.build-windows.outputs.status == 'deploy'
+
+    steps:
+      - name: Install Dependencies
+        run: |
           &'C:\Program Files\7-Zip\7z.exe' x archive.tar.xz -aoa
           rm archive.tar.xz
           &'C:\Program Files\7-Zip\7z.exe' x archive.tar -aoa
           rm archive.tar
-
-      - name: Install Dependencies
-        run: |
           pip install -r requirements.txt
           pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
           pip install git+https://github.com/rocky/x-python.git
-          
           python -m pip install -e .
       
       - name: Set up Clang
@@ -54,7 +66,7 @@ jobs:
       - name: Build Executable
         run: |
           cd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\
-          python -m gds compile=gds.gd
+          python -m gds format=gds.gd
           python -m nuitka gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang
 
       - name: Upload main.dist
