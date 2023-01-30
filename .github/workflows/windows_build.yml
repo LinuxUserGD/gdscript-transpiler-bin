@@ -42,68 +42,6 @@ jobs:
           pip install git+https://github.com/Nuitka/Nuitka.git
           pip install git+https://github.com/rocky/python-xdis.git
           pip install git+https://github.com/rocky/x-python.git
-
-          mv *.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\
-          mv D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\gds.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\bin\
-          mv D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds\setup.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\
-          
-          cp gds/__init__.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/advanced_expression_matching.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/arrays.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/arrays_dictionaries_nested_const.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/basic_expression_matching.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/benchmark.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/bitwise_operators.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/concatenation.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/constants.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/dictionaries.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/dictionary_lua_style.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/dictionary_mixed_syntax.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/dollar_and_percent_get_node.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/dollar_node_paths.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/enums.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/export_variable.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/float_notation.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/for_range.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/function_default_parameter_type_inference.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/function_many_parameters.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/if_after_lambda.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/ins.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/lambda_callable.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/lambda_capture_callable.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/lambda_default_parameter_capture.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/lambda_named_callable.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/match_bind_unused.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/match_dictionary.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/match_multiple_patterns_with_array.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/match_multiple_variable_binds_in_pattern.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/matches.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/multiline_arrays.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/multiline_dictionaries.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/multiline_if.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/multiline_strings.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/multiline_vector.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_arithmetic.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_array.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_dictionary.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_function_calls.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_if.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_match.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/nested_parentheses.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/number_separators.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/operator_assign.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/property_setter_getter.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/semicolon_as_end_statement.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/semicolon_as_terminator.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/signal_declaration.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/static_typing.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/str_preserves_case.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/string_formatting.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/trailing_comma_in_function_args.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/truthiness.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/typed_arrays.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/variable_declaration.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
-          mv gds/whiles.py D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\test\
           
           python -m pip install -e .
       
