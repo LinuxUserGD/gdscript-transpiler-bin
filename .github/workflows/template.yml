@@ -55,36 +55,8 @@ jobs:
           arch: x86_64
           packages: >
             coreutils
-            alsa-lib-dev
-            libffi-dev
-            ncurses-dev
-            tcl-dev
-            tk-dev
-            zlib-dev
-            gettext-dev
             wget
             curl
-            perl
-            libgcc
-            gcc
-            clang15-dev
-            clang15-extra-tools
-            clang15-libclang
-            clang15-libs
-            clang15-static
-            llvm15-dev
-            llvm-runtimes
-            llvm-libunwind-dev
-            llvm-libunwind-static
-            llvm15-libs
-            llvm15-static
-            compiler-rt
-            musl-dev
-            openssl-dev
-            linux-headers
-            patchelf
-            pkgconf
-            make
             git
             bash
             tar
@@ -155,6 +127,51 @@ jobs:
     if: needs.build-linux.outputs.status == 'deploy'
 
     steps:
+      - name: Setup latest Alpine Linux
+        uses: jirutka/setup-alpine@v1
+        with:
+          branch: edge
+          arch: x86_64
+          packages: >
+            coreutils
+            alsa-lib-dev
+            libffi-dev
+            ncurses-dev
+            tcl-dev
+            tk-dev
+            zlib-dev
+            gettext-dev
+            wget
+            curl
+            perl
+            libgcc
+            gcc
+            clang15-dev
+            clang15-extra-tools
+            clang15-libclang
+            clang15-libs
+            clang15-static
+            llvm15-dev
+            llvm-runtimes
+            llvm-libunwind-dev
+            llvm-libunwind-static
+            llvm15-libs
+            llvm15-static
+            compiler-rt
+            musl-dev
+            openssl-dev
+            linux-headers
+            patchelf
+            pkgconf
+            make
+            git
+            bash
+            tar
+            file
+            gzip
+            sudo
+            xz
+          shell-name: alpine.sh
       - name: Compile binary
         run: |
           export PYTHON_VERSION=3.10.9
