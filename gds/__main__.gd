@@ -298,7 +298,7 @@ func version_info() -> void:
 	var id: String = info.get("hash")
 	var version = Version.new()
 	print("GDScript2PythonTranspiler " + version.__version__ + "\n")
-	print("Godot" + "\n" + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
+	print("Compatible with Godot" + "\n" + str(major) + "." + str(minor) + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
 	OS.execute('python',['-m','xpython','-c','import sys;print(sys.version)'],stdout,true,false)
 	print("Python" + "\n" + stdout[0].split("\n")[0])
