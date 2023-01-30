@@ -120,7 +120,6 @@ jobs:
           [[ $md5 != $md5_compare ]]  && echo "New archive" && echo "status='deploy'" >> $GITHUB_OUTPUT && mv ../archive.tar.xz archive.tar.xz
           git add -A && git commit -m "update archive.tar.xz" && git push origin
           cd .. 
-          [[ $md5 != $md5_compare ]] && 
           echo ${PWD}
         shell: alpine.sh {0}
 
