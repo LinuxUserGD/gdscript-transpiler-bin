@@ -130,7 +130,7 @@ jobs:
           mv gds/*.py .
           mv bin/*.py .
           mv test/*.py .
-          tar -cJf archive.tar.xz *.py README.md
+          tar --sort=name --owner=root:0 --group=root:0 --mtime='UTC 2023-01-01' -cJf archive.tar.xz *.py README.md
           rm *.py README.md
           mv .github/workflows/api.py .
           echo "Uploading files to gist..."
