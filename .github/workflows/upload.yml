@@ -48,6 +48,7 @@ jobs:
     needs: build-linux
     if: needs.build-linux.outputs.status == 'deploy'
 
+    steps:
       - name: Download artifact from build
         uses: bettermarks/action-artifact-download@0.3.0
         with:
