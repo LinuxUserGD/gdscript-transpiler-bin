@@ -66,20 +66,6 @@ text = "Run"
 script = ExtResource("5_mjqvg")
 metadata/_edit_layout_mode = 1
 
-[node name="TranspileButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
-visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -80.0
-offset_top = 39.0
-offset_bottom = 72.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("4_5pn77")
-text = "Transpile"
-metadata/_edit_layout_mode = 1
-
 [node name="ok" type="HSplitContainer" parent="HSplitContainer"]
 layout_mode = 2
 split_offset = 640
@@ -91,11 +77,6 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("4")
-text = "extends Node
-
-func _ready():
-       print(\"Hello world!\")
-"
 editable = false
 highlight_all_occurrences = true
 highlight_current_line = true
@@ -148,5 +129,4 @@ metadata/_edit_layout_mode = 1
 
 [connection signal="text_changed" from="HSplitContainer/VBoxContainer/ScriptEditor" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_on_script_editor_text_changed"]
 [connection signal="pressed" from="HSplitContainer/VBoxContainer/ScriptEditor/RunButton" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_run_button_pressed"]
-[connection signal="pressed" from="HSplitContainer/VBoxContainer/ScriptEditor/TranspileButton" to="HSplitContainer/VBoxContainer/ScriptEditor" method="_on_transpile_button_pressed"]
 [connection signal="pressed" from="HSplitContainer/ok/VBoxContainer2/ScriptEditor/RunButton2" to="HSplitContainer/ok/VBoxContainer2/ScriptEditor" method="_on_run_button_2_pressed"]

@@ -283,7 +283,7 @@ static func string_as_typeof(type :String) -> int:
 	if STRING_AS_TYPE_MAPPINGS.is_empty():
 		for key in TYPE_AS_STRING_MAPPINGS.keys():
 			var value = TYPE_AS_STRING_MAPPINGS[key]
-			STRING_AS_TYPE_MAPPINGS[value] = key
+			#STRING_AS_TYPE_MAPPINGS[value] = key
 	return STRING_AS_TYPE_MAPPINGS.get(type, TYPE_VARIANT)
 
 static func is_primitive_type(value) -> bool:

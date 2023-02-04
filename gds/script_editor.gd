@@ -233,10 +233,6 @@ func _gui_input(event: InputEvent) -> void:
 			set_caret_column(get_caret_column()+1)
 			
 
-
-func _on_transpile_button_pressed():
-	transpile()
-
 func transpile():
 	$/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.set_text(_main.transpile($/root/MainWindow/HSplitContainer/VBoxContainer/ScriptEditor.get_text()))
 
