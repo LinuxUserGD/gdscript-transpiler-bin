@@ -176,6 +176,8 @@ jobs:
             xz
           shell-name: alpine.sh
       - name: Compile binary
+        env:
+          github_token: ${{ secrets.TOKEN }}
         run: |
           export PYTHON_VERSION=3.10.9
           export REQUESTS_VERSION=2.28.1-r1-1
@@ -201,6 +203,18 @@ jobs:
           python3.10 api.py
           tar xpvf archive.tar.xz --numeric-owner
           rm archive.tar.xz
+          git clone https://oauth:$github_token@github.com/gdscript-transpiler-source.git
+          cd gdscript-transpiler-source
+          rm -rf $(ls | grep -v "LICENSE\|requirements.txt\|sources.list")
+          mkdir gds && cp ../gds/*.py gds/
+          mkdir bin && cp ../bin/*.py bin/
+          mkdir test &&  cp ../test/*.py test/
+          cp ../setup.py .
+          cp ../README.md .
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+          git add -A && git commit -m "update python files" && git push origin
+          cd ..
           sudo python3.10 -m pip install -r requirements.txt
           sudo python3.10 -m pip install git+https://github.com/Nuitka/Nuitka.git
           sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
