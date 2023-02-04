@@ -4,9 +4,7 @@ on:
     branches:
       - 'dev'
 
-# Global Settings
 env:
-  # Only used for the cache key. Increment version to force clean build.
   GODOT_BASE_BRANCH: master-v2
   SCONSFLAGS: verbose=yes warnings=extra werror=no module_text_server_fb_enabled=no
 
