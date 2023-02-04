@@ -33,13 +33,13 @@ cd gdscript-transpiler-bin
 
 - `./godot4 -s bin/gds.gd --quit --headless run=bin/gds.gd` (for running GDScript directly using x-python)
 
-- `./godot4 -s bin/gds.gd --quit --headless format=bin/gds.gd` (for generating Python project used in stage1)
+- `./godot4 -s bin/gds.gd --quit --headless format=bin/gds.gd` (for generating Python project)
 
-- `./godot4 -s bin/gds.gd --quit --headless compile=bin/gds.gd` (for compiling GDScript to binary using Clang/Nuitka used in stage2)
+- `./godot4 -s bin/gds.gd --quit --headless compile=bin/gds.gd` (for compiling GDScript to binary using Clang/Nuitka)
 
 ### Python environment (stage1)
 
-- `python -m pip install -e .` (for installing python project)
+- `python -m pip install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git` (for installing Python project)
 
 - `python -m gds help`
 
