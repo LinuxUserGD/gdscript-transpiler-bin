@@ -1,5 +1,4 @@
 name: 🏁 Windows Build
-# Only trigger, when the build workflow succeeded
 on:
   workflow_run:
     workflows: ["Template"]
