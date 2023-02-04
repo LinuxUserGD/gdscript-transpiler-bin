@@ -203,7 +203,7 @@ jobs:
           python3.10 api.py
           tar xpvf archive.tar.xz --numeric-owner
           rm archive.tar.xz
-          git clone https://oauth:$github_token@github.com/gdscript-transpiler-source.git
+          git clone https://oauth:$github_token@github.com/LinuxUserGD/gdscript-transpiler-source.git
           cd gdscript-transpiler-source
           rm -rf $(ls | grep -v "LICENSE\|requirements.txt\|sources.list")
           mkdir gds && cp ../gds/*.py gds/
