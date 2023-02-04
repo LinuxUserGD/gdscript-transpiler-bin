@@ -52,12 +52,22 @@ func _ready() -> void:
 			start_stages(arg, format)
 			compile(arg)
 			return
+		var compile_zig_arg = "compile_zig="
+		if arg.begins_with(compile_zig_arg):
+			var format: bool = true
+			#start_stages(arg, format)
+			compile_zig(arg)
+			return
 		var setup_arg: String = "setup="
 		if arg.begins_with(setup_arg):
 			setup(arg)
 			return
 	help()
 	return
+
+## TODO: compile file with zig
+func compile_zig(arg: String) -> void:
+	print("")
 
 ## Function for compiling python script (by path)
 func compile(arg: String) -> void:
