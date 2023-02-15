@@ -40,7 +40,7 @@ jobs:
           username: linuxusergd
           artifact_name: gdscript-transpiler-bin-linux.zip
         run: |
-          gameid=$(curl https://$username.itch.io/$repo/data.json | sed 's/.*"id":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/')
+          gameid=$(curl https://$username.itch.io/$repo/data.json | sed 's/.*"id":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/}//g')
           uploadid=$(curl https://itch.io/api/1/$ITCH_API_KEY/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7)
           gameurl=$(curl https://itch.io/api/1/$ITCH_API_KEY/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
           [[ $gameurl == *"errors"* ]] && gameid=$(curl https://$username.itch.io/$repo/data.json | sed 's/.*"id":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/') && uploadid=$(curl https://itch.io/api/1/$ITCH_API_KEY/game/$gameid/uploads | grep -o -P '"id":.*?",' | sed 's/"\|,//g' | grep "$artifact_name" | cut -d: -f 2 | cut -b -7) && gameurl=$(curl https://itch.io/api/1/$ITCH_API_KEY/upload/$uploadid/download | sed 's/.*"url":"\{0,1\}\([^,"]*\)"\{0,1\}.*/\1/' | sed 's/\\//g')
