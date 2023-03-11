@@ -63,7 +63,7 @@ jobs:
           rm archive.tar.xz
           pip install -r requirements.txt
           pip install git+https://github.com/Nuitka/Nuitka.git
-          pip install git+https://github.com/rocky/python-xdis.git
+          pip install xdis
           pip install git+https://github.com/rocky/x-python.git
 
           python -m pip install -e .
