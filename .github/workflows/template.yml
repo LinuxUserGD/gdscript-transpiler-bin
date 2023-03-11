@@ -220,7 +220,7 @@ jobs:
           cd ..
           sudo python3.10 -m pip install -r requirements.txt
           sudo python3.10 -m pip install git+https://github.com/Nuitka/Nuitka.git
-          sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
+          sudo python3.10 -m pip install xdis
           sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
           sudo python3.10 -m pip install -e .
           python3.10 -m gds format=bin/gds.gd
