@@ -65,13 +65,13 @@ Time for running GDScript code:
 
 ```gdscript
 func string() -> int:
-	var x : String = ""
+	var x: String = ""
 	for i in range(0, 300000):
 		x += " "
 	return x.length()
 
 func add() -> int:
-	var x := -100000000
+	var x: int = -100000000
 	for i in range(0, 100000000):
 		x += 1
 	return x
