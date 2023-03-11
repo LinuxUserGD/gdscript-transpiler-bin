@@ -102,7 +102,7 @@ func compile(arg: String) -> void:
 	nuitka += "--assume-yes-for-downloads"
 	nuitka += "';"
 	nuitka += "e='"
-	# bugfix "No such file or directory: Grammar3.10.9.final.0.pickle"
+	# bugfix "No such file or directory: Grammar3.10.10.final.0.pickle"
 	nuitka += "--include-package-data=blib2to3"
 	nuitka += "';"
 	nuitka += "f='"

@@ -29,3 +29,6 @@ gds.egg-info/
 gds.dist/
 gds.onefile-build/
 gds.build/
+
+# Python Archive
+archive.tar.xz
