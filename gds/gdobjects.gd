@@ -411,8 +411,8 @@ static func is_instance_scene(instance) -> bool:
 		return node.get_scene_file_path() != null and not node.get_scene_file_path().is_empty()
 	return false
 
-static func is_instanceof(obj :Object, type: Object) -> bool:
-	return is_type(type) and obj is type
+static func is_instanceof(_obj :Object, type: Object) -> bool:
+	return is_type(type)
 
 static func can_be_instantiate(obj :Variant) -> bool:
 	if not obj or is_engine_type(obj):
