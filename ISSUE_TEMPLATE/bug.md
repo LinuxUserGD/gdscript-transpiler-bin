@@ -6,6 +6,8 @@ title: "Bug Report"
 ref: "main"
 labels:
 - bug
+milestone:
+- gd4
 assignees:
 - LinuxUserGD
 
