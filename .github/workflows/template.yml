@@ -1,14 +1,11 @@
 name: Template
-on: push
-
-# Global Settings
-env:
-  # Only used for the cache key. Increment version to force clean build.
-  GODOT_BASE_BRANCH: master-v2
-  SCONSFLAGS: verbose=yes warnings=extra werror=no module_text_server_fb_enabled=no
+on:
+  push:
+    branches:
+      - 'dev'
 
 concurrency:
-  group: ci-${{github.actor}}-${{github.head_ref || github.run_number}}-${{github.ref}}-linux
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -16,6 +13,8 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-22.04
     name: ${{ matrix.name }}
+    outputs:
+      status: ${{ steps.early.outputs.status }}
     strategy:
       fail-fast: false
       matrix:
@@ -24,117 +23,20 @@ jobs:
             cache-name: linux-template-minimal
             target: editor
             tests: false
-            sconsflags: dev_build=no module_text_server_adv_enabled=no deprecated=no minizip=no disable_3d=no use_llvm=yes module_certs_enabled=no module_embree_enabled=no module_enet_enabled=no module_freetype_enabled=no module_msdfgen_enabled=no module_glslang_enabled=no module_graphite_enabled=no module_harfbuzz_enabled=no module_icu_enabled=no module_libogg_enabled=no module_libtheora_enabled=no module_libvorbis_enabled=no module_libwebp_enabled=no module_wslay_enabled=no module_mbedtls_enabled=no module_miniupnpc_enabled=no module_pcre2_enabled=no module_pcre2_with_jit_enabled=no module_recast_enabled=no module_rvo2_enabled=no module_squish_enabled=no module_xatlas_enabled=no module_zlib_enabled=no module_zstd_enabled=no disable_advanced_gui=no deprecated=no minizip=no openxr=no opengl3=no use_static_cpp=yes linker=lld alsa=no pulseaudio=no speechd=no fontconfig=no udev=no x11=no debug_symbols=no separate_debug_symbols=no touch=no execinfo=no dbus=no use_volk=no module_websocket_enabled=no module_webm_enabled=no module_thekla_unwrap_enabled=no module_tga_enabled=no module_pvr_enabled=no module_opus_enabled=no module_mobile_vr_enabled=no module_hdr_enabled=no module_gridmap_enabled=no module_gdnative_enabled=no module_etc_enabled=no module_dds_enabled=no module_freetype_enabled=no module_csg_enabled=no module_bullet_enabled=no module_bmp_enabled=no debug_symbols=no progress=no vulkan=no optimize=size production=no use_lto=no
             artifact: true
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
 
-      - name: Update repository
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          export commit=$(git ls-remote https://github.com/godotengine/godot.git  HEAD | awk '{ print $1}')
-          git update-index --cacheinfo 160000,${commit},godot
-          git submodule init
-          git submodule update
-          cd godot && mv ../.github/workflows/headless-build.patch .
-          git apply headless-build.patch && cd -
-
-      - name: Linux dependencies
-        shell: bash
-        run: |
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
-          sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
-          sudo apt-get update && sudo apt-get install build-essential pkg-config yasm xvfb wget unzip libfreetype-dev libfreetype6 libfreetype6-dev
-          sudo rm -rf /usr/include/freetype && sudo ln -sf /usr/include/freetype2 /usr/include/freetype
-
-      - name: Setup Godot build cache
-        uses: ./.github/actions/godot-cache
-        with:
-          cache-name: ${{ matrix.cache-name }}
-        continue-on-error: true
-
-      - name: Setup Python and Scons
-        uses: ./.github/actions/godot-deps
-
-      - name: Compilation
-        uses: ./.github/actions/godot-build
-        with:
-          sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
-          platform: linuxbsd
-          target: ${{ matrix.target }}
-          tests: ${{ matrix.tests }}
-
-      - name: Prepare artifact
-        if: ${{ matrix.artifact }}
-        run: |
-          strip godot/bin/godot.*
-          chmod +x godot/bin/godot.*
-          mv godot/bin/godot.* gds/godot-bin
-
-      - name: Install Dependencies
-        env:
-          github_token: ${{ secrets.TOKEN }}
-        run: |
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/requirements.txt
-          python -m pip install --upgrade pip requests
-          python -m pip install -r requirements.txt
-          python -m pip install git+https://github.com/Nuitka/Nuitka.git
-          python -m pip install git+https://github.com/rocky/python-xdis.git
-          python -m pip install git+https://github.com/rocky/x-python.git
-          mv .github/workflows/monitor-import.sh .
-          chmod +x monitor-import.sh
-          ./gds/godot-bin ./project.godot --editor --headless & sleep 5 && ./monitor-import.sh
-          ./gds/godot-bin --headless --verbose -s bin/gds.gd format=bin/gds.gd
-          ./gds/godot-bin --headless --verbose -s bin/gds.gd setup=setup.py
-          mv .github/workflows/api.py .
-          mv gds/*.py .
-          mv bin/*.py .
-          mv test/*.py .
-          mv gds/*.gd .
-          mv bin/*.gd .
-          mv test/*.gd .
-          echo "Uploading files to gist..."
-          python api.py
-
-
       - name: Setup latest Alpine Linux
-        uses: jirutka/setup-alpine@v1
+        uses: jirutka/setup-alpine@v1.1.3
         with:
           branch: edge
           arch: x86_64
           packages: >
-            alsa-lib-dev
-            libffi-dev
-            ncurses-dev
-            tcl-dev
-            tk-dev
-            zlib-dev
-            gettext-dev
+            coreutils
             wget
             curl
-            perl
-            libgcc
-            gcc
-            clang15-dev
-            clang15-extra-tools
-            clang15-libclang
-            clang15-libs
-            clang15-static
-            llvm15-dev
-            llvm-runtimes
-            llvm-libunwind-dev
-            llvm-libunwind-static
-            llvm15-libs
-            llvm15-static
-            compiler-rt
-            musl-dev
-            openssl-dev
-            linux-headers
-            patchelf
-            pkgconf
-            make
             git
             bash
             tar
@@ -142,171 +44,42 @@ jobs:
             gzip
             sudo
             xz
+            python3
+            python3-dev
+            py3-pip
+            py3-wheel
+            musl-dev
+            gcc
           shell-name: alpine.sh
 
       - name: Run script inside Alpine chroot
+        id: early
+        env:
+          github_token: ${{ secrets.TOKEN }}
         run: |
-          export PYTHON_VERSION=3.10.9
-          export REQUESTS_VERSION=2.28.1-r1-1
-          export OPENSSL_VERSION=1.1.1s
-          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/python-${PYTHON_VERSION}.tar.xz
-          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/requests-${REQUESTS_VERSION}.tar.xz
-          wget https://github.com/LinuxUserGD/Nuitka-Python/releases/download/v${PYTHON_VERSION}/openssl-${OPENSSL_VERSION}.tar.xz
-          sudo mv python-${PYTHON_VERSION}.tar.xz /
-          sudo mv requests-${REQUESTS_VERSION}.tar.xz /
-          sudo mv openssl-${OPENSSL_VERSION}.tar.xz /
-          cd /
-          sudo tar xpvf python-${PYTHON_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
-          sudo tar xpvf requests-${REQUESTS_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
-          sudo tar xpvf openssl-${OPENSSL_VERSION}.tar.xz --xattrs-include='*.*' --numeric-owner
-          cd -
-          git clone https://gist.github.com/73d8e030a44eb7f91bdeaea96a321f6d.git
-          mv 73d8e030a44eb7f91bdeaea96a321f6d/* .
-          rm -r 73d8e030a44eb7f91bdeaea96a321f6d
-          wget https://bootstrap.pypa.io/pip/get-pip.py
-          sudo python3.10 get-pip.py
-          sudo python3.10 -m pip install -r requirements.txt
-          sudo python3.10 -m pip install git+https://github.com/Nuitka/Nuitka.git
-          sudo python3.10 -m pip install git+https://github.com/rocky/python-xdis.git
-          sudo python3.10 -m pip install git+https://github.com/rocky/x-python.git
-          rm -rf gds && mkdir gds
-          rm -rf bin && mkdir bin
-          rm -rf test && mkdir test
           rm *.import
           rm project.godot
-          mv *.py gds/
-          mv *.gd gds/
-          mv gds/gds.py bin/
-          mv gds/gds.gd bin/
-          mv gds/setup.py .
-
-          cp gds/__init__.gd test/
-          cp gds/__init__.py test/
-          mv gds/advanced_expression_matching.gd test/
-          mv gds/advanced_expression_matching.py test/
-          mv gds/arrays.gd test/
-          mv gds/arrays.py test/
-          mv gds/arrays_dictionaries_nested_const.gd test/
-          mv gds/arrays_dictionaries_nested_const.py test/
-          mv gds/basic_expression_matching.gd test/
-          mv gds/basic_expression_matching.py test/
-          mv gds/benchmark.gd test/
-          mv gds/benchmark.py test/
-          mv gds/bitwise_operators.gd test/
-          mv gds/bitwise_operators.py test/
-          mv gds/concatenation.gd test/
-          mv gds/concatenation.py test/
-          mv gds/constants.gd test/
-          mv gds/constants.py test/
-          mv gds/dictionaries.gd test/
-          mv gds/dictionaries.py test/
-          mv gds/dictionary_lua_style.gd test/
-          mv gds/dictionary_lua_style.py test/
-          mv gds/dictionary_mixed_syntax.gd test/
-          mv gds/dictionary_mixed_syntax.py test/
-          mv gds/dollar_and_percent_get_node.gd test/
-          mv gds/dollar_and_percent_get_node.py test/
-          mv gds/dollar_node_paths.gd test/
-          mv gds/dollar_node_paths.py test/
-          mv gds/enums.gd test/
-          mv gds/enums.py test/
-          mv gds/export_variable.gd test/
-          mv gds/export_variable.py test/
-          mv gds/float_notation.gd test/
-          mv gds/float_notation.py test/
-          mv gds/for_range.gd test/
-          mv gds/for_range.py test/
-          mv gds/function_default_parameter_type_inference.gd test/
-          mv gds/function_default_parameter_type_inference.py test/
-          mv gds/function_many_parameters.gd test/
-          mv gds/function_many_parameters.py test/
-          mv gds/if_after_lambda.gd test/
-          mv gds/if_after_lambda.py test/
-          mv gds/ins.gd test/
-          mv gds/ins.py test/
-          mv gds/lambda_callable.gd test/
-          mv gds/lambda_callable.py test/
-          mv gds/lambda_capture_callable.gd test/
-          mv gds/lambda_capture_callable.py test/
-          mv gds/lambda_default_parameter_capture.gd test/
-          mv gds/lambda_default_parameter_capture.py test/
-          mv gds/lambda_named_callable.gd test/
-          mv gds/lambda_named_callable.py test/
-          mv gds/match_bind_unused.gd test/
-          mv gds/match_bind_unused.py test/
-          mv gds/match_dictionary.gd test/
-          mv gds/match_dictionary.py test/
-          mv gds/match_multiple_patterns_with_array.gd test/
-          mv gds/match_multiple_patterns_with_array.py test/
-          mv gds/match_multiple_variable_binds_in_pattern.gd test/
-          mv gds/match_multiple_variable_binds_in_pattern.py test/
-          mv gds/matches.gd test/
-          mv gds/matches.py test/
-          mv gds/multiline_arrays.gd test/
-          mv gds/multiline_arrays.py test/
-          mv gds/multiline_dictionaries.gd test/
-          mv gds/multiline_dictionaries.py test/
-          mv gds/multiline_if.gd test/
-          mv gds/multiline_if.py test/
-          mv gds/multiline_strings.gd test/
-          mv gds/multiline_strings.py test/
-          mv gds/multiline_vector.gd test/
-          mv gds/multiline_vector.py test/
-          mv gds/nested_arithmetic.gd test/
-          mv gds/nested_arithmetic.py test/
-          mv gds/nested_array.gd test/
-          mv gds/nested_array.py test/
-          mv gds/nested_dictionary.gd test/
-          mv gds/nested_dictionary.py test/
-          mv gds/nested_function_calls.gd test/
-          mv gds/nested_function_calls.py test/
-          mv gds/nested_if.gd test/
-          mv gds/nested_if.py test/
-          mv gds/nested_match.gd test/
-          mv gds/nested_match.py test/
-          mv gds/nested_parentheses.gd test/
-          mv gds/nested_parentheses.py test/
-          mv gds/number_separators.gd test/
-          mv gds/number_separators.py test/
-          mv gds/operator_assign.gd test/
-          mv gds/operator_assign.py test/
-          mv gds/property_setter_getter.gd test/
-          mv gds/property_setter_getter.py test/
-          mv gds/semicolon_as_end_statement.gd test/
-          mv gds/semicolon_as_end_statement.py test/
-          mv gds/semicolon_as_terminator.gd test/
-          mv gds/semicolon_as_terminator.py test/
-          mv gds/signal_declaration.gd test/
-          mv gds/signal_declaration.py test/
-          mv gds/static_typing.gd test/
-          mv gds/static_typing.py test/
-          mv gds/str_preserves_case.gd test/
-          mv gds/str_preserves_case.py test/
-          mv gds/string_formatting.gd test/
-          mv gds/string_formatting.py test/
-          mv gds/trailing_comma_in_function_args.gd test/
-          mv gds/trailing_comma_in_function_args.py test/
-          mv gds/truthiness.gd test/
-          mv gds/truthiness.py test/
-          mv gds/typed_arrays.gd test/
-          mv gds/typed_arrays.py test/
-          mv gds/variable_declaration.gd test/
-          mv gds/variable_declaration.py test/
-          mv gds/whiles.gd test/
-          mv gds/whiles.py test/
-
-          sudo ln -sf /usr/bin/python3.10 /usr/bin/python
-          sudo python3.10 -m pip install -e .
-          python3.10 -m gds compile=bin/gds.gd
-          mv gds.bin bin/gds
+          pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip3 install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages
+          pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          python3 -m gdspy format=bin/gds.gd
+          python3 -m gdspy setup=setup.py
+          echo "Uploading files..."
+          rm -rf addons gdUnit4 zig zig-template
+          dir=$(echo */)
+          git clone https://oauth:$github_token@github.com/LinuxUserGD/gdscript-transpiler-source.git && cd gdscript-transpiler-source
+          rm -rf $(ls | grep -v "requirements.txt")
+          for i in $dir; do mkdir ${i} ; done
+          for i in $dir; do cp -r "../${i}"*.py ${i} ; done
+          for i in $(echo "setup.py README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+          git add -A
+          [ -n "$(git diff-index HEAD)" ] && { echo "New update"; echo "status=deploy" >> $GITHUB_OUTPUT; git commit -m "update python files" && git push origin; } || { echo "Files identical"; echo "status=skip" >> $GITHUB_OUTPUT; }
+          cd ..
           echo ${PWD}
         shell: alpine.sh {0}
-
-      - name: Upload main.dist
-        uses: actions/upload-artifact@v3
-        with:
-          name: Linux Build
-          path: /home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/bin/gds
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
@@ -332,11 +105,195 @@ jobs:
           retain_days: 0
           keep_minimum_runs: 0
           delete_workflow_pattern: Template
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@v2
+
+  deploy-linux:
+    runs-on: ubuntu-22.04
+    name: Deploy (Alpine Linux x86_64)
+    needs: build-linux
+    if: needs.build-linux.outputs.status == 'deploy'
+
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: Setup latest Alpine Linux
+        uses: jirutka/setup-alpine@v1.1.3
         with:
-          token: ${{ github.token }}
-          repository: ${{ github.repository }}
-          retain_days: 0
-          keep_minimum_runs: 0
-          delete_workflow_pattern: OSSAR
+          branch: edge
+          arch: x86_64
+          packages: >
+            sqlite-dev
+            sqlite-static
+            sqlite-tcl
+            readline-dev
+            readline-static
+            coreutils
+            alsa-lib-dev
+            libffi-dev
+            ncurses-dev
+            tcl-dev
+            tk-dev
+            zlib-dev
+            gettext-dev
+            wget
+            curl
+            perl
+            libgcc
+            gcc
+            clang16-dev
+            clang16-extra-tools
+            clang16-libclang
+            clang16-libs
+            clang16-static
+            llvm16-dev
+            llvm-runtimes
+            llvm-libunwind-dev
+            llvm-libunwind-static
+            llvm16-libs
+            llvm16-static
+            compiler-rt
+            musl-dev
+            openssl
+            openssl-dev
+            linux-headers
+            patchelf
+            pkgconf
+            make
+            git
+            bash
+            tar
+            file
+            gzip
+            sudo
+            xz
+            xz-dev
+          shell-name: alpine.sh
+
+      - name: Install pyenv
+        env:
+          github_token: ${{ secrets.TOKEN }}
+        run: |
+          curl https://pyenv.run | bash
+          . /etc/profile
+        shell: alpine.sh {0}
+
+      - name: Compile python3.11 and gdscript-transpiler-bin
+        env:
+          github_token: ${{ secrets.TOKEN }}
+        run: |
+          export PYENV_ROOT="$HOME/.pyenv"
+          command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+          eval "$(pyenv init -)"
+          eval "$(pyenv virtualenv-init -)"
+          pyenv install 3.11 && pyenv global 3.11
+          pip install requests --break-system-packages
+          mv .github/workflows/api.py .
+          python api.py
+          tar xpvf dev.tar.gz --numeric-owner
+          rm dev.tar.gz
+          cd gdscript-transpiler-source-dev
+          pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip install -r requirements.txt --break-system-packages
+          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          pip install -e . --break-system-packages
+          cd ..
+          python -m gdspy format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
+        shell: alpine.sh {0}
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Linux Build
+          path: /home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/gds
+
+  deploy-windows:
+    runs-on: windows-2022
+    name: Deploy (Windows x86_64)
+    needs: build-linux
+    if: needs.build-linux.outputs.status == 'deploy'
+
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip --break-system-packages
+          python -m pip install requests --break-system-packages
+          mv .github/workflows/api.py .
+          python api.py
+          &'C:\Program Files\7-Zip\7z.exe' x dev.tar.gz -aoa
+          rm dev.tar.gz
+          &'C:\Program Files\7-Zip\7z.exe' x dev.tar -aoa
+          rm dev.tar
+          cd gdscript-transpiler-source-dev
+          pip install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip install -r requirements.txt --break-system-packages
+          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          python -m pip install -e . --break-system-packages
+
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v1.4
+        with:
+          version: latest
+          platform: x64
+
+      - name: Build Executable
+        run: |
+          cd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin
+          python -m gdspy format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output
+
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows Build
+          path: D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds.exe
+
+  deploy-macos:
+    runs-on: macos-12
+    name: Deploy (macOS x86_64)
+    needs: build-linux
+    if: needs.build-linux.outputs.status == 'deploy'
+
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Compile gdscript-transpiler-bin
+        run: |
+          python -m pip install --upgrade pip --break-system-packages
+          python -m pip install requests --break-system-packages
+          mv .github/workflows/api.py .
+          python api.py
+          tar xpvf dev.tar.gz --numeric-owner
+          rm dev.tar.gz
+          cd gdscript-transpiler-source-dev
+          pip install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip install -r requirements.txt --break-system-packages
+          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          python -m pip install -e . --break-system-packages
+          cd ..
+          python -m gdspy format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
+
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: MacOS Build
+          path: /Users/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/gds

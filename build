@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+ROOTDIR="$(pwd)"
+ZIG_DIR=$(python -c "import os; import ziglang; print(os.path.dirname(ziglang.__file__))" 2>&1)
+export ZIG_EXE="$ZIG_DIR/zig"
+TARGET_OS_CMAKE=""
+mkdir -p "$ROOTDIR/out/build-zig-host"
+mkdir -p "$ROOTDIR/out/host"
+cd "$ROOTDIR/out/build-zig-host"
+cmake "$ROOTDIR/zig" \
+  -DCMAKE_INSTALL_PREFIX="$ROOTDIR/out/host" \
+  -DCMAKE_PREFIX_PATH="$ROOTDIR/out/host" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_C_COMPILER="$(pwd)/../../zigcc" \
+  -DCMAKE_CXX_COMPILER="$(pwd)/../../zigc++" \
+  -DCMAKE_GENERATOR=Ninja
+cmake --build . --target install
+ZIG="$ROOTDIR/out/host/bin/zig"

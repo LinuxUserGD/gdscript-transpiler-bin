@@ -2,29 +2,28 @@ class_name Arrays_dictionaries_nested_const
 
 # https://github.com/godotengine/godot/issues/50285
 
-@warning_ignore(unused_local_constant)
 func test():
-	const CONST_INNER_DICTIONARY = { "key": true }
-	const CONST_NESTED_DICTIONARY_OLD_WORKAROUND = {
+	const _CONST_INNER_DICTIONARY = { "key": true }
+	const _CONST_NESTED_DICTIONARY_OLD_WORKAROUND = {
 		"key1": "value1",
-		"key2": CONST_INNER_DICTIONARY
+		"key2": _CONST_INNER_DICTIONARY
 	}
 	# All of these should be valid
-	const CONST_NESTED_DICTIONARY = {
+	const _CONST_NESTED_DICTIONARY = {
 		"key1": "value1",
 		"key2": { "key": true }
 	}
 
 
-	const CONST_DICTIONARY_WITH_ARRAY = {
+	const _CONST_DICTIONARY_WITH_ARRAY = {
 		"key1": [1,2,3,4]
 	}
 
-	const CONST_NESTED_ARRAY = [[],[2],[1,2,3]]
-	const CONST_ARRAY_WITH_DICT = [{"key1": 3}, {"key2": 5}]
+	const _CONST_NESTED_ARRAY = [[],[2],[1,2,3]]
+	const _CONST_ARRAY_WITH_DICT = [{"key1": 3}, {"key2": 5}]
 
-	const THREE_DIMENSIONAL_ARRAY = [[[],[],[]],[[],[],[]],[[],[],[]]]
-	const MANY_NESTED_DICT = {
+	const _THREE_DIMENSIONAL_ARRAY = [[[],[],[]],[[],[],[]],[[],[],[]]]
+	const _MANY_NESTED_DICT = {
 		"key1": {
 			"key11": {
 				"key111": {},

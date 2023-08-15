@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Open a Issue
+    url: https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues/new/choose
+    about: Open a new issue on codeberg.org.

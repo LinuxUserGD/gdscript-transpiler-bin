@@ -1,37 +1,54 @@
-# Contributing to gdscript-transpiler-bin
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+# Contributing to GDScript Transpiler
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+Thank you for considering contributing to GDScript Transpiler!
 
-## We Develop with Codeberg
-We use codeberg to host code, to track issues and feature requests, as well as accept pull requests.
+We appreciate your input and want to make the contribution process as easy and transparent as possible.
 
-## We Use [Git Flow](https://docs.codeberg.org/collaborating/pull-requests-and-git-flow/), So All Code Changes Happen Through Pull Requests
-Pull requests are the best way to propose changes to the codebase (we use [Git Flow](https://docs.codeberg.org/collaborating/pull-requests-and-git-flow/). We actively welcome your pull requests:
+Whether you want to report a bug, discuss code improvements, submit a fix, propose new features, or become a maintainer, we welcome your involvement.
 
-1. Fork the repo and create your branch from `dev`.
-2. If you've added code that should be tested, add tests.
-3. Ensure the CI passes.
-4. Issue that pull request!
+## Development on Codeberg
+We use Codeberg to host our code, track issues and feature requests, and accept pull requests.
 
-## Any contributions you make will be under the MIT Software License
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+It's recommended to familiarize yourself with Codeberg's features and workflow to participate effectively.
 
-## Report bugs using Codeberg's issue tracker
-We use Codeberg issues to track public bugs. Report a bug by [opening a new issue](https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues/new/choose); it's that easy!
+## Codeberg Flow
+We follow the Codeberg Flow for making code changes.
 
-Write bug reports with detail, background, and sample code
+This means that all code modifications should be proposed through pull requests.
 
-## Use a Consistent Coding Style
-I'm again borrowing these from 
-- [Godot's GDScript Conventions](https://docs.godotengine.org/en/latest/tutorials/scripting/gdscript/gdscript_styleguide.html)
+Pull requests provide a structured and collaborative way to review and discuss code changes.
+
+If you'd like to contribute, please follow these steps:
+
+1. Select an open issue to work on or create a new issue if none exists.
+2. Fork the repository and create a branch from the `dev` branch.
+   - Use the issue number as the branch name, e.g., GD-111.
+   - Assign the issue to yourself and set its status to "In Progress."
+3. If you have made changes to the code that should be tested, please include appropriate tests.
+4. If you have modified any APIs, ensure that the documentation is updated accordingly.
+5. Create a pull request and provide information in the "Why" and "What" sections:
+   - Link the pull request to the corresponding issue.
+   - Assign the pull request to yourself.
+   - Make sure each pull request is associated with only one issue.
+   - If the pull request is still in progress, mark it as a draft.
+   - Ensure that the continuous integration (CI) process passes successfully.
+6. Submit the pull request!
 
 ## License
-By contributing, you agree that your contributions will be licensed under its [MIT License](https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/src/branch/dev/LICENSE).
+By contributing to this project, you agree that your contributions will be licensed under the same [MIT License](https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/src/branch/dev/LICENSE) that covers the project.
+
+If you have any concerns, please reach out to the maintainers.
+
+## Reporting Bugs
+If you encounter any bugs or issues, please use Codeberg's issue tracking system.
+
+You can report a bug by [opening a new issue](https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues/new?template=.gitea%2fISSUE_TEMPLATE%2fbug.md).
+
+When submitting a bug report, please provide detailed information, including the steps to reproduce the issue, relevant background information, and sample code if possible.
+
+## Coding Style
+To maintain code consistency, please adhere to the following coding style guides:
+- [Godot's GDScript Conventions](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)
 
 ## References
-This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md) and https://github.com/MikeSchulze/gdUnit4/blob/master/CONTRIBUTING.md
+This document was adapted from the open-source contribution guidelines for [GdUnit4](https://github.com/MikeSchulze/gdUnit4/blob/master/CONTRIBUTING.md)

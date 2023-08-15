@@ -1,8 +1,18 @@
-[submodule "godot"]
-	path = godot
-	url = https://github.com/godotengine/godot.git
-	shallow = true
-[submodule "toolkit"]
-	path = toolkit
-	url = https://github.com/LinuxUserGD/toolkit.git
-	shallow = true
+[submodule "gdUnit4"]
+	path = gdUnit4
+	url = https://github.com/MikeSchulze/gdUnit4.git
+	remote = origin
+	branch = master
+	update = rebase
+[submodule "zig"]
+	path = zig
+	url = https://github.com/ziglang/zig.git
+	remote = origin
+	branch = master
+	update = rebase
+[submodule "zig-template"]
+	path = zig-template
+	url = https://codeberg.org/LinuxUserGD/zig-template.git
+	remote = origin
+	branch = dev
+	update = rebase

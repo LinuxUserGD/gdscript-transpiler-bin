@@ -6,20 +6,19 @@ on:
     types:
       - completed
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Linux itch.io Upload
+    outputs:
+      status: ${{ steps.early.outputs.status }}
     steps:
-      - name: Pause until all workflows are completed
-        uses: willgarcia/workflow-wait-action@0.1.0
-        with:
-          initial_delay: 360
-          interval: 10
-
-      - uses: actions/checkout@master
       - name: Download artifact from build
-
         uses: bettermarks/action-artifact-download@0.3.0
         with:
           repo: LinuxUserGD/gdscript-transpiler-bin
@@ -49,15 +48,12 @@ jobs:
       - name: Extracting linux.zip
         shell: bash
         run: |
-          rm -rf gds
-          wget https://gist.githubusercontent.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d/raw/sources.list
-          sudo rm -f /etc/apt/sources.list.d/* && sudo cp -f sources.list /etc/apt/sources.list
           sudo apt-get update && sudo apt-get install unzip
           unzip linux.zip
           rm linux.zip
 
       - name: Uploading linux binary
-        uses: manleydev/butler-publish-itchio-action@master
+        uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: linux
@@ -68,12 +64,12 @@ jobs:
       - name: Extracting macOS.zip
         shell: bash
         run: |
-          rm gds
+          rm -rf gds
           unzip macOS.zip
           rm macOS.zip
 
       - name: Uploading macOS binary
-        uses: manleydev/butler-publish-itchio-action@master
+        uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: mac
@@ -84,12 +80,12 @@ jobs:
       - name: Extracting windows.zip
         shell: bash
         run: |
-          rm gds
+          rm -rf gds
           unzip windows.zip
           rm windows.zip
 
       - name: Uploading windows binary
-        uses: manleydev/butler-publish-itchio-action@master
+        uses: yeslayla/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: windows

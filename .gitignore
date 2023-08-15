@@ -22,10 +22,18 @@ logs/
 
 # Exported files
 dist/
-gds/__pycache__/
+gdspy/__pycache__/
 bin/__pycache__/
 test/__pycache__/
 gds.egg-info/
 gds.dist/
 gds.onefile-build/
 gds.build/
+
+# Python Archive
+archive.tar.xz
+
+# Zig
+zig-cache/
+zig-out/
+out/
