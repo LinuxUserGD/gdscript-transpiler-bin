@@ -162,7 +162,7 @@ const setup: Array = [
 	"        'Topic :: Python :: GDScript :: Python Modules',",
 	"    ],",
 	"    # Package info",
-	"    packages=['gdspy'] + ['gdspy.' + pkg for pkg in find_packages('gdspy')],",
+	"    packages=['gdspy'] + ['gdspy.' + pkg for pkg in find_packages('gdspy')] + ['test'] + ['test.' + pkg for pkg in find_packages('test')],",
 	"    # Add _ prefix to the names of temporary build dirs",
 	"    options={'build': {'build_base': '_build'}, },",
 	"    zip_safe=True,",
