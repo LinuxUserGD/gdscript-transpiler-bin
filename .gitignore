@@ -22,7 +22,7 @@ logs/
 
 # Exported files
 dist/
-gdspy/__pycache__/
+gdsbin/__pycache__/
 bin/__pycache__/
 test/__pycache__/
 gds.egg-info/

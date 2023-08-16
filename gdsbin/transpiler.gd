@@ -524,7 +524,7 @@ func translate(e: String) -> String:
 		while e.contains(gds_name.to_lower() + " = import " + gds_name):
 			e = e.replace(gds_name.to_lower() + " = import " + gds_name, "import " + gds_name.to_lower())
 			if e.contains("."):
-				if e.contains("gdspy"):
+				if e.contains("gdsbin"):
 					var imp : String = e.split(".")[1]
 					var imp_b : String = imp.split(" ")[1]
 					var package : String = e.split(".")[0]
@@ -549,6 +549,6 @@ func translate(e: String) -> String:
 					props.gds_deps[index] = "../" + package + "/" + imp_b
 			else:
 				# TODO: detect package import, otherwise use regular import
-				e = e.replace("import " + gds_name.to_lower(), "import gdspy." + gds_name.to_lower() + " as " + gds_name.to_lower())
+				e = e.replace("import " + gds_name.to_lower(), "import gdsbin." + gds_name.to_lower() + " as " + gds_name.to_lower())
 		index += 1
 	return e

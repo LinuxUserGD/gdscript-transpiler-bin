@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://decvm47txmafw"
-path="res://.godot/imported/noto_sans_regular.ttf-77c04c9766866d090a8a85245dd3444e.fontdata"
+uid="uid://bwt6t2q5kbjbe"
+path="res://.godot/imported/hack_regular.ttf-a1e988799fc302b0920dc6a71c3573dd.fontdata"
 
 [deps]
 
-source_file="res://gdspy/fonts/noto_sans_regular.ttf"
-dest_files=["res://.godot/imported/noto_sans_regular.ttf-77c04c9766866d090a8a85245dd3444e.fontdata"]
+source_file="res://gdsbin/fonts/hack_regular.ttf"
+dest_files=["res://.godot/imported/hack_regular.ttf-a1e988799fc302b0920dc6a71c3573dd.fontdata"]
 
 [params]
 

@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=10 format=3 uid="uid://bwuol0nxm8rsj"]
 
-[ext_resource type="FontFile" uid="uid://bwt6t2q5kbjbe" path="res://gdspy/fonts/hack_regular.ttf" id="1_1sbn2"]
+[ext_resource type="FontFile" uid="uid://bwt6t2q5kbjbe" path="res://gdsbin/fonts/hack_regular.ttf" id="1_1sbn2"]
 
 [sub_resource type="StyleBoxFlat" id="1"]
 bg_color = Color(0.223529, 0.239216, 0.25098, 1)

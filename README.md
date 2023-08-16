@@ -43,13 +43,13 @@ Installing python gds
 python -m pip install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git
 ```
 
-- `python -m gdspy help`
+- `python -m gdsbin help`
 
-- `python -m gdspy run=bin/gds.gd`
+- `python -m gdsbin run=bin/gds.gd`
 
-- `python -m gdspy format=bin/gds.gd`
+- `python -m gdsbin format=bin/gds.gd`
 
-- `python -m gdspy compile=bin/gds.gd`
+- `python -m gdsbin compile=bin/gds.gd`
 
 ### Nuitka compiled binary (stage2)
 Installing gds binary (available at [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin))

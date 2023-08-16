@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://bb4hpvw0tq6yt"]
 
-[ext_resource type="Theme" uid="uid://bwuol0nxm8rsj" path="res://gdspy/resources/theme.tres" id="1_b4qlw"]
-[ext_resource type="Script" path="res://gdspy/main_window.gd" id="2_cf6o8"]
-[ext_resource type="Script" path="res://gdspy/script_editor.gd" id="3_d7aim"]
-[ext_resource type="FontFile" uid="uid://decvm47txmafw" path="res://gdspy/fonts/noto_sans_regular.ttf" id="4_hv1ml"]
-[ext_resource type="Script" path="res://gdspy/run_button.gd" id="5_d1ogv"]
+[ext_resource type="Theme" uid="uid://bwuol0nxm8rsj" path="res://gdsbin/resources/theme.tres" id="1_b4qlw"]
+[ext_resource type="Script" path="res://gdsbin/main_window.gd" id="2_cf6o8"]
+[ext_resource type="Script" path="res://gdsbin/script_editor.gd" id="3_d7aim"]
+[ext_resource type="FontFile" uid="uid://decvm47txmafw" path="res://gdsbin/fonts/noto_sans_regular.ttf" id="4_hv1ml"]
+[ext_resource type="Script" path="res://gdsbin/run_button.gd" id="5_d1ogv"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_wdykl"]
 number_color = Color(1, 0.666667, 0.137255, 1)

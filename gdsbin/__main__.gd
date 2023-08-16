@@ -11,7 +11,7 @@ class_name __Main__
 ## Runs once when executed, prints different output to console depending on argument
 func _ready() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
-	var __init__ = preload("res://gdspy/__init__.gd").new()
+	var __init__ = preload("res://gdsbin/__init__.gd").new()
 	for arg in OS.get_cmdline_args():
 		if arg == "version":
 			version_info()

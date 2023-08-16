@@ -63,8 +63,8 @@ jobs:
           pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
           pip3 install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages
           pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
-          python3 -m gdspy format=bin/gds.gd
-          python3 -m gdspy setup=setup.py
+          python3 -m gdsbin format=bin/gds.gd
+          python3 -m gdsbin setup=setup.py
           echo "Uploading files..."
           rm -rf addons gdUnit4 zig zig-template
           dir=$(echo */)
@@ -198,7 +198,7 @@ jobs:
           pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
           pip install -e . --break-system-packages
           cd ..
-          python -m gdspy format=bin/gds.gd
+          python -m gdsbin format=bin/gds.gd
           python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
         shell: alpine.sh {0}
       - name: Upload main.dist
@@ -249,7 +249,7 @@ jobs:
       - name: Build Executable
         run: |
           cd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin
-          python -m gdspy format=bin/gds.gd
+          python -m gdsbin format=bin/gds.gd
           python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output
 
       - name: Upload main.dist
@@ -289,7 +289,7 @@ jobs:
           pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
           python -m pip install -e . --break-system-packages
           cd ..
-          python -m gdspy format=bin/gds.gd
+          python -m gdsbin format=bin/gds.gd
           python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
 
       - name: Upload main.dist
