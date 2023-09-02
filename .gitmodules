@@ -6,9 +6,9 @@
 	update = rebase
 [submodule "zig"]
 	path = zig
-	url = https://github.com/ziglang/zig.git
+	url = https://github.com/LinuxUserGD/zig.git
 	remote = origin
-	branch = master
+	branch = android
 	update = rebase
 [submodule "zig-template"]
 	path = zig-template
