@@ -19,7 +19,7 @@ jobs:
       status: ${{ steps.early.outputs.status }}
     steps:
       - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
+        uses: bettermarks/action-artifact-download@0.4.0
         with:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
           wait_seconds: 20
 
       - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
+        uses: bettermarks/action-artifact-download@0.4.0
         with:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -37,7 +37,7 @@ jobs:
           wait_seconds: 20
 
       - name: Download artifact from build
-        uses: bettermarks/action-artifact-download@0.3.0
+        uses: bettermarks/action-artifact-download@0.4.0
         with:
           repo: LinuxUserGD/gdscript-transpiler-bin
           token: ${{ secrets.GITHUB_TOKEN }}
