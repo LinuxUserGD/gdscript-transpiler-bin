@@ -26,7 +26,7 @@ jobs:
             artifact: true
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup latest Alpine Linux
         uses: jirutka/setup-alpine@v1.1.3
@@ -114,7 +114,7 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup latest Alpine Linux
         uses: jirutka/setup-alpine@v1.1.3
@@ -215,7 +215,7 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -266,7 +266,7 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
