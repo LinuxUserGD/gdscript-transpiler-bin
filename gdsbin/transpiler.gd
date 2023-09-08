@@ -110,7 +110,11 @@ func read(path: String) -> String:
 
 func generate_setup(path: String, pyproject_toml: bool) -> void:
 	var content: String = ""
-	var file: Array = props.pyproject_toml if pyproject_toml else props.setup
+	var file: Array
+	if pyproject_toml:
+		file = props.pyproject_toml
+	else:
+		file = props.setup
 	for line in file:
 		content += line + "\n"
 	save(path, content)

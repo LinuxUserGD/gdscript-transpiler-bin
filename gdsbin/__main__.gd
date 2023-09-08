@@ -192,7 +192,11 @@ func setup(arg: String, pyproject_toml: bool) -> void:
 				pathstr += "/"
 			index += 1
 		pathstr = pathstr.left(pathstr.length()-1)
-	var file_extension = "toml" if pyproject_toml else "py"
+	var file_extension: String
+	if pyproject_toml:
+		file_extension = "toml"
+	else:
+		file_extension = "py"
 	var path2: String = "res://" + pathstr + file_extension
 	var transpiler = Transpiler.new()
 	transpiler.generate_setup(path2, pyproject_toml)
