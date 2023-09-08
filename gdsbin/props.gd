@@ -115,6 +115,12 @@ const repl_dict: Dictionary = {
 	"Thread.new()": "",
 }
 
+const pyproject_toml: Array = [
+	"[build-system]",
+	"requires = ['setuptools>=42']",
+	"build-backend = 'setuptools.build_meta'",
+]
+
 const setup: Array = [
 	"#!/usr/bin/env python",
 	"from setuptools import setup, find_packages",

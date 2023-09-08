@@ -51,7 +51,11 @@ func _ready() -> void:
 			return
 		var setup_arg: String = "setup="
 		if arg.begins_with(setup_arg):
-			setup(arg)
+			setup(arg, false)
+			return
+		var pyproject_arg: String = "pyproject="
+		if arg.begins_with(pyproject_arg):
+			setup(arg, true)
 			return
 	help()
 	return
@@ -160,7 +164,7 @@ func form(stdout: Array, imp: String, _imp_string: String):
 	return stdout
 
 ## Function for saving setup.py
-func setup(arg: String) -> void:
+func setup(arg: String, pyproject_toml: bool) -> void:
 	var path_end: String = arg.split("=")[1]
 	var args = path_end.split(".")
 	var c: int = args.size()
@@ -188,9 +192,10 @@ func setup(arg: String) -> void:
 				pathstr += "/"
 			index += 1
 		pathstr = pathstr.left(pathstr.length()-1)
-	var path2: String = "res://" + pathstr + "py"
+	var file_extension = "toml" if pyproject_toml else "py"
+	var path2: String = "res://" + pathstr + file_extension
 	var transpiler = Transpiler.new()
-	transpiler.generate_setup(path2)
+	transpiler.generate_setup(path2, pyproject_toml)
 
 ## Function for transpiling script (by path)
 func start(arg: String, stage2: bool) -> void:
@@ -317,17 +322,18 @@ func help() -> void:
 	print("Usage: gds [options]")
 	print()
 	print("Options:")
-	print("  " + "version" + "                     " + "show program's version number and exit")
-	print("  " + "help" + "                        " + "show this help message and exit")
-	print("  " + "format=../path/to/file.gd" + "   " + "transpile and format GDScript files recursively")
-	print("  " + "run=../path/to/file.gd" + "      " + "run GDScript file directly using x-python")
-	print("  " + "compile=../path/to/file.gd" + "  " + "compile GDScript file to binary using Clang/Nuitka")
-	print("  " + "exp=../path/to/file.gd" + "      " + "experimental option to tokenize GDScript file")
-	print("  " + "setup=../path/setup.py" + "      " + "output a setup.py file to install python project")
-	print("  " + "test=vector2" + "                " + "testing Vector2 implementation")
-	print("  " + "test=parser" + "                 " + "running GDScript tests (not working yet)")
-	print("  " + "benchmark" + "                   " + "running benchmark to compare performance")
-	print("  " + "compile_zig" + "                 " + "build latest Zig toolchain from source")
+	print("  " + "version                           " + "show program's version number and exit")
+	print("  " + "help                              " + "show this help message and exit")
+	print("  " + "format=../path/to/file.gd         " + "transpile and format GDScript files recursively")
+	print("  " + "run=../path/to/file.gd            " + "run GDScript file directly using x-python")
+	print("  " + "compile=../path/to/file.gd        " + "compile GDScript file to binary using Clang/Nuitka")
+	print("  " + "exp=../path/to/file.gd            " + "experimental option to tokenize GDScript file")
+	print("  " + "setup=../path/setup.py            " + "output a setup.py file to install python project")
+	print("  " + "pyproject=../path/pyproject.toml  " + "output a pyproject.toml file to install python project")
+	print("  " + "test=vector2                      " + "testing Vector2 implementation")
+	print("  " + "test=parser                       " + "running GDScript tests (not working yet)")
+	print("  " + "benchmark                         " + "running benchmark to compare performance")
+	print("  " + "compile_zig                       " + "build latest Zig toolchain from source")
 
 ## Testing benchmark
 func run_benchmark() -> void:
