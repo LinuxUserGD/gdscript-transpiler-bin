@@ -51,11 +51,13 @@ func _ready() -> void:
 			return
 		var setup_arg: String = "setup="
 		if arg.begins_with(setup_arg):
-			setup(arg, false)
+			var pyproject: bool = false
+			setup(arg, pyproject)
 			return
 		var pyproject_arg: String = "pyproject="
 		if arg.begins_with(pyproject_arg):
-			setup(arg, true)
+			var pyproject: bool = true
+			setup(arg, pyproject)
 			return
 	help()
 	return
