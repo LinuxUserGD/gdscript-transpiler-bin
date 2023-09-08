@@ -110,13 +110,14 @@ func read(path: String) -> String:
 
 func generate_setup(path: String, pyproject_toml: bool) -> void:
 	var content: String = ""
-	var file: Array
 	if pyproject_toml:
-		file = props.pyproject_toml
+		var file: Array = props.pyproject_toml
+		for line in file:
+			content += line + "\n"
 	else:
-		file = props.setup
-	for line in file:
-		content += line + "\n"
+		var file: Array = props.setup
+		for line in file:
+			content += line + "\n"
 	save(path, content)
 
 ## Function to write final output to a file using File compatibility class

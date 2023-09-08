@@ -11,6 +11,7 @@ export_presets.cfg
 
 # Python
 *.py
+pyproject.toml
 
 # Nuitka
 *.bin
