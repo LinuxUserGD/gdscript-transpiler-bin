@@ -6,6 +6,8 @@ class_name Props
 ##
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-props-py
 
+var extend: Array = []
+
 ## Godot built-in types
 var types: Array = [
 	"AABB",
@@ -197,6 +199,8 @@ var resize_def: bool = false
 var right_def: bool = false
 ## Add additional python code for left() method to transpiled script if required
 var left_def: bool = false
+## Add additional python code for newinstance() method to transpiled script if required
+var newinstance_def: bool = false
 ## Add additional python sys import to transpiled script if required
 var sys_imp: bool = false
 ## Add additional python os import to transpiled script if required

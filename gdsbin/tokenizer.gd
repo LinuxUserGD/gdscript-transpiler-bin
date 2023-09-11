@@ -7,8 +7,8 @@ class_name Tokenizer
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-tokenizer-py
 
 ## Method to process input string and list of tokens
-func tokenize(input_string: String):
-	var delimiter : Array = ['(', ')', ':', ',', '.', '=', '+', '-', '*', '/', '<', '>', '!', '&', '|', '~', '%', ' ', '[', ']', '{', '}', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '"', '\t']
+func tokenize(input_string: String) -> Array:
+	var delimiter : Array = ['(', ')', ':', ',', '.', '=', '+', '-', '*', '/', '<', '>', '!', '&', '|', '~', '%', ' ', '[', ']', '{', '}', '"', '\t']
 	var token : Dictionary = {
 		"#": "NUMBER SIGN",
 		"!": "EXCLAMATION MARK",

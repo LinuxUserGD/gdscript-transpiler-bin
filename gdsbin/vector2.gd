@@ -3,16 +3,9 @@ class_name VECTOR2
 var x : float = 0
 var y : float = 0
 
-
-## Constructor call, for API see https://docs.godotengine.org/de/latest/classes/index.html
-func _init() -> void:
-	x = 0
-	y = 0
-
-
 ## Returns this vector's angle with respect to the positive X axis, or (1, 0) vector, in radians.
-func angle() -> float:
-	return atan2(y, x)
+func angle(v) -> float:
+	return atan2(v.y, v.x)
 
 
 func from_angle(p_angle : float):
@@ -23,42 +16,42 @@ func from_angle(p_angle : float):
 
 
 ## Returns the length (magnitude) of this vector.
-func vec_length() -> float:
-	return sqrt(x * x + y * y)
+func vec_length(v) -> float:
+	return sqrt(length_squared(v))
 
 
 ## Returns the squared length (squared magnitude) of this vector.
-func length_squared() -> float:
-	return x * x + y * y
+func length_squared(v) -> float:
+	return v.x * v.x + v.y * v.y
 
 
 ## Returns the vector scaled to unit length. Equivalent to v / v.length().
-func normalized():
+func normalized(v):
 	var vector2 = VECTOR2.new()
-	var l : float = x * x + y * y
+	var l : float = v.x * v.x + v.y * v.y
 	if (l != 0):
 		l = sqrt(l)
-		vector2.x = x/l
-		vector2.y = y/l
+		vector2.x = v.x/l
+		vector2.y = v.y/l
 		return vector2
-	vector2.x = x
-	vector2.y = y
+	vector2.x = v.x
+	vector2.y = v.y
 	return vector2
 
 
 ## Returns true if the vector is normalized, false otherwise.
-func is_normalized() -> bool:
-	return math_is_equal_approx(length_squared(), 1)
+func is_normalized(v) -> bool:
+	return math_is_equal_approx(length_squared(v), 1)
 
 
 ## Returns the distance between this vector and to.
-func distance_to(p_vector2) -> float:
-	return sqrt((x - p_vector2.x) * (x - p_vector2.x) + (y - p_vector2.y) * (y - p_vector2.y))
+func distance_to(p_vector2, v) -> float:
+	return sqrt((v.x - p_vector2.x) * (v.x - p_vector2.x) + (v.y - p_vector2.y) * (v.y - p_vector2.y))
 
 
 ## Returns the squared distance between this vector and b.
-func distance_squared_to(p_vector2) -> float:
-	return (x - p_vector2.x) * (x - p_vector2.x) + (y - p_vector2.y) * (y - p_vector2.y)
+func distance_squared_to(p_vector2, v) -> float:
+	return (v.x - p_vector2.x) * (v.x - p_vector2.x) + (v.y - p_vector2.y) * (v.y - p_vector2.y)
 
 
 ## Returns the angle to the given vector, in radians.
@@ -68,7 +61,7 @@ func angle_to(vector2, p_vector2) -> float:
 
 ## Returns the angle between the line connecting the two points and the X axis, in radians.
 func angle_to_point(vector2, p_vector2) -> float:
-	return (sub(vector2, p_vector2)).angle()
+	return angle(sub(vector2, p_vector2))
 
 
 ## Returns the dot product of this vector and with. This can be used to compare the angle between two vectors.
@@ -82,34 +75,34 @@ func cross(vector2, p_other) -> float:
 
 
 ## Returns a new vector with each component set to one or negative one, depending on the signs of the components.
-func sign():
+func sign(v):
 	var sign: VECTOR2 = self
-	sign.x = sign(x)
-	sign.y = sign(y)
+	sign.x = sign(v.x)
+	sign.y = sign(v.y)
 	return sign
 
 
 ## Returns a new vector with all components rounded down (towards negative infinity).
-func floor():
+func floor(v):
 	var floor: VECTOR2 = self
-	floor.x = floor(x)
-	floor.y = floor(y)
+	floor.x = floor(v.x)
+	floor.y = floor(v.y)
 	return floor
 
 
 ## Returns a new vector with all components rounded up (towards positive infinity).
-func ceil():
+func ceil(v):
 	var ceil: VECTOR2 = self
-	ceil.x = ceil(x)
-	ceil.y = ceil(y)
+	ceil.x = ceil(v.x)
+	ceil.y = ceil(v.y)
 	return ceil
 
 
 ## Returns a new vector with all components rounded to the nearest integer, with halfway cases rounded away from zero.
-func round():
+func round(v):
 	var round: VECTOR2 = self
-	round.x = round(x)
-	round.y = round(y)
+	round.x = round(v.x)
+	round.y = round(v.y)
 	return round
 
 
@@ -141,7 +134,8 @@ func posmodv(vec2, p_modv):
 
 ## Returns this vector projected onto the vector b.
 func project(vector2, p_to):
-	return mul(p_to, dot(vector2, p_to) / p_to.length_squared())
+	return mul(p_to, dot(vector2, p_to) / p_to.length_squared(p_to))
+
 
 
 ## Deprecated, please use limit_length instead.
@@ -161,8 +155,8 @@ func snapped(vec2, p_step):
 
 
 ## Returns the vector with a maximum length by limiting its length to length.
-func limit_length(vec2, p_len : float):
-	var l : float = vec_length()
+func limit_length(vec2, p_len : float, v1):
+	var l : float = vec_length(v1)
 	var v = vec2
 	if (l > 0 && p_len < l):
 		return mul(div(v, l), p_len)
@@ -196,18 +190,18 @@ func reflect(vector2, p_normal):
 
 
 ## Returns true if this vector and v are approximately equal, by running math_is_equal_approx on each component.
-func vec_is_equal_approx(p_v) -> bool:
-	return math_is_equal_approx(x, p_v.x) and math_is_equal_approx(y, p_v.y)
+func vec_is_equal_approx(p_v, v) -> bool:
+	return math_is_equal_approx(v.x, p_v.x) and math_is_equal_approx(v.y, p_v.y)
 
 
 ## Returns true if this vector is approximately zero, by running is_zero_approx on each component.
-func is_zero_approx() -> bool:
-	return is_zero_approx(x) and is_zero_approx(y)
+func is_zero_approx(v) -> bool:
+	return is_zero_approx(v.x) and is_zero_approx(v.y)
 
 
 ## Returns true if this vector is finite, by running is_finite on each component.
-func is_finite() -> bool:
-	return is_finite(x) and is_finite(y)
+func is_finite(v) -> bool:
+	return is_finite(v.x) and is_finite(v.y)
 
 
 func sub(vec1, vec2):

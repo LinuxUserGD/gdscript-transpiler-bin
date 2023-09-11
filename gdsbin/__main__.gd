@@ -150,9 +150,14 @@ func start_exp(arg: String) -> void:
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
 	var tokenizer = Tokenizer.new()
-	for line in content.split("\n"):
+	var ast = Ast.new()
+	var root = Root.new()
+	var unit: Array = []
+	var con: Array = content.split("\n")
+	for line in con:
 		var tokens : Array = tokenizer.tokenize(line)
-		print(tokens)
+		unit.append(tokens)
+	print(ast.parsertree.printpt(ast.ast(0, unit.size(), 0, root, unit, con)))
 
 ## Wrapper function for start()
 func start_stages(argum: String, format: bool) -> void:
@@ -465,35 +470,26 @@ func run_parser() -> void:
 func run_vector2() -> void:
 	var vector2 = VECTOR2.new()
 	vector2.x = 3
-	print("x -> " + str(vector2.x))
 	vector2.y = 5
+	print("x -> " + str(vector2.x))
 	print("y -> " + str(vector2.y))
-	print("angle() -> " + str(vector2.angle()))
+	print("angle() -> " + str(vector2.angle(vector2)))
 	var vector2_res = vector2.from_angle(30)
 	print("from_angle(30) -> " + "(" + str(vector2_res.x) + ", " + str(vector2_res.y) + ")")
-	print("vec_length() -> " + str(vector2.vec_length()))
-	print("length_squared() -> " + str(vector2.length_squared()))
-	# Class instance not working yet in Python, see https://stackoverflow.com/a/7616959
-	vector2.x = 3
-	vector2.y = 5
-	var vector2_res2 = vector2.normalized()
+	print("vec_length() -> " + str(vector2.vec_length(vector2)))
+	print("length_squared() -> " + str(vector2.length_squared(vector2)))
+	var vector2_res2 = vector2.normalized(vector2)
 	print("normalized() -> " + "(" + str(vector2_res2.x) + ", " + str(vector2_res2.y) + ")")
-	print("is_normalized() -> " + str(vector2_res2.is_normalized()))
-	print("distance_to() -> " + str(vector2.distance_to(vector2)))
-	print("distance_squared_to() -> " + str(vector2.distance_squared_to(vector2)))
+	print("is_normalized() -> " + str(vector2_res2.is_normalized(vector2)))
+	print("distance_to() -> " + str(vector2.distance_to(vector2, vector2)))
+	print("distance_squared_to() -> " + str(vector2.distance_squared_to(vector2, vector2)))
 	print("angle_to() -> " + str(vector2.angle_to(vector2, vector2)))
 	print("angle_to_point() -> " + str(vector2.angle_to_point(vector2, vector2)))
-	vector2.x = 3
-	vector2.y = 5
 	print("dot() -> " + str(vector2.dot(vector2, vector2)))
 	print("cross() -> " + str(vector2.cross(vector2, vector2)))
 	var vec_rot = vector2.rotated(vector2, 1)
 	print("rotated() -> " + "(" + str(vec_rot.x) + ", " + str(vec_rot.y) + ")")
-	vector2.x = 3
-	vector2.y = 5
 	var vec_proj = vector2.project(vector2, vector2)
 	print("project() -> " + "(" + str(vec_proj.x) + ", " + str(vec_proj.y) + ")")
-	vector2.x = 3
-	vector2.y = 5
-	var vec_lim = vector2.limit_length(vector2, 2)
+	var vec_lim = vector2.limit_length(vector2, 2, vector2)
 	print("limit_length() -> " + "(" + str(vec_lim.x) + ", " + str(vec_lim.y) + ")")

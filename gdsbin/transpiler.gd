@@ -97,6 +97,16 @@ func transpile(content: String) -> String:
 		t += "\n"
 		t += "    _init()"
 		t += "\n"
+	if props.newinstance_def:
+		props.newinstance_def = false
+		t += "def newinstance(m):"
+		t += "\n"
+		t += "    i = type(m)(m.__name__, m.__doc__)"
+		t += "\n"
+		t += "    i.__dict__.update(m.__dict__)"
+		t += "\n"
+		t += "    return i"
+		t += "\n"
 	return t
 
 
@@ -249,6 +259,8 @@ func dict(arg: String) -> String:
 		con = true
 	if arg in props.types:
 		return e
+	elif arg in props.extend:
+		return e
 	elif (
 		arg
 		in [
@@ -396,6 +408,9 @@ func dict(arg: String) -> String:
 	while arg.contains(".ends_with"):
 		arg = arg.replace(".ends_with", ".endswith")
 		con = true
+	while arg.contains(".find("):
+		arg = arg.replace(".find(", ".index(")
+		con = true
 	while arg.contains(".contains"):
 		arg = arg.replace(".contains", ".find")
 		arg = "0 <= " + arg
@@ -501,6 +516,10 @@ func translate(e: String) -> String:
 	if e.contains("class_name"):
 		var script_name : String = e.split(" ")[1]
 		props.gds_deps.append(script_name)
+	if e.contains("extends"):
+		var script_name : String = e.split(" ")[1]
+		if script_name not in props.types:
+			props.extend.append(script_name)
 	var args: Array = e.split(" ")
 	e = ""
 	for arg in args:
@@ -554,7 +573,7 @@ func translate(e: String) -> String:
 					e += "import " + package + "." + imp_b
 					props.gds_deps[index] = "../" + package + "/" + imp_b
 			else:
-				# TODO: detect package import, otherwise use regular import
-				e = e.replace("import " + gds_name.to_lower(), "import gdsbin." + gds_name.to_lower() + " as " + gds_name.to_lower())
+				# Shallow copy, https://stackoverflow.com/a/11173076
+				e = e.replace("import " + gds_name.to_lower(), "import gdsbin." + gds_name.to_lower() + "; " + gds_name.to_lower() + " =  type(gdsbin." + gds_name.to_lower() + ")(gdsbin." + gds_name.to_lower() + ".__name__, gdsbin." + gds_name.to_lower() + ".__doc__); " + gds_name.to_lower() + ".__dict__.update(gdsbin." + gds_name.to_lower() + ".__dict__)")
 		index += 1
 	return e
