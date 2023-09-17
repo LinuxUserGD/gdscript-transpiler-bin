@@ -8,13 +8,15 @@ class_name Parsertree
 
 ## Method to process input string and list of tokens
 
-func printpt(element) -> String:
+func printpt(element, level: int) -> String:
 	match element.t():
 		"root":
 			var out: String = ""
 			if element.elem.size() > 0:
 				for e in element.elem:
-					out += printpt(e)
+					for i in range(level):
+						out += "	"
+					out += printpt(e, level)
 			return out
 		"comment":
 			return element.comment + "\n"
@@ -33,7 +35,7 @@ func printpt(element) -> String:
 			out += "):"
 			out += "\n"
 			if (element.root != null):
-				out += printpt(element.root)
+				out += printpt(element.root, level+1)
 			return out
 		"variable":
 			return "var " + element.vari + "\n"

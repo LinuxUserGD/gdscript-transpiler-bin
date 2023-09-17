@@ -157,7 +157,7 @@ func start_exp(arg: String) -> void:
 	for line in con:
 		var tokens : Array = tokenizer.tokenize(line)
 		unit.append(tokens)
-	print(ast.parsertree.printpt(ast.ast(0, unit.size(), 0, root, unit, con)))
+	print(ast.parsertree.printpt(ast.ast(0, unit.size(), 0, root, unit, con), 0))
 
 ## Wrapper function for start()
 func start_stages(argum: String, format: bool) -> void:

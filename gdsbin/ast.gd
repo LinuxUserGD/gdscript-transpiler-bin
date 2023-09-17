@@ -29,9 +29,9 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 			root = Root.new()
 			root.elem = []
 		if input[level] == "NUMBER SIGN":
-			_number_sign(root, input, conline)
+			_number_sign(root, conline)
 		elif input[level] == "NUMBER SIGN 2":
-			_number_sign(root, input, conline)
+			_number_sign(root, conline)
 		elif input[level] == "CLASS NAME":
 			_classname(root, input)
 		elif input[level] == "EXTENDS":
@@ -45,13 +45,13 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 			#print(input)
 	return root
 
-func _number_sign(root, input: Array, conline: String):
+func _number_sign(root, conline: String):
 	var comment = Comment.new()
 	comment.comment = conline
 	root.elem.append(comment)
 	#print(input)
 
-func _number_sign_2(root, input: Array, conline: String):
+func _number_sign_2(root, conline: String):
 	var comment = Comment.new()
 	comment.comment = conline
 	root.elem.append(comment)
