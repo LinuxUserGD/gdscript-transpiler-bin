@@ -33,9 +33,9 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 		elif input[level] == "NUMBER SIGN 2":
 			_number_sign(root, conline)
 		elif input[level] == "CLASS NAME":
-			_classname(root, input)
+			_classname(root, input, level)
 		elif input[level] == "EXTENDS":
-			_extend(root, input)
+			_extend(root, input, level)
 		elif input[level] == "FUNCTION":
 			_function(i, endln, level, root, input, unit, con)
 		elif input[level] == "VARIABLE":
@@ -57,15 +57,15 @@ func _number_sign_2(root, conline: String):
 	root.elem.append(comment)
 	#print(input)
 
-func _classname(root, input: Array):
+func _classname(root, input: Array, level: int):
 	var classn = Classn.new()
-	classn.classn = input[1]
+	classn.classn = input[level+1]
 	root.elem.append(classn)
 	#print(input)
 
-func _extend(root, input: Array):
+func _extend(root, input: Array, level: int):
 	var extend = Extend.new()
-	extend.extend = input[1]
+	extend.extend = input[level+1]
 	root.elem.append(extend)
 	#print(input)
 
@@ -78,9 +78,9 @@ func _variable(root, input: Array, level: int):
 
 func _function(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
 	var function = Function.new()
-	function.function = input[1]
-	var begin = input.find("LEFT BRACKET", 2)
-	var end = input.find("RIGHT BRACKET", 3)
+	function.function = input[level+1]
+	var begin = input.find("LEFT BRACKET", level+2)
+	var end = input.find("RIGHT BRACKET", level+3)
 	var add: bool = true
 	while (end-begin > 1):
 		if add:
