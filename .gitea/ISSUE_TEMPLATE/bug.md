@@ -3,6 +3,8 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG]"
 ref: 'dev'
+blank_issues_enabled: false
+milestone: '2164'
 labels:
   - bug
 
