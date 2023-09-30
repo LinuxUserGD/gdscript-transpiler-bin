@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build-linux:
     permissions: write-all
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: ${{ matrix.name }}
     outputs:
       status: ${{ steps.early.outputs.status }}
@@ -108,7 +108,7 @@ jobs:
           delete_workflow_pattern: Template
 
   deploy-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: Deploy (Alpine Linux x86_64)
     needs: build-linux
     if: needs.build-linux.outputs.status == 'deploy'
