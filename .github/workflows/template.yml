@@ -29,7 +29,7 @@ jobs:
         uses: LinuxUserGD/checkout@v4.1.0
 
       - name: Setup latest Alpine Linux
-        uses: jirutka/setup-alpine@v1.1.4
+        uses: LinuxUserGD/setup-alpine@v1.1.4
         with:
           branch: edge
           arch: x86_64
@@ -118,7 +118,7 @@ jobs:
         uses: LinuxUserGD/checkout@v4.1.0
 
       - name: Setup latest Alpine Linux
-        uses: jirutka/setup-alpine@v1.1.4
+        uses: LinuxUserGD/setup-alpine@v1.1.4
         with:
           branch: edge
           arch: x86_64
