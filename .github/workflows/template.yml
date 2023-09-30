@@ -28,10 +28,6 @@ jobs:
       - name: Check-out repository
         uses: LinuxUserGD/checkout@v4.1.0
 
-      - name: Install sudo binary
-        run: |
-          apt install -y sudo
-
       - name: Setup latest Alpine Linux
         uses: LinuxUserGD/setup-alpine@v1.1.4
         with:
@@ -94,10 +90,6 @@ jobs:
     steps:
       - name: Check-out repository
         uses: LinuxUserGD/checkout@v4.1.0
-
-      - name: Install sudo binary
-        run: |
-          apt install -y sudo
 
       - name: Setup latest Alpine Linux
         uses: LinuxUserGD/setup-alpine@v1.1.4
