@@ -97,8 +97,8 @@ jobs:
           branch: edge
           arch: x86_64
           packages: >
-            sqlite-dev
             sqlite-static
+            sqlite-dev
             sqlite-tcl
             readline-dev
             readline-static
