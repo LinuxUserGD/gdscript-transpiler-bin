@@ -42,7 +42,6 @@ jobs:
             tar
             file
             gzip
-            sudo
             xz
             python3
             python3-dev
@@ -140,7 +139,6 @@ jobs:
             tar
             file
             gzip
-            sudo
             xz
             xz-dev
           shell-name: alpine.sh
