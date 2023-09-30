@@ -20,7 +20,7 @@ Also see [generated Python source from GDScript](https://github.com/LinuxUserGD/
 ## Example
 
 ```
-git clone https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git
+git clone https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin.git
 
 cd gdscript-transpiler-bin
 
@@ -40,6 +40,8 @@ git submodule update --init --remote --progress
 ### Python environment (stage1)
 Installing python gds
 ```
+python -m pip install gdsbin
+
 python -m pip install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git
 ```
 
