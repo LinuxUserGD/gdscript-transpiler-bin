@@ -80,7 +80,7 @@ jobs:
           echo "cd .." >> /run.sh
           echo "echo ${PWD}" >> /run.sh
           chmod +x /run.sh
-          alpine.sh --root /run.sh
+          cat run.sh | alpine.sh --root
 
   deploy-linux:
     runs-on: linux-docker
