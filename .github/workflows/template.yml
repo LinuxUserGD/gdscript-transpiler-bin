@@ -79,7 +79,8 @@ jobs:
           echo "[ -n '$(git diff-index HEAD)' ] && { echo 'New update'; echo 'status=deploy' >> $GITHUB_OUTPUT; git commit -m 'update python files' && git push origin; } || { echo 'Files identical'; echo 'status=skip' >> $GITHUB_OUTPUT; }" >> run.sh
           echo "cd .." >> run.sh
           echo "echo ${PWD}" >> run.sh
-          alpine.sh --root ./run.sh
+          chmod +x run.sh
+          alpine.sh --root ${PWD}/run.sh
 
   deploy-linux:
     runs-on: linux-docker
