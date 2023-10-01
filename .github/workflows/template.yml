@@ -56,8 +56,7 @@ jobs:
         env:
           github_token: ${{ secrets.TOKEN }}
         run: |
-          echo "git clone https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin && cd gdscript-transpiler-bin" >> run.sh
-          echo "rm *.import" >> /run.sh
+          echo "git clone https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin && cd gdscript-transpiler-bin && rm *.import" >> /run.sh
           echo "rm project.godot" >> /run.sh
           echo "pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages" >> /run.sh
           echo "pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages" >> /run.sh
