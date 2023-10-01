@@ -79,7 +79,7 @@ jobs:
           [ -n "$(git diff-index HEAD)" ] && { echo "New update"; echo "status=deploy" >> $GITHUB_OUTPUT; git commit -m "update python files" && git push origin; } || { echo "Files identical"; echo "status=skip" >> $GITHUB_OUTPUT; }
           cd ..
           echo ${PWD}
-        shell: alpine.sh {0}
+        shell: alpine.sh --root {0}
 
   deploy-linux:
     runs-on: linux-docker
@@ -149,7 +149,7 @@ jobs:
         run: |
           curl https://pyenv.run | bash
           . /etc/profile
-        shell: alpine.sh {0}
+        shell: alpine.sh --root {0}
 
       - name: Compile python3.11 and gdscript-transpiler-bin
         env:
@@ -174,7 +174,7 @@ jobs:
           cd ..
           python -m gdsbin format=bin/gds.gd
           python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
-        shell: alpine.sh {0}
+        shell: alpine.sh --root {0}
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
