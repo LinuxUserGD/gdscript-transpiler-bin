@@ -150,14 +150,17 @@ func start_exp(arg: String) -> void:
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
 	var tokenizer = Tokenizer.new()
-	var ast = Ast.new()
-	var root = Root.new()
-	var unit: Array = []
 	var con: Array = content.split("\n")
+	var unit: Array = []
 	for line in con:
 		var tokens : Array = tokenizer.tokenize(line)
 		unit.append(tokens)
-	print(ast.parsertree.printpt(ast.ast(0, unit.size(), 0, root, unit, con), 0))
+	var ast = Ast.new()
+	var root = Root.new()
+	var ast_res = ast.ast(0, unit.size(), 0, root, unit, con)
+	var parsertree = Parsertree.new()
+	var string_res = parsertree.printpt(ast_res, 0)
+	print(string_res)
 
 ## Wrapper function for start()
 func start_stages(argum: String, format: bool) -> void:

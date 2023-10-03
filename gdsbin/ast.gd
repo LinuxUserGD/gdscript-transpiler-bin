@@ -6,8 +6,6 @@ class_name Ast
 ##
 ## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-tokenizer-py
 ## Method to process input string and list of tokens
-var parsertree = Parsertree.new()
-var tokenizer = Tokenizer.new()
 
 func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 	for i in range(startln, endln, 1):
@@ -78,6 +76,7 @@ func _variable(root, input: Array, level: int):
 
 func _function(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
 	var function = Function.new()
+	function.args = []
 	function.function = input[level+1]
 	var begin = input.find("LEFT BRACKET", level+2)
 	var end = input.find("RIGHT BRACKET", level+3)
