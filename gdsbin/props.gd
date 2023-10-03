@@ -4,7 +4,6 @@ class_name Props
 ##
 ## Properties for Transpiler
 ##
-## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-props-py
 
 var extend: Array = []
 

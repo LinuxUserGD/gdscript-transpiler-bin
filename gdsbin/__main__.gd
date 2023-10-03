@@ -6,7 +6,6 @@ class_name __Main__
 ## using search-and-replace syntax
 ##
 ##
-## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-__main__-py
 
 ## Runs once when executed, prints different output to console depending on argument
 func _ready() -> void:

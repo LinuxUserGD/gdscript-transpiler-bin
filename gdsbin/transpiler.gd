@@ -6,7 +6,6 @@ class_name Transpiler
 ## using search-and-replace syntax
 ##
 ##
-## @tutorial(Generated python script): https://gist.github.com/LinuxUserGD/73d8e030a44eb7f91bdeaea96a321f6d#file-transpiler-py
 
 ## Properties class instance
 var props = Props.new()
