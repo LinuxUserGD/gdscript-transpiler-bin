@@ -60,7 +60,7 @@ jobs:
           echo 'rm project.godot' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
-          echo 'pip3 install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages' >> /run.sh
+          echo 'pip3 install git+https://code.forgejo.org.com/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages' >> /run.sh
           echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages' >> /run.sh
           echo 'python3 -m gdsbin format=bin/gds.gd' >> /run.sh
           echo 'python3 -m gdsbin setup=setup.py' >> /run.sh
@@ -68,12 +68,12 @@ jobs:
           echo 'echo "Uploading files..."' >> /run.sh
           echo 'rm -rf addons gdUnit4 zig zig-template' >> /run.sh
           echo 'dir=$(echo */)' >> /run.sh
-          echo 'git clone https://oauth:$github_token@github.com/LinuxUserGD/gdscript-transpiler-source.git && cd gdscript-transpiler-source' >> /run.sh
+          echo 'git clone https://oauth:$github_token@code.forgejo.org/LinuxUserGD/gdscript-transpiler-source.git && cd gdscript-transpiler-source' >> /run.sh
           echo 'rm -rf $(ls | grep -v "requirements.txt")' >> /run.sh
           echo 'for i in $dir; do mkdir ${i} ; done' >> /run.sh
           echo 'for i in $dir; do cp -r "../${i}"*.py ${i} ; done' >> /run.sh
           echo 'for i in $(echo "setup.py pyproject.toml README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done' >> /run.sh
-          echo 'git config --global user.name "GitHub Actions Bot"' >> /run.sh
+          echo 'git config --global user.name "Forgejo Actions Bot"' >> /run.sh
           echo 'git config --global user.email "<>"' >> /run.sh
           echo 'git add -A' >> /run.sh
           echo '[ -n "$(git diff-index HEAD)" ] && { echo "New update"; echo "status=deploy" >> $GITHUB_OUTPUT; git commit -m "update python files" && git push origin; } || { echo "Files identical"; echo "status=skip" >> $GITHUB_OUTPUT; }' >> /run.sh
@@ -162,7 +162,7 @@ jobs:
           eval "$(pyenv virtualenv-init -)"
           pyenv install 3.11 && pyenv global 3.11
           pip install requests --break-system-packages
-          mv .github/workflows/api.py .
+          mv .forgejo/workflows/api.py .
           python api.py
           tar xpvf dev.tar.gz --numeric-owner
           rm dev.tar.gz
@@ -202,7 +202,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip --break-system-packages
           python -m pip install requests --break-system-packages
-          mv .github/workflows/api.py .
+          mv .forgejo/workflows/api.py .
           python api.py
           &'C:\Program Files\7-Zip\7z.exe' x dev.tar.gz -aoa
           rm dev.tar.gz
@@ -253,7 +253,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip --break-system-packages
           python -m pip install requests --break-system-packages
-          mv .github/workflows/api.py .
+          mv .forgejo/workflows/api.py .
           python api.py
           tar xpvf dev.tar.gz --numeric-owner
           rm dev.tar.gz

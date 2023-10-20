@@ -8,11 +8,11 @@
 
 `gdscript-transpiler-bin` is a GDScript compiler (using [Nuitka](https://github.com/Nuitka/Nuitka)), minimal scripts can be transpiled to Python.
 
-Binary builds are compiled using [GitHub Actions](https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions) for Alpine Linux, macOS and Windows x86_64.
+Binary builds are compiled using [Forgejo Actions](https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin/actions) for Alpine Linux, macOS and Windows x86_64.
 
 Other compatible platforms: Android (aarch64 and x86_64).
 
-Also see [generated Python source from GDScript](https://github.com/LinuxUserGD/gdscript-transpiler-source).
+Also see [generated Python source from GDScript](https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-source).
 
 
 [![Video](preview.gif)](preview.gif)
@@ -42,7 +42,7 @@ Installing python gds
 ```
 python -m pip install gdsbin
 
-python -m pip install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git
+python -m pip install git+https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-source.git
 ```
 
 - `python -m gdsbin help`
