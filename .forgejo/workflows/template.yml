@@ -54,13 +54,13 @@ jobs:
       - name: Run script inside Alpine chroot
         id: early
         env:
-          github_token: ${{ secrets.ACCESSTOKEN }}
+          github_token: ${{ secrets.TOKEN }
         run: |
           echo 'git clone https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin && cd gdscript-transpiler-bin && rm *.import' >> /run.sh
           echo 'rm project.godot' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
-          echo 'pip3 install git+https://code.forgejo.org.com/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages' >> /run.sh
+          echo 'pip3 install git+https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages' >> /run.sh
           echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages' >> /run.sh
           echo 'python3 -m gdsbin format=bin/gds.gd' >> /run.sh
           echo 'python3 -m gdsbin setup=setup.py' >> /run.sh
@@ -146,7 +146,7 @@ jobs:
 
       - name: Install pyenv
         env:
-          github_token: ${{ secrets.ACCESSTOKEN }}
+          github_token: ${{ secrets.TOKEN }}
         run: |
           curl https://pyenv.run | bash
           . /etc/profile
@@ -154,7 +154,7 @@ jobs:
 
       - name: Compile python3.11 and gdscript-transpiler-bin
         env:
-          github_token: ${{ secrets.ACCESSTOKEN }}
+          github_token: ${{ secrets.TOKEN }}
         run: |
           export PYENV_ROOT="$HOME/.pyenv"
           command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
