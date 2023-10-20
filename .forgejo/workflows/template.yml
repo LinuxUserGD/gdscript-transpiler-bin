@@ -1,0 +1,274 @@
+name: Template
+on:
+  push:
+    branches:
+      - 'dev'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-linux:
+    permissions: write-all
+    runs-on: linux-docker
+    name: ${{ matrix.name }}
+    outputs:
+      status: ${{ steps.early.outputs.status }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Minimal Template (target=editor, everything disabled)
+            cache-name: linux-template-minimal
+            target: editor
+            tests: false
+            artifact: true
+    steps:
+      - name: Check-out repository
+        uses: LinuxUserGD/checkout@v4.1.0
+
+      - name: Setup latest Alpine Linux
+        uses: LinuxUserGD/setup-alpine@v1.1.4
+        with:
+          branch: edge
+          arch: x86_64
+          packages: >
+            coreutils
+            wget
+            curl
+            git
+            bash
+            tar
+            file
+            gzip
+            xz
+            python3
+            python3-dev
+            py3-pip
+            py3-wheel
+            musl-dev
+            gcc
+          shell-name: alpine.sh
+
+      - name: Run script inside Alpine chroot
+        id: early
+        env:
+          github_token: ${{ secrets.TOKEN }}
+        run: |
+          echo 'git clone https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin && cd gdscript-transpiler-bin && rm *.import' >> /run.sh
+          echo 'rm project.godot' >> /run.sh
+          echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
+          echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
+          echo 'pip3 install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git --break-system-packages' >> /run.sh
+          echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages' >> /run.sh
+          echo 'python3 -m gdsbin format=bin/gds.gd' >> /run.sh
+          echo 'python3 -m gdsbin setup=setup.py' >> /run.sh
+          echo 'python3 -m gdsbin pyproject=pyproject.toml' >> /run.sh
+          echo 'echo "Uploading files..."' >> /run.sh
+          echo 'rm -rf addons gdUnit4 zig zig-template' >> /run.sh
+          echo 'dir=$(echo */)' >> /run.sh
+          echo 'git clone https://oauth:$github_token@github.com/LinuxUserGD/gdscript-transpiler-source.git && cd gdscript-transpiler-source' >> /run.sh
+          echo 'rm -rf $(ls | grep -v "requirements.txt")' >> /run.sh
+          echo 'for i in $dir; do mkdir ${i} ; done' >> /run.sh
+          echo 'for i in $dir; do cp -r "../${i}"*.py ${i} ; done' >> /run.sh
+          echo 'for i in $(echo "setup.py pyproject.toml README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done' >> /run.sh
+          echo 'git config --global user.name "GitHub Actions Bot"' >> /run.sh
+          echo 'git config --global user.email "<>"' >> /run.sh
+          echo 'git add -A' >> /run.sh
+          echo '[ -n "$(git diff-index HEAD)" ] && { echo "New update"; echo "status=deploy" >> $GITHUB_OUTPUT; git commit -m "update python files" && git push origin; } || { echo "Files identical"; echo "status=skip" >> $GITHUB_OUTPUT; }' >> /run.sh
+          echo 'cd ..' >> /run.sh
+          echo 'echo ${PWD}' >> /run.sh
+          chmod +x /run.sh
+          cat /run.sh | alpine.sh --root
+
+  deploy-linux:
+    runs-on: linux-docker
+    name: Deploy (Alpine Linux x86_64)
+    needs: build-linux
+    if: needs.build-linux.outputs.status == 'deploy'
+
+    steps:
+      - name: Check-out repository
+        uses: LinuxUserGD/checkout@v4.1.0
+
+      - name: Setup latest Alpine Linux
+        uses: LinuxUserGD/setup-alpine@v1.1.4
+        with:
+          branch: edge
+          arch: x86_64
+          packages: >
+            sqlite-static
+            sqlite-dev
+            sqlite-tcl
+            readline-dev
+            readline-static
+            coreutils
+            alsa-lib-dev
+            libffi-dev
+            ncurses-dev
+            tcl-dev
+            tk-dev
+            zlib-dev
+            gettext-dev
+            wget
+            curl
+            perl
+            libgcc
+            gcc
+            clang16-dev
+            clang16-extra-tools
+            clang16-libclang
+            clang16-libs
+            clang16-static
+            llvm16-dev
+            llvm-runtimes
+            llvm-libunwind-dev
+            llvm-libunwind-static
+            llvm16-libs
+            llvm16-static
+            compiler-rt
+            musl-dev
+            openssl
+            openssl-dev
+            linux-headers
+            patchelf
+            pkgconf
+            make
+            git
+            bash
+            tar
+            file
+            gzip
+            xz
+            xz-dev
+          shell-name: alpine.sh
+
+      - name: Install pyenv
+        env:
+          github_token: ${{ secrets.TOKEN }}
+        run: |
+          curl https://pyenv.run | bash
+          . /etc/profile
+        shell: alpine.sh --root {0}
+
+      - name: Compile python3.11 and gdscript-transpiler-bin
+        env:
+          github_token: ${{ secrets.TOKEN }}
+        run: |
+          export PYENV_ROOT="$HOME/.pyenv"
+          command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+          eval "$(pyenv init -)"
+          eval "$(pyenv virtualenv-init -)"
+          pyenv install 3.11 && pyenv global 3.11
+          pip install requests --break-system-packages
+          mv .github/workflows/api.py .
+          python api.py
+          tar xpvf dev.tar.gz --numeric-owner
+          rm dev.tar.gz
+          cd gdscript-transpiler-source-dev
+          pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip install -r requirements.txt --break-system-packages
+          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          pip install -e . --break-system-packages
+          cd ..
+          python -m gdsbin format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
+        shell: alpine.sh --root {0}
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Linux Build
+          path: /home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/gds
+
+  deploy-windows:
+    runs-on: windows-2022
+    name: Deploy (Windows x86_64)
+    needs: build-linux
+    if: needs.build-linux.outputs.status == 'deploy'
+
+    steps:
+      - name: Check-out repository
+        uses: LinuxUserGD/checkout@v4.1.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip --break-system-packages
+          python -m pip install requests --break-system-packages
+          mv .github/workflows/api.py .
+          python api.py
+          &'C:\Program Files\7-Zip\7z.exe' x dev.tar.gz -aoa
+          rm dev.tar.gz
+          &'C:\Program Files\7-Zip\7z.exe' x dev.tar -aoa
+          rm dev.tar
+          cd gdscript-transpiler-source-dev
+          pip install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip install -r requirements.txt --break-system-packages
+          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          python -m pip install -e . --break-system-packages
+
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v1.4
+        with:
+          version: latest
+          platform: x64
+
+      - name: Build Executable
+        run: |
+          cd D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin
+          python -m gdsbin format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output
+
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows Build
+          path: D:\a\gdscript-transpiler-bin\gdscript-transpiler-bin\gds.exe
+
+  deploy-macos:
+    runs-on: macos-12
+    name: Deploy (macOS x86_64)
+    needs: build-linux
+    if: needs.build-linux.outputs.status == 'deploy'
+
+    steps:
+      - name: Check-out repository
+        uses: LinuxUserGD/checkout@v4.1.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Compile gdscript-transpiler-bin
+        run: |
+          python -m pip install --upgrade pip --break-system-packages
+          python -m pip install requests --break-system-packages
+          mv .github/workflows/api.py .
+          python api.py
+          tar xpvf dev.tar.gz --numeric-owner
+          rm dev.tar.gz
+          cd gdscript-transpiler-source-dev
+          pip install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
+          pip install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
+          pip install -r requirements.txt --break-system-packages
+          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
+          python -m pip install -e . --break-system-packages
+          cd ..
+          python -m gdsbin format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
+
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: MacOS Build
+          path: /Users/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/gds
