@@ -68,7 +68,8 @@ jobs:
           echo 'echo "Uploading files..."' >> /run.sh
           echo 'rm -rf addons gdUnit4 zig zig-template' >> /run.sh
           echo 'dir=$(echo */)' >> /run.sh
-          echo "git clone https://oauth:$github_token@code.forgejo.org/LinuxUserGD/gdscript-transpiler-source.git && cd gdscript-transpiler-source" >> /run.sh
+          echo github_token=$github_token >> run.sh
+          echo 'git clone https://oauth:$github_token@code.forgejo.org/LinuxUserGD/gdscript-transpiler-source.git && cd gdscript-transpiler-source' >> /run.sh
           echo 'rm -rf $(ls | grep -v "requirements.txt")' >> /run.sh
           echo 'for i in $dir; do mkdir ${i} ; done' >> /run.sh
           echo 'for i in $dir; do cp -r "../${i}"*.py ${i} ; done' >> /run.sh
