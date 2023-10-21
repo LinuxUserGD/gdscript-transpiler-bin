@@ -12,7 +12,7 @@ Binary builds are compiled using [Forgejo Actions](https://code.forgejo.org/Linu
 
 Other compatible platforms: Android (aarch64 and x86_64).
 
-Also see [generated Python source from GDScript](https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-source).
+Also see [generated Python source from GDScript](https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin/src/branch/python).
 
 
 [![Video](preview.gif)](preview.gif)
