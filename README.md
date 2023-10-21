@@ -42,7 +42,7 @@ Installing python gds
 ```
 python -m pip install gdsbin
 
-python -m pip install git+https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-source.git
+python -m pip install git+https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin.git@python
 ```
 
 - `python -m gdsbin help`
