@@ -1,15 +1,3 @@
-import gdsbin.parsertree
-
-parsertree = type(gdsbin.parsertree)(
-    gdsbin.parsertree.__name__, gdsbin.parsertree.__doc__
-)
-parsertree.__dict__.update(gdsbin.parsertree.__dict__)
-import gdsbin.tokenizer
-
-tokenizer = type(gdsbin.tokenizer)(gdsbin.tokenizer.__name__, gdsbin.tokenizer.__doc__)
-tokenizer.__dict__.update(gdsbin.tokenizer.__dict__)
-
-
 def ast(startln, endln, level, root, unit, con):
     for i in range(startln, endln, 1):
         input = unit[i]
@@ -105,6 +93,7 @@ def _function(startln, endln, level, root, input, unit, con):
 
     function = type(gdsbin.function)(gdsbin.function.__name__, gdsbin.function.__doc__)
     function.__dict__.update(gdsbin.function.__dict__)
+    function.args = []
     function.function = input[level + 1]
     begin = input.index("LEFT BRACKET", level + 2)
     end = input.index("RIGHT BRACKET", level + 3)

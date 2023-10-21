@@ -197,6 +197,11 @@ def start_exp(arg):
         gdsbin.tokenizer.__name__, gdsbin.tokenizer.__doc__
     )
     tokenizer.__dict__.update(gdsbin.tokenizer.__dict__)
+    con = content.split("\n")
+    unit = []
+    for line in con:
+        tokens = tokenizer.tokenize(line)
+        unit.append(tokens)
     import gdsbin.ast
 
     ast = type(gdsbin.ast)(gdsbin.ast.__name__, gdsbin.ast.__doc__)
@@ -205,12 +210,15 @@ def start_exp(arg):
 
     root = type(gdsbin.root)(gdsbin.root.__name__, gdsbin.root.__doc__)
     root.__dict__.update(gdsbin.root.__dict__)
-    unit = []
-    con = content.split("\n")
-    for line in con:
-        tokens = tokenizer.tokenize(line)
-        unit.append(tokens)
-    print(ast.parsertree.printpt(ast.ast(0, len(unit), 0, root, unit, con), 0))
+    ast_res = ast.ast(0, len(unit), 0, root, unit, con)
+    import gdsbin.parsertree
+
+    parsertree = type(gdsbin.parsertree)(
+        gdsbin.parsertree.__name__, gdsbin.parsertree.__doc__
+    )
+    parsertree.__dict__.update(gdsbin.parsertree.__dict__)
+    string_res = parsertree.printpt(ast_res, 0)
+    print(string_res)
 
 
 def start_stages(argum, format):
