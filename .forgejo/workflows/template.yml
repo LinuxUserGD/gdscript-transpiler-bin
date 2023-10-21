@@ -54,7 +54,7 @@ jobs:
       - name: Run script inside Alpine chroot
         id: early
         env:
-          CUSTOMTOKEN: ${{ secrets.TOKEN }
+          CUSTOMTOKEN: ${{ secrets.INPUT_TOKEN }
         run: |
           echo 'git clone https://code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin && cd gdscript-transpiler-bin && rm *.import' >> /run.sh
           echo 'rm project.godot' >> /run.sh
@@ -147,7 +147,7 @@ jobs:
 
       - name: Install pyenv
         env:
-          CUSTOMTOKEN: ${{ secrets.TOKEN }}
+          CUSTOMTOKEN: ${{ secrets.INPUT_TOKEN }}
         run: |
           curl https://pyenv.run | bash
           . /etc/profile
@@ -155,7 +155,7 @@ jobs:
 
       - name: Compile python3.11 and gdscript-transpiler-bin
         env:
-          CUSTOMTOKEN: ${{ secrets.TOKEN }}
+          CUSTOMTOKEN: ${{ secrets.INPUT_TOKEN }}
         run: |
           export PYENV_ROOT="$HOME/.pyenv"
           command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
