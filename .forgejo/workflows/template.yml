@@ -40,6 +40,8 @@ jobs:
             git
             bash
             tar
+            sed
+            grep
             file
             gzip
             xz
@@ -68,8 +70,8 @@ jobs:
           echo 'echo "Uploading files..."' >> /run.sh
           echo 'rm -rf addons gdUnit4 zig zig-template' >> /run.sh
           echo 'dir=$(echo */)' >> /run.sh
-          echo CUSTOMTOKEN=${{ secrets.GITHUB_TOKEN }} >> run.sh
           echo 'git clone https://oauth:$CUSTOMTOKEN@code.forgejo.org/LinuxUserGD/gdscript-transpiler-bin.git -b python && cd gdscript-transpiler-bin' >> /run.sh
+          grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
           echo 'rm -rf $(ls | grep -v "requirements.txt")' >> /run.sh
           echo 'for i in $dir; do mkdir ${i} ; done' >> /run.sh
           echo 'for i in $dir; do cp -r "../${i}"*.py ${i} ; done' >> /run.sh
