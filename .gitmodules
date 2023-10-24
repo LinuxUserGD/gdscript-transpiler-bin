@@ -12,7 +12,7 @@
 	update = rebase
 [submodule "zig-template"]
 	path = zig-template
-	url = https://code.forgejo.org/LinuxUserGD/zig-template.git
+	url = https://codeberg.org/LinuxUserGD/zig-template.git
 	remote = origin
 	branch = dev
 	update = rebase
