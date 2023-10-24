@@ -26,10 +26,10 @@ jobs:
             artifact: true
     steps:
       - name: Check-out repository
-        uses: LinuxUserGD/checkout@v4.1.0
+        uses: https://codeberg.org/actions/checkout@main
 
       - name: Setup latest Alpine Linux
-        uses: LinuxUserGD/setup-alpine@v1.1.4
+        uses: https://codeberg.org/LinuxUserGD/setup-alpine@master
         with:
           branch: edge
           arch: x86_64
@@ -93,10 +93,10 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: LinuxUserGD/checkout@v4.1.0
+        uses: https://codeberg.org/actions/checkout@main
 
       - name: Setup latest Alpine Linux
-        uses: LinuxUserGD/setup-alpine@v1.1.4
+        uses: https://codeberg.org/LinuxUserGD/setup-alpine@master
         with:
           branch: edge
           arch: x86_64
