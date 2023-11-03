@@ -478,13 +478,13 @@ def dict(arg):
                 {
                     "major": 4,
                     "minor": 1,
-                    "patch": 2,
-                    "hex": 262402,
+                    "patch": 3,
+                    "hex": 262403,
                     "status": "stable",
                     "build": "gentoo",
                     "year": 2023,
-                    "hash": "399c9dc393f6f84c0b4e4d4117906c70c048ecf2",
-                    "string": "4.1.2-stable (gentoo)",
+                    "hash": "f06b6836a9ecfd0e6ec96d8bcf0fe9c9bc10dcbf",
+                    "string": "4.1.3-stable (gentoo)",
                 }
             ),
         )
