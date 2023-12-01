@@ -477,14 +477,14 @@ def dict(arg):
             str(
                 {
                     "major": 4,
-                    "minor": 1,
-                    "patch": 3,
-                    "hex": 262403,
+                    "minor": 2,
+                    "patch": 0,
+                    "hex": 262656,
                     "status": "stable",
                     "build": "gentoo",
                     "year": 2023,
-                    "hash": "f06b6836a9ecfd0e6ec96d8bcf0fe9c9bc10dcbf",
-                    "string": "4.1.3-stable (gentoo)",
+                    "hash": "46dc277917a93cbf601bbcf0d27d00f6feeec0d5",
+                    "string": "4.2-stable (gentoo)",
                 }
             ),
         )
