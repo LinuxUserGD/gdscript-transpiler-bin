@@ -169,7 +169,8 @@ func start_stages(argum: String, format: bool) -> void:
 
 ## Format function
 func form(stdout: Array, imp: String, _imp_string: String):
-	OS.execute('python',['-c',imp+ ';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)
+	var imp2: String = ';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'
+	OS.execute('python',['-c',imp+imp2],stdout,true,false)
 	return stdout
 
 ## Function for saving setup.py
@@ -257,8 +258,13 @@ func start(arg: String, stage2: bool) -> void:
 		print("Formatting " + pathstr + "py...")
 	var stdout: Array = []
 	var imp_string: String = "import black"
+	var bl: String = ";mode=black.mode.Mode(target_versions=versions,"
+	bl += "line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,"
+	bl += "skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,"
+	bl += "experimental_string_processing=False,preview=False,"
+	bl += "python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
 	imp_string += ";versions=set()"
-	imp_string += ";mode=black.mode.Mode(target_versions=versions,line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,experimental_string_processing=False,preview=False,python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
+	imp_string += bl
 	imp_string += ";write_back = black.WriteBack.from_configuration"
 	imp_string += "("
 	imp_string += "check="
@@ -283,7 +289,6 @@ func start(arg: String, stage2: bool) -> void:
 	imp_string += "'"
 	imp_string += "+'py"
 	imp_string += "')"
-	
 	if stage2:
 		stdout = form(stdout, imp_string, pathstr)
 	for dep in deps:
@@ -311,7 +316,8 @@ func version_info() -> void:
 	var id: String = info.get("hash")
 	var version = Version.new()
 	print("GDScript Transpiler " + version.__version__ + "\n")
-	print("Compatible with Godot" + "\n" + str(major) + "." + str(minor) + "." + str(patch) + "." + status + "." + build + "." + id.left(9))
+	var GDV: String = str(major) + "." + str(minor) + "." + str(patch)
+	print("Compatible with Godot" + "\n" + GDV + "." + status + "." + build + "." + id.left(9))
 	var stdout: Array = []
 	OS.execute('python',['-c','import sys;print(sys.version)'],stdout,true,false)
 	print("Python" + "\n" + stdout[0].split("\n")[0])
@@ -332,22 +338,33 @@ func version_info() -> void:
 
 ## Help function which prints all possible commands
 func help() -> void:
+	const VER_DESC = "show program's version number and exit"
+	const HELP_DESC = "show this help message and exit"
+	const FMT_DESC = "transpile and format GDScript files recursively"
+	const RUN_DESC = "run GDScript file directly using CPython"
+	const COMP_DESC = "compile GDScript file to binary using Clang/Nuitka"
+	const EXP_DESC = "experimental option to tokenize GDScript file"
+	const SETUP_DESC = "output a setup.py file to install python project"
+	const PYPR_DESC = "output a pyproject.toml file to install python project"
+	const VEC2_DESC = "testing Vector2 implementation"
+	const PARSER_DESC = "running GDScript tests (not working yet)"
+	const BENCH_DESC = "running benchmark to compare performance"
+	const ZIG_DESC = "build latest Zig toolchain from source"
 	print("Usage: gds [options]")
 	print()
 	print("Options:")
-	print("  " + "version                           " + "show program's version number and exit")
-	print("  " + "help                              " + "show this help message and exit")
-	print("  " + "format=../path/to/file.gd         " + "transpile and format GDScript files recursively")
-	print("  " + "run=../path/to/file.gd            " + "run GDScript file directly using x-python")
-	print("  " + "compile=../path/to/file.gd        " + "compile GDScript file to binary using Clang/Nuitka")
-	print("  " + "exp=../path/to/file.gd            " + "experimental option to tokenize GDScript file")
-	print("  " + "setup=../path/setup.py            " + "output a setup.py file to install python project")
-	print("  " + "pyproject=../path/pyproject.toml  " + "output a pyproject.toml file to install python project")
-	print("  " + "test=vector2                      " + "testing Vector2 implementation")
-	print("  " + "test=parser                       " + "running GDScript tests (not working yet)")
-	print("  " + "benchmark                         " + "running benchmark to compare performance")
-	print("  " + "compile_zig                       " + "build latest Zig toolchain from source")
-
+	print("  " + "version                           " + VER_DESC)
+	print("  " + "help                              " + HELP_DESC)
+	print("  " + "format=../path/to/file.gd         " + FMT_DESC)
+	print("  " + "run=../path/to/file.gd            " + RUN_DESC)
+	print("  " + "compile=../path/to/file.gd        " + COMP_DESC)
+	print("  " + "exp=../path/to/file.gd            " + EXP_DESC)
+	print("  " + "setup=../path/setup.py            " + SETUP_DESC)
+	print("  " + "pyproject=../path/pyproject.toml  " + PYPR_DESC)
+	print("  " + "test=vector2                      " + VEC2_DESC)
+	print("  " + "test=parser                       " + PARSER_DESC)
+	print("  " + "benchmark                         " + BENCH_DESC)
+	print("  " + "compile_zig                       " + ZIG_DESC)
 ## Testing benchmark
 func run_benchmark() -> void:
 	var test: Dictionary = {}

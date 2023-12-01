@@ -46,11 +46,11 @@ text = "extends Node
 
 func _ready():
 	pass"
+caret_blink = true
+syntax_highlighter = SubResource("CodeHighlighter_wdykl")
 highlight_all_occurrences = true
 highlight_current_line = true
 draw_tabs = true
-syntax_highlighter = SubResource("CodeHighlighter_wdykl")
-caret_blink = true
 script = ExtResource("3_d7aim")
 
 [node name="RunButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
@@ -78,11 +78,11 @@ layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_b4qlw")
 editable = false
+caret_blink = true
+syntax_highlighter = SubResource("CodeHighlighter_r1olw")
 highlight_all_occurrences = true
 highlight_current_line = true
 draw_tabs = true
-syntax_highlighter = SubResource("CodeHighlighter_r1olw")
-caret_blink = true
 script = ExtResource("3_d7aim")
 
 [node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor"]

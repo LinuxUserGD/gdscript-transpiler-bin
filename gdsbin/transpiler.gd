@@ -15,7 +15,7 @@ var props = Props.new()
 ## Imports are added to transpiled python script if required.
 func transpile(content: String) -> String:
 	props.types.sort()
-	var t = ""
+	var t: String = ""
 	for line in content.split("\n"):
 		if not line.begins_with("##"):
 			t += analyze(line)
@@ -142,7 +142,16 @@ func check_match(l: String):
 	for i in l:
 		if i != " " && i != "	":
 			out += i
-	if out.ends_with(":") and not out.begins_with("for") and not out.begins_with("while") and not out.begins_with("if") and not out.contains("(") and not out.contains(")") and not out.contains("match") and not out.begins_with("else") and not out.contains("elif"):
+	var cond: bool = out.ends_with(":")
+	cond = (cond and not out.begins_with("for"))
+	cond = (cond and not out.begins_with("while"))
+	cond = (cond and not out.begins_with("if"))
+	cond = (cond and not out.contains("("))
+	cond = (cond and not out.contains(")"))
+	cond = (cond and not out.contains("match"))
+	cond = (cond and not out.begins_with("else"))
+	cond = (cond and not out.contains("elif"))
+	if cond:
 		var args: Array = l.split("	")
 		var count = 0
 		for arg_str in args:
@@ -158,8 +167,8 @@ func check_match(l: String):
 
 
 func check_new(l: String):
-	const names: Array[String] = ["preload", "load"]
-	for n in names:
+	const NAMES: Array[String] = ["preload", "load"]
+	for n in NAMES:
 		var name: String = n + "(" + '"'
 		name += "res://"
 		var search: String = ".gd" + '"'
@@ -188,7 +197,8 @@ func check_new(l: String):
 			search += ").new()"
 	return l
 
-## Function for splitting lines (excluding double quoted Strings) into readable GDScript syntax expressions which later can be converted
+## Function for splitting lines (excluding double quoted Strings) into
+## readable GDScript syntax expressions which later can be converted
 func analyze(l: String) -> String:
 	l = check_match(l)
 	l = check_new(l)
@@ -234,13 +244,13 @@ func dict(arg: String) -> String:
 		e += arg
 		e += " "
 		return e
-	elif arg == "File.new()":
+	if arg == "File.new()":
 		e += props.repl_dict[arg]
 		e += '"'
 		e += '"'
 		e += " "
 		return e
-	elif arg == "Thread.new()":
+	if arg == "Thread.new()":
 		e += props.repl_dict[arg]
 		e += "	Thread()"
 		e += " "
@@ -258,9 +268,9 @@ func dict(arg: String) -> String:
 		con = true
 	if arg in props.types:
 		return e
-	elif arg in props.extend:
+	if arg in props.extend:
 		return e
-	elif (
+	if (
 		arg
 		in [
 			"-s",
@@ -275,9 +285,11 @@ func dict(arg: String) -> String:
 	):
 		e += props.repl_dict[arg]
 		return e
-	elif arg in props.gds_deps:
+	if arg in props.gds_deps:
 		return e
-	elif (
+	var bl: String = "';black.reformat_one(src=src,fast=False,write_back=write_back"
+	bl += ",mode=mode,report=report)'],stdout,true,false)"
+	if (
 		arg
 		in [
 			"func",
@@ -288,7 +300,7 @@ func dict(arg: String) -> String:
 			"sys;print(sys.version)'],stdout,true,false)",
 			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
 			"';print(black.__version__)'],stdout,true,false)",
-			"';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)",
+			bl,
 			"';nuitka.__main__.main()'],stdout,true,false)",
 			"';ziglang.__main__'],stdout,true,false)",
 		]
@@ -296,61 +308,61 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		e += " "
 		return e
-	elif arg == "_ready()" or arg == "_init()":
+	if arg == "_ready()" or arg == "_init()":
 		e += props.repl_dict[arg]
 		e += " "
 		props.init_def = true
 		return e
-	elif arg.ends_with("_ready()"):
+	if arg.ends_with("_ready()"):
 		arg = arg.replace("_ready()", props.repl_dict["_ready()"])
 		e += arg
 		e += " "
 		return e
-	elif arg.ends_with("_init()"):
+	if arg.ends_with("_init()"):
 		arg = arg.replace("_init()", props.repl_dict["_init()"])
 		e += arg
 		e += " "
 		return e
-	elif arg.contains("null"):
+	if arg.contains("null"):
 		arg = arg.replace("null", props.repl_dict["null"])
 		e += arg
 		e += " "
 		return e
-	elif arg == "OS.execute('python',['-c','import":
+	if arg == "OS.execute('python',['-c','import":
 		e += props.repl_dict[arg]
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str1+":
+	if arg == "OS.execute('python',['-c',import_str1+":
 		e += props.repl_dict[arg]
 		props.nuitka_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',nuitka+":
+	if arg == "OS.execute('python',['-c',nuitka+":
 		e += props.repl_dict[arg]
 		return e
-	elif arg == "OS.execute('python',['-c',import_str2+":
+	if arg == "OS.execute('python',['-c',import_str2+":
 		e += props.repl_dict[arg]
 		props.black_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',import_str3+":
+	if arg == "OS.execute('python',['-c',import_str3+":
 		e += props.repl_dict[arg]
 		props.sys_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',imp+":
+	if arg == "OS.execute('python',['-c',imp+":
 		e += props.repl_dict[arg]
 		props.black_imp = true
 		return e
-	elif arg == "OS.execute('python',['-c',xpy+":
+	if arg == "OS.execute('python',['-c',xpy+":
 		e += props.repl_dict[arg]
 		return e
-	elif arg == "OS.execute('python',['-c',nuitka+":
+	if arg == "OS.execute('python',['-c',nuitka+":
 		e += props.repl_dict[arg]
 		return e
-	elif arg == "quit()" or arg == "self.quit()":
+	if arg == "quit()" or arg == "self.quit()":
 		e += props.repl_dict[arg]
 		e += " "
 		props.sys_imp = true
 		return e
-	elif arg == "#!/usr/bin/godot":
+	if arg == "#!/usr/bin/godot":
 		e += props.repl_dict[arg]
 		props.py_imp = true
 		e += " "
@@ -573,6 +585,9 @@ func translate(e: String) -> String:
 					props.gds_deps[index] = "../" + package + "/" + imp_b
 			else:
 				# Shallow copy, https://stackoverflow.com/a/11173076
-				e = e.replace("import " + gds_name.to_lower(), "import gdsbin." + gds_name.to_lower() + "; " + gds_name.to_lower() + " =  type(gdsbin." + gds_name.to_lower() + ")(gdsbin." + gds_name.to_lower() + ".__name__, gdsbin." + gds_name.to_lower() + ".__doc__); " + gds_name.to_lower() + ".__dict__.update(gdsbin." + gds_name.to_lower() + ".__dict__)")
+				var L: String = gds_name.to_lower()
+				var r: String = "import gdsbin." + L + "; " + L + " =  type(gdsbin." + L
+				r += r + ")(gdsbin." + L + ".__name__, gdsbin." + L + ".__doc__); " + L
+				e = e.replace("import " + L, r + ".__dict__.update(gdsbin." + L + ".__dict__)")
 		index += 1
 	return e
