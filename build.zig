@@ -10,7 +10,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = builtin.Mode.ReleaseFast,
     });
-    bin.rdynamic = true;
+    bin.rdynamic = false;
     bin.strip = true;
     b.installArtifact(bin);
 }
