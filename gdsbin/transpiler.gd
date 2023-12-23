@@ -585,9 +585,12 @@ func translate(e: String) -> String:
 					props.gds_deps[index] = "../" + package + "/" + imp_b
 			else:
 				# Shallow copy, https://stackoverflow.com/a/11173076
-				var L: String = gds_name.to_lower()
-				var r: String = "import gdsbin." + L + "; " + L + " =  type(gdsbin." + L
-				r += r + ")(gdsbin." + L + ".__name__, gdsbin." + L + ".__doc__); " + L
-				e = e.replace("import " + L, r + ".__dict__.update(gdsbin." + L + ".__dict__)")
+				var gds = gds_name.to_lower()
+				var b = "gdsbin." + gds
+				var str1 = "import " + gds
+				var str2 = "import " + b + "; "
+				var str3 = gds + " =  type(" + b + ")(" + b + ".__name__, " + b + ".__doc__); "
+				var str4 = gds + ".__dict__.update(" + b + ".__dict__)"
+				e = e.replace(str1, str2 + str3 + str4)
 		index += 1
 	return e
