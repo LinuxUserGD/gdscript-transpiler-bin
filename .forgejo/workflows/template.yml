@@ -58,11 +58,11 @@ jobs:
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo 'git clone https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin && cd gdscript-transpiler-bin && rm *.import' >> /run.sh
+          echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin && rm *.import' >> /run.sh
           echo 'rm project.godot' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
-          echo 'pip3 install git+https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages' >> /run.sh
+          echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages' >> /run.sh
           echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages' >> /run.sh
           echo 'python3 -m gdsbin format=bin/gds.gd' >> /run.sh
           echo 'python3 -m gdsbin setup=setup.py' >> /run.sh
