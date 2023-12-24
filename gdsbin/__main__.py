@@ -228,6 +228,18 @@ def start_stages(argum, format):
 
 
 def form(stdout, imp, _imp_string):
+    args = {
+        "src": "src",
+        "fast": "False",
+        "write_back": "write_back",
+        "mode": "mode",
+        "report": "report",
+    }
+    args_str = ""
+    for arg in args:
+        args_str += arg + "=" + args[arg] + ","
+    args_str = left(args_str, len(args_str) - 1)
+    _black_ = ";black.reformat_one(" + args_str + ")"
     versions = set()
     mode = black.mode.Mode(
         target_versions=versions,
@@ -345,8 +357,13 @@ def start(arg, stage2):
         print("Formatting " + pathstr + "py...")
     stdout = []
     imp_string = "import black"
+    bl = ";mode=black.mode.Mode(target_versions=versions,"
+    bl += "line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,"
+    bl += "skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,"
+    bl += "experimental_string_processing=False,preview=False,"
+    bl += "python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
     imp_string += ";versions=set()"
-    imp_string += ";mode=black.mode.Mode(target_versions=versions,line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,experimental_string_processing=False,preview=False,python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
+    imp_string += bl
     imp_string += ";write_back = black.WriteBack.from_configuration"
     imp_string += "("
     imp_string += "check="
@@ -371,7 +388,6 @@ def start(arg, stage2):
     imp_string += "'"
     imp_string += "+'py"
     imp_string += "')"
-
     if stage2:
         stdout = form(stdout, imp_string, pathstr)
     for dep in deps:
@@ -392,13 +408,13 @@ def version_info():
     info = {
         "major": 4,
         "minor": 2,
-        "patch": 0,
-        "hex": 262656,
+        "patch": 1,
+        "hex": 262657,
         "status": "stable",
         "build": "gentoo",
         "year": 2023,
-        "hash": "46dc277917a93cbf601bbcf0d27d00f6feeec0d5",
-        "string": "4.2-stable (gentoo)",
+        "hash": "b09f793f564a6c95dc76acc654b390e68441bd01",
+        "string": "4.2.1-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
@@ -411,14 +427,11 @@ def version_info():
     version = type(gdsbin.version)(gdsbin.version.__name__, gdsbin.version.__doc__)
     version.__dict__.update(gdsbin.version.__dict__)
     print("GDScript Transpiler " + version.__version__ + "\n")
+    GDV = str(major) + "." + str(minor) + "." + str(patch)
     print(
         "Compatible with Godot"
         + "\n"
-        + str(major)
-        + "."
-        + str(minor)
-        + "."
-        + str(patch)
+        + GDV
         + "."
         + status
         + "."
@@ -449,65 +462,33 @@ def version_info():
 
 
 def help():
+    VER_DESC = "show program's version number and exit"
+    HELP_DESC = "show this help message and exit"
+    FMT_DESC = "transpile and format GDScript files recursively"
+    RUN_DESC = "run GDScript file directly using CPython"
+    COMP_DESC = "compile GDScript file to binary using Clang/Nuitka"
+    EXP_DESC = "experimental option to tokenize GDScript file"
+    SETUP_DESC = "output a setup.py file to install python project"
+    PYPR_DESC = "output a pyproject.toml file to install python project"
+    VEC2_DESC = "testing Vector2 implementation"
+    PARSER_DESC = "running GDScript tests (not working yet)"
+    BENCH_DESC = "running benchmark to compare performance"
+    ZIG_DESC = "build latest Zig toolchain from source"
     print("Usage: gds [options]")
     print("\n")
     print("Options:")
-    print(
-        "  "
-        + "version                           "
-        + "show program's version number and exit"
-    )
-    print(
-        "  " + "help                              " + "show this help message and exit"
-    )
-    print(
-        "  "
-        + "format=../path/to/file.gd         "
-        + "transpile and format GDScript files recursively"
-    )
-    print(
-        "  "
-        + "run=../path/to/file.gd            "
-        + "run GDScript file directly using x-python"
-    )
-    print(
-        "  "
-        + "compile=../path/to/file.gd        "
-        + "compile GDScript file to binary using Clang/Nuitka"
-    )
-    print(
-        "  "
-        + "exp=../path/to/file.gd            "
-        + "experimental option to tokenize GDScript file"
-    )
-    print(
-        "  "
-        + "setup=../path/setup.py            "
-        + "output a setup.py file to install python project"
-    )
-    print(
-        "  "
-        + "pyproject=../path/pyproject.toml  "
-        + "output a pyproject.toml file to install python project"
-    )
-    print(
-        "  " + "test=vector2                      " + "testing Vector2 implementation"
-    )
-    print(
-        "  "
-        + "test=parser                       "
-        + "running GDScript tests (not working yet)"
-    )
-    print(
-        "  "
-        + "benchmark                         "
-        + "running benchmark to compare performance"
-    )
-    print(
-        "  "
-        + "compile_zig                       "
-        + "build latest Zig toolchain from source"
-    )
+    print("  " + "version                           " + VER_DESC)
+    print("  " + "help                              " + HELP_DESC)
+    print("  " + "format=../path/to/file.gd         " + FMT_DESC)
+    print("  " + "run=../path/to/file.gd            " + RUN_DESC)
+    print("  " + "compile=../path/to/file.gd        " + COMP_DESC)
+    print("  " + "exp=../path/to/file.gd            " + EXP_DESC)
+    print("  " + "setup=../path/setup.py            " + SETUP_DESC)
+    print("  " + "pyproject=../path/pyproject.toml  " + PYPR_DESC)
+    print("  " + "test=vector2                      " + VEC2_DESC)
+    print("  " + "test=parser                       " + PARSER_DESC)
+    print("  " + "benchmark                         " + BENCH_DESC)
+    print("  " + "compile_zig                       " + ZIG_DESC)
 
 
 def run_benchmark():

@@ -90,7 +90,7 @@ repl_dict = {
     "OS.execute('python',['-c',nuitka+": "",
     "';print(Version.getNuitkaVersion())'],stdout,true,false)": "stdout = [Version.getNuitkaVersion()]",
     "';print(black.__version__)'],stdout,true,false)": "stdout = [black.__version__]",
-    "';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)": "versions = set()"
+    "_black_],stdout,true,false)": "versions = set()"
     + "\n"
     + "    mode = black.mode.Mode(target_versions=versions,line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,experimental_string_processing=False,preview=False,python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
     + "\n"

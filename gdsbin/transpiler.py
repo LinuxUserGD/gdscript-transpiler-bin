@@ -133,17 +133,16 @@ def check_match(l):
     for i in l:
         if i != " " and i != "	":
             out += i
-    if (
-        out.endswith(":")
-        and not out.startswith("for")
-        and not out.startswith("while")
-        and not out.startswith("if")
-        and not 0 <= out.find("(")
-        and not 0 <= out.find(")")
-        and not 0 <= out.find("match")
-        and not out.startswith("else")
-        and not 0 <= out.find("elif")
-    ):
+    cond = out.endswith(":")
+    cond = cond and not out.startswith("for")
+    cond = cond and not out.startswith("while")
+    cond = cond and not out.startswith("if")
+    cond = cond and not 0 <= out.find("(")
+    cond = cond and not 0 <= out.find(")")
+    cond = cond and not 0 <= out.find("match")
+    cond = cond and not out.startswith("else")
+    cond = cond and not 0 <= out.find("elif")
+    if cond:
         args = l.split("	")
         count = 0
         for arg_str in args:
@@ -159,8 +158,8 @@ def check_match(l):
 
 
 def check_new(l):
-    names: [String] = ["preload", "load"]
-    for n in names:
+    NAMES: [String] = ["preload", "load"]
+    for n in NAMES:
         name = n + "(" + '"'
         name += ""
         search = ".gd" + '"'
@@ -238,13 +237,13 @@ def dict(arg):
         e += arg
         e += " "
         return e
-    elif arg == "File.new()":
+    if arg == "File.new()":
         e += props.repl_dict[arg]
         e += '"'
         e += '"'
         e += " "
         return e
-    elif arg == "Thread.new()":
+    if arg == "Thread.new()":
         e += props.repl_dict[arg]
         e += "	Thread()"
         e += " "
@@ -266,9 +265,9 @@ def dict(arg):
         con = True
     if arg in props.types:
         return e
-    elif arg in props.extend:
+    if arg in props.extend:
         return e
-    elif arg in [
+    if arg in [
         "-s",
         "var",
         "const",
@@ -280,9 +279,9 @@ def dict(arg):
     ]:
         e += props.repl_dict[arg]
         return e
-    elif arg in props.gds_deps:
+    if arg in props.gds_deps:
         return e
-    elif arg in [
+    if arg in [
         "func",
         "true",
         "false",
@@ -291,68 +290,68 @@ def dict(arg):
         "sys;print(sys.version)'],stdout,true,false)",
         "';print(Version.getNuitkaVersion())'],stdout,true,false)",
         "';print(black.__version__)'],stdout,true,false)",
-        "';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)",
+        "_black_],stdout,true,false)",
         "';nuitka.__main__.main()'],stdout,true,false)",
         "';ziglang.__main__'],stdout,true,false)",
     ]:
         e += props.repl_dict[arg]
         e += " "
         return e
-    elif arg == "_ready()" or arg == "_init()":
+    if arg == "_ready()" or arg == "_init()":
         e += props.repl_dict[arg]
         e += " "
         props.init_def = True
         return e
-    elif arg.endswith("_ready()"):
+    if arg.endswith("_ready()"):
         arg = arg.replace("_ready()", props.repl_dict["_ready()"])
         e += arg
         e += " "
         return e
-    elif arg.endswith("_init()"):
+    if arg.endswith("_init()"):
         arg = arg.replace("_init()", props.repl_dict["_init()"])
         e += arg
         e += " "
         return e
-    elif 0 <= arg.find("null"):
+    if 0 <= arg.find("null"):
         arg = arg.replace("null", props.repl_dict["null"])
         e += arg
         e += " "
         return e
-    elif arg == "OS.execute('python',['-c','import":
+    if arg == "OS.execute('python',['-c','import":
         e += props.repl_dict[arg]
         props.sys_imp = True
         return e
-    elif arg == "OS.execute('python',['-c',import_str1+":
+    if arg == "OS.execute('python',['-c',import_str1+":
         e += props.repl_dict[arg]
         props.nuitka_imp = True
         return e
-    elif arg == "OS.execute('python',['-c',nuitka+":
+    if arg == "OS.execute('python',['-c',nuitka+":
         e += props.repl_dict[arg]
         return e
-    elif arg == "OS.execute('python',['-c',import_str2+":
+    if arg == "OS.execute('python',['-c',import_str2+":
         e += props.repl_dict[arg]
         props.black_imp = True
         return e
-    elif arg == "OS.execute('python',['-c',import_str3+":
+    if arg == "OS.execute('python',['-c',import_str3+":
         e += props.repl_dict[arg]
         props.sys_imp = True
         return e
-    elif arg == "OS.execute('python',['-c',imp+":
+    if arg == "OS.execute('python',['-c',imp+":
         e += props.repl_dict[arg]
         props.black_imp = True
         return e
-    elif arg == "OS.execute('python',['-c',xpy+":
+    if arg == "OS.execute('python',['-c',xpy+":
         e += props.repl_dict[arg]
         return e
-    elif arg == "OS.execute('python',['-c',nuitka+":
+    if arg == "OS.execute('python',['-c',nuitka+":
         e += props.repl_dict[arg]
         return e
-    elif arg == "quit()" or arg == "self.quit()":
+    if arg == "quit()" or arg == "self.quit()":
         e += props.repl_dict[arg]
         e += " "
         props.sys_imp = True
         return e
-    elif arg == "#!/usr/bin/godot":
+    if arg == "#!/usr/bin/godot":
         e += props.repl_dict[arg]
         props.py_imp = True
         e += " "
@@ -478,13 +477,13 @@ def dict(arg):
                 {
                     "major": 4,
                     "minor": 2,
-                    "patch": 0,
-                    "hex": 262656,
+                    "patch": 1,
+                    "hex": 262657,
                     "status": "stable",
                     "build": "gentoo",
                     "year": 2023,
-                    "hash": "46dc277917a93cbf601bbcf0d27d00f6feeec0d5",
-                    "string": "4.2-stable (gentoo)",
+                    "hash": "b09f793f564a6c95dc76acc654b390e68441bd01",
+                    "string": "4.2.1-stable (gentoo)",
                 }
             ),
         )
@@ -594,24 +593,15 @@ def translate(e):
                     props.gds_deps[index] = "../" + package + "/" + imp_b
             else:
                 # Shallow copy, https://stackoverflow.com/a/11173076
-                e = e.replace(
-                    "import " + gds_name.lower(),
-                    "import gdsbin."
-                    + gds_name.lower()
-                    + "; "
-                    + gds_name.lower()
-                    + " =  type(gdsbin."
-                    + gds_name.lower()
-                    + ")(gdsbin."
-                    + gds_name.lower()
-                    + ".__name__, gdsbin."
-                    + gds_name.lower()
-                    + ".__doc__); "
-                    + gds_name.lower()
-                    + ".__dict__.update(gdsbin."
-                    + gds_name.lower()
-                    + ".__dict__)",
+                gds = gds_name.lower()
+                b = "gdsbin." + gds
+                str1 = "import " + gds
+                str2 = "import " + b + "; "
+                str3 = (
+                    gds + " =  type(" + b + ")(" + b + ".__name__, " + b + ".__doc__); "
                 )
+                str4 = gds + ".__dict__.update(" + b + ".__dict__)"
+                e = e.replace(str1, str2 + str3 + str4)
         index += 1
     return e
 
