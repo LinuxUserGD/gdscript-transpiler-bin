@@ -58,7 +58,7 @@ jobs:
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin && rm *.import' >> /run.sh
+          echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin && rm *.import' > /run.sh
           echo 'rm project.godot' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
           echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
@@ -146,38 +146,34 @@ jobs:
             xz-dev
           shell-name: alpine.sh
 
-      - name: Install pyenv
+      - name: Install pyenv, compile python3.11 and gdscript-transpiler-bin
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl https://pyenv.run | bash
-          . /etc/profile
-        shell: alpine.sh --root {0}
+          echo 'curl https://pyenv.run | bash' > /run.sh
+          echo '. /etc/profile' >> /run.sh
+          echo 'export PYENV_ROOT="$HOME/.pyenv"' >> /run.sh
+          echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> /run.sh
+          echo 'eval "$(pyenv init -)"' >> /run.sh
+          echo 'eval "$(pyenv virtualenv-init -)"' >> /run.sh
+          echo 'pyenv install 3.11 && pyenv global 3.11' >> /run.sh
+          echo 'pip install requests --break-system-packages' >> /run.sh
+          echo 'mv .forgejo/workflows/api.py .' >> /run.sh
+          echo 'python api.py' >> /run.sh
+          echo 'tar xpvf gdscript-transpiler-bin-python.tar.gz --numeric-owner' >> /run.sh
+          echo 'rm gdscript-transpiler-bin-python.tar.gz' >> /run.sh
+          echo 'cd gdscript-transpiler-bin' >> /run.sh
+          echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
+          echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
+          echo 'pip install -r requirements.txt --break-system-packages' >> /run.sh
+          echo 'pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages' >> /run.sh
+          echo 'pip install -e . --break-system-packages' >> /run.sh
+          echo 'cd ..' >> /run.sh
+          echo 'python -m gdsbin format=bin/gds.gd' >> /run.sh
+          echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
+          chmod +x /run.sh
+          cat /run.sh | alpine.sh --root
 
-      - name: Compile python3.11 and gdscript-transpiler-bin
-        env:
-          CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          export PYENV_ROOT="$HOME/.pyenv"
-          command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-          eval "$(pyenv init -)"
-          eval "$(pyenv virtualenv-init -)"
-          pyenv install 3.11 && pyenv global 3.11
-          pip install requests --break-system-packages
-          mv .forgejo/workflows/api.py .
-          python api.py
-          tar xpvf gdscript-transpiler-bin-python.tar.gz --numeric-owner
-          rm gdscript-transpiler-bin-python.tar.gz
-          cd gdscript-transpiler-bin
-          pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages
-          pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages
-          pip install -r requirements.txt --break-system-packages
-          pip install git+https://github.com/Nuitka/Nuitka.git --break-system-packages
-          pip install -e . --break-system-packages
-          cd ..
-          python -m gdsbin format=bin/gds.gd
-          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
-        shell: alpine.sh --root {0}
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
         with:
