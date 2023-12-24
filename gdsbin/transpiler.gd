@@ -287,8 +287,6 @@ func dict(arg: String) -> String:
 		return e
 	if arg in props.gds_deps:
 		return e
-	var bl: String = "';black.reformat_one(src=src,fast=False,write_back=write_back"
-	bl += ",mode=mode,report=report)'],stdout,true,false)"
 	if (
 		arg
 		in [
@@ -300,7 +298,7 @@ func dict(arg: String) -> String:
 			"sys;print(sys.version)'],stdout,true,false)",
 			"';print(Version.getNuitkaVersion())'],stdout,true,false)",
 			"';print(black.__version__)'],stdout,true,false)",
-			bl,
+			"_black_],stdout,true,false)",
 			"';nuitka.__main__.main()'],stdout,true,false)",
 			"';ziglang.__main__'],stdout,true,false)",
 		]

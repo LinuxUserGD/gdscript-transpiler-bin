@@ -169,8 +169,19 @@ func start_stages(argum: String, format: bool) -> void:
 
 ## Format function
 func form(stdout: Array, imp: String, _imp_string: String):
-	var imp2: String = ';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'
-	OS.execute('python',['-c',imp+imp2],stdout,true,false)
+	const args: Dictionary = {
+		"src": "src",
+		"fast": "False",
+		"write_back": "write_back",
+		"mode": "mode",
+		"report": "report"
+	}
+	var args_str: String = ""
+	for arg in args:
+		args_str += arg + "=" + args[arg] + ","
+	args_str = args_str.left(args_str.length()-1)
+	var _black_ = ";black.reformat_one(" + args_str + ")"
+	OS.execute('python',['-c',imp+ _black_],stdout,true,false)
 	return stdout
 
 ## Function for saving setup.py

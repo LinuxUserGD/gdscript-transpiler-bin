@@ -103,7 +103,7 @@ const repl_dict: Dictionary = {
 	"stdout = [Version.getNuitkaVersion()]",
 	"';print(black.__version__)'],stdout,true,false)":
 	"stdout = [black.__version__]",
-	"';black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)'],stdout,true,false)":
+	"_black_],stdout,true,false)":
 	"versions = set()" + "\n" + "    mode = black.mode.Mode(target_versions=versions,line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,experimental_string_processing=False,preview=False,python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)" + "\n" + "    report=black.report.Report(check=False,diff=False,quiet=True,verbose=False)" + "\n" + "    write_back=black.WriteBack.from_configuration(check=False,diff=False,color=False)" + "\n" + "    src=black.Path(_imp_string+'py')" + "\n" + "    black.reformat_one(src=src,fast=False,write_back=write_back,mode=mode,report=report)",
 	"';ziglang.__main__'],stdout,true,false)":
 	"sys.argv=['zig','version']" + "\n" + "    import ziglang.__main__" + "\n" + "    stdout = [ziglang.__main__]",
