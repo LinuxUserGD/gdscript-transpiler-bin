@@ -79,7 +79,7 @@ jobs:
           echo 'git config --global user.name "LinuxUserGD"' >> /run.sh
           echo 'git config --global user.email "hugegameartgd@gmail.com"' >> /run.sh
           echo 'git add -A' >> /run.sh
-          echo '[ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 1; }' >> /run.sh
+          echo '[ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 0; }' >> /run.sh
           echo 'cd ..' >> /run.sh
           echo 'echo ${PWD}' >> /run.sh
           chmod +x /run.sh
