@@ -161,7 +161,7 @@ jobs:
           echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages' >> /run.sh
           grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
           echo 'python -m gdsbin format=bin/gds.gd' >> /run.sh
-          echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
+          echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
           chmod +x /run.sh
           cat /run.sh | alpine.sh --root
 
