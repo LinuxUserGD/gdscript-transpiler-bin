@@ -1,3 +1,3 @@
 ziglang
-Nuitka
+Nuitka @ git+https://github.com/Nuitka/Nuitka.git@develop
 black
