@@ -146,6 +146,8 @@ jobs:
             gzip
             xz-dev
             xz
+            openjdk21-jdk
+            wine
           shell-name: alpine.sh
 
       - name: Install pyenv, compile python3.11 and gdscript-transpiler-bin
@@ -164,6 +166,15 @@ jobs:
           grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
           echo 'python -m gdsbin format=bin/gds.gd' >> /run.sh
           echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
+          echo 'curl -L https://broth.itch.ovh/butler/windows-amd64/LATEST/archive/default | jar xv' >> /run.sh
+          echo 'export BUTLER_API_KEY=$BUTLER_CREDENTIALS' >> /run.sh
+          echo 'echo $BUTLER_API_KEY > key.txt' >> /run.sh
+          echo 'wine butler.exe -i $(winepath -w key.txt) push $(winepath -w $PACKAGE) $ITCH_USER/$ITCH_GAME:$CHANNEL' >> /run.sh
+          grep -l '$BUTLER_CREDENTIALS' /run.sh | xargs sed -i "s/\$BUTLER_CREDENTIALS/${{ secrets.BUTLER_CREDENTIALS }}/g"
+          grep -l '$CHANNEL' /run.sh | xargs sed -i "s/\$CHANNEL/linux/g"
+          grep -l '$ITCH_GAME' /run.sh | xargs sed -i "s/\$ITCH_GAME/gdscript-transpiler-bin/g"
+          grep -l '$ITCH_USER' /run.sh | xargs sed -i "s/\$ITCH_USER/linuxusergd/g"
+          grep -l '$PACKAGE' /run.sh | xargs sed -i "s/\$PACKAGE/gds/g"
           chmod +x /run.sh
           cat /run.sh | alpine.sh --root
 
