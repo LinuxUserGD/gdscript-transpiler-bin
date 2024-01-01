@@ -103,8 +103,8 @@ jobs:
             sqlite-static
             sqlite-dev
             sqlite-tcl
-            readline-dev
             readline-static
+            readline-dev
             coreutils
             alsa-lib-dev
             libffi-dev
@@ -112,27 +112,29 @@ jobs:
             tcl-dev
             tk-dev
             zlib-dev
-            gettext-dev
+            gettext-tiny
+            gettext-tiny-dev
             wget
             curl
             perl
-            libgcc
             gcc
-            clang16-dev
-            clang16-extra-tools
-            clang16-libclang
-            clang16-libs
-            clang16-static
-            llvm16-dev
+            libgcc
+            clang17-static
+            clang17-dev
+            clang17-extra-tools
+            clang17-libclang
+            clang17-libs
+            llvm-libunwind-static
+            llvm17-static
+            llvm17-dev
             llvm-runtimes
             llvm-libunwind-dev
-            llvm-libunwind-static
-            llvm16-libs
-            llvm16-static
+            llvm17-libs
             compiler-rt
             musl-dev
-            openssl
+            musl-libintl
             openssl-dev
+            openssl
             linux-headers
             patchelf
             pkgconf
@@ -142,8 +144,8 @@ jobs:
             tar
             file
             gzip
-            xz
             xz-dev
+            xz
           shell-name: alpine.sh
 
       - name: Install pyenv, compile python3.11 and gdscript-transpiler-bin
@@ -156,12 +158,12 @@ jobs:
           echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> /run.sh
           echo 'eval "$(pyenv init -)"' >> /run.sh
           echo 'eval "$(pyenv virtualenv-init -)"' >> /run.sh
-          echo 'pyenv install 3.11 && pyenv global 3.11' >> /run.sh
+          echo 'CC=clang CXX=clang++ pyenv install 3.11 && pyenv global 3.11' >> /run.sh
           echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin' >> /run.sh
           echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages' >> /run.sh
           grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
           echo 'python -m gdsbin format=bin/gds.gd' >> /run.sh
-          echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
+          echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
           chmod +x /run.sh
           cat /run.sh | alpine.sh --root
 
