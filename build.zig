@@ -9,9 +9,9 @@ pub fn build(b: *std.Build) void {
         .root_source_file = .{ .path = "zig-template/src/main.zig" },
         .target = target,
         .optimize = builtin.Mode.ReleaseFast,
+        .strip = true,
     });
     bin.rdynamic = false;
-    bin.strip = true;
     b.installArtifact(bin);
 }
 
