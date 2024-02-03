@@ -26,7 +26,7 @@ logs/
 dist/
 gdsbin/__pycache__/
 bin/__pycache__/
-test/__pycache__/
+gdsbin/test/__pycache__/
 gds.egg-info/
 gds.dist/
 gds.onefile-build/

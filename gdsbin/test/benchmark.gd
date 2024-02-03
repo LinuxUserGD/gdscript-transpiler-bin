@@ -6,7 +6,7 @@ const PRINT_PER_TEST_TIME = false
 var _test_a = 1
 
 func run() -> void:
-	var __init__ = preload("res://test/__init__.gd").new()
+	var __init__ = preload("__init__.gd").new()
 	info("add")
 	var start_ms: int = Time.get_ticks_msec()
 	check(start_ms, add(), 0)

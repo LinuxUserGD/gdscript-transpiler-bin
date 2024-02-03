@@ -170,19 +170,23 @@ func check_new(l: String):
 	const NAMES: Array[String] = ["preload", "load"]
 	for n in NAMES:
 		var name: String = n + "(" + '"'
-		name += "res://"
 		var search: String = ".gd" + '"'
 		search += ").new()"
-		while l.contains(name) && l.contains(search):
+		if l.contains(name) && l.contains(search):
 			l = l.replace(name, "")
 			l = l.replace(search, "")
 			name = l.split("=")[1]
 			name = name.replace(" ", "")
 			name = name.replace("//", "")
-			search = name.split("/")[0]
+			var lvl = name.split("/")
+			lvl = lvl.size()
+			search = ""
+			for i in range(lvl-1):
+				search += name.split("/")[i] + "."
+			search = search.left(search.length()-1)
+			name = name.split("/")[lvl-1]
 			while search.begins_with("res:"):
 				search = search.replace("res:", "")
-			name = name.split("/")[1]
 			while l.contains(" = "):
 				l = l.split(" = ")[0]
 			while l.contains("="):
@@ -191,10 +195,11 @@ func check_new(l: String):
 				l = l.replace(name, search + "." + name + " = " + name.to_upper() + ".new()")
 			while l.contains("var " + name):
 				l = l.replace("var " + name, search + "." + name + " = " + name.to_upper() + ".new()")
-			name = n + "(" + '"'
-			name += "res://"
-			search = ".gd" + '"'
-			search += ").new()"
+			var s = l.replace("	", "")
+			if s.begins_with("."):
+				l = l.replace(s, "")
+				s = s.right(s.length() - 1)
+				l = l+s
 	return l
 
 ## Function for splitting lines (excluding double quoted Strings) into
@@ -559,27 +564,22 @@ func translate(e: String) -> String:
 			e = e.replace(gds_name.to_lower() + " = import " + gds_name, "import " + gds_name.to_lower())
 			if e.contains("."):
 				if e.contains("gdsbin"):
-					var imp : String = e.split(".")[1]
+					var packages: Array = e.split(".")
+					var l: int = packages.size()
+					var imp : String = packages[l-1]
 					var imp_b : String = imp.split(" ")[1]
-					var package : String = e.split(".")[0]
+					var package: String = ""
+					while (l>1):
+						package = packages[l-2] + "/" + package
+						l-=1
+					package = package.left(package.length() - 1)
 					props.os_imp = true
 					e = "    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))"
 					e += "\n"
 					while package.contains(" "):
 						e += " "
 						package = package.right(package.length() - 1)
-					e += "import " + package + "." + imp_b
-					props.gds_deps[index] = "../" + package + "/" + imp_b
-				elif e.contains("test"):
-					var imp : String = e.split(".")[1]
-					var imp_b : String = imp.split(" ")[1]
-					var package : String = e.split(".")[0]
-					props.os_imp = true
-					e = ""
-					while package.contains(" "):
-						e += " "
-						package = package.right(package.length() - 1)
-					e += "import " + package + "." + imp_b
+					e += "import " + package.replace("/", ".") + "." + imp_b
 					props.gds_deps[index] = "../" + package + "/" + imp_b
 			else:
 				# Shallow copy, https://stackoverflow.com/a/11173076
