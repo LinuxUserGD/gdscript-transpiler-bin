@@ -234,7 +234,7 @@ setup = [
     "        'Topic :: Software Development :: Libraries :: Python Modules',",
     "    ],",
     "    # Package info",
-    "    packages=['gdsbin'] + ['gdsbin.' + pkg for pkg in find_packages('gdsbin')] + ['test'] + ['test.' + pkg for pkg in find_packages('test')],",
+    "    packages=['gdsbin'] + ['gdsbin.' + pkg for pkg in find_packages('gdsbin')],",
     "    # Add _ prefix to the names of temporary build dirs",
     "    options={'build': {'build_base': '_build'}, },",
     "    zip_safe=True,",
