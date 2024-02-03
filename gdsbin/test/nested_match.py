@@ -39,7 +39,9 @@ def test():
                                                                         case _:
                                                                             print("9")
                                                                             match number:
-                                                                                case 1234:
+                                                                                case (
+                                                                                    1234
+                                                                                ):
                                                                                     print(
                                                                                         "10"
                                                                                     )
@@ -94,7 +96,9 @@ def test():
                                                                                                                                                                         "20"
                                                                                                                                                                     )
                                                                                                                                                                     match number:
-                                                                                                                                                                        case []:
+                                                                                                                                                                        case (
+                                                                                                                                                                            []
+                                                                                                                                                                        ):
                                                                                                                                                                             print(
                                                                                                                                                                                 "Should not be printed"
                                                                                                                                                                             )

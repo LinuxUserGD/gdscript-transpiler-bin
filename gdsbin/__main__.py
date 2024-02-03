@@ -5,9 +5,10 @@ import sys
 
 
 def _init():
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.__init__
 
+    __init__ = type(gdsbin.__init__)(gdsbin.__init__.__name__, gdsbin.__init__.__doc__)
+    __init__.__dict__.update(gdsbin.__init__.__dict__)
     for arg in sys.argv:
         if arg == "version":
             version_info()
@@ -249,7 +250,6 @@ def form(stdout, imp, _imp_string):
         skip_source_first_line=False,
         string_normalization=True,
         magic_trailing_comma=True,
-        experimental_string_processing=False,
         preview=False,
         python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),
     )
@@ -360,7 +360,7 @@ def start(arg, stage2):
     bl = ";mode=black.mode.Mode(target_versions=versions,"
     bl += "line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,"
     bl += "skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,"
-    bl += "experimental_string_processing=False,preview=False,"
+    bl += "preview=False,"
     bl += "python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
     imp_string += ";versions=set()"
     imp_string += bl
@@ -492,179 +492,235 @@ def help():
 
 
 def run_benchmark():
-    test = {}
-    import test.benchmark
+    gdsbin = {}
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.benchmark
 
-    test.benchmark.run()
+    gdsbin.test.benchmark.run()
 
 
 def run_parser():
-    test = {}
-    import test.advanced_expression_matching
+    gdsbin = {}
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.advanced_expression_matching
 
-    test.advanced_expression_matching.test()
-    import test.arrays
+    gdsbin.test.advanced_expression_matching.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.arrays
 
-    test.arrays.test()
-    import test.arrays_dictionaries_nested_const
+    gdsbin.test.arrays.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.arrays_dictionaries_nested_const
 
-    test.arrays_dictionaries_nested_const.test()
-    import test.basic_expression_matching
+    gdsbin.test.arrays_dictionaries_nested_const.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.basic_expression_matching
 
-    test.basic_expression_matching.test()
-    import test.bitwise_operators
+    gdsbin.test.basic_expression_matching.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.bitwise_operators
 
-    test.bitwise_operators.test()
-    import test.concatenation
+    gdsbin.test.bitwise_operators.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.concatenation
 
-    test.concatenation.test()
-    import test.constants
+    gdsbin.test.concatenation.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.constants
 
-    test.constants.test()
-    import test.dictionaries
+    gdsbin.test.constants.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.dictionaries
 
-    test.dictionaries.test()
-    import test.dictionary_lua_style
+    gdsbin.test.dictionaries.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.dictionary_lua_style
 
-    test.dictionary_lua_style.test()
-    import test.dictionary_mixed_syntax
+    gdsbin.test.dictionary_lua_style.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.dictionary_mixed_syntax
 
-    test.dictionary_mixed_syntax.test()
-    import test.dollar_and_percent_get_node
+    gdsbin.test.dictionary_mixed_syntax.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.dollar_and_percent_get_node
 
-    test.dollar_and_percent_get_node.test()
-    import test.dollar_node_paths
+    gdsbin.test.dollar_and_percent_get_node.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.dollar_node_paths
 
-    test.dollar_node_paths.test()
-    import test.enums
+    gdsbin.test.dollar_node_paths.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.enums
 
-    test.enums.test()
-    import test.export_variable
+    gdsbin.test.enums.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.export_variable
 
-    test.export_variable.test()
-    import test.float_notation
+    gdsbin.test.export_variable.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.float_notation
 
-    test.float_notation.test()
-    import test.for_range
+    gdsbin.test.float_notation.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.for_range
 
-    test.for_range.test()
-    import test.function_default_parameter_type_inference
+    gdsbin.test.for_range.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.function_default_parameter_type_inference
 
-    test.function_default_parameter_type_inference.test()
-    import test.function_many_parameters
+    gdsbin.test.function_default_parameter_type_inference.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.function_many_parameters
 
-    test.function_many_parameters.test()
-    import test.if_after_lambda
+    gdsbin.test.function_many_parameters.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.if_after_lambda
 
-    test.if_after_lambda.test()
-    import test.ins
+    gdsbin.test.if_after_lambda.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.ins
 
-    test.ins.test()
-    import test.lambda_callable
+    gdsbin.test.ins.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.lambda_callable
 
-    test.lambda_callable.test()
-    import test.lambda_capture_callable
+    gdsbin.test.lambda_callable.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.lambda_capture_callable
 
-    test.lambda_capture_callable.test()
-    import test.lambda_default_parameter_capture
+    gdsbin.test.lambda_capture_callable.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.lambda_default_parameter_capture
 
-    test.lambda_default_parameter_capture.test()
-    import test.lambda_named_callable
+    gdsbin.test.lambda_default_parameter_capture.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.lambda_named_callable
 
-    test.lambda_named_callable.test()
-    import test.matches
+    gdsbin.test.lambda_named_callable.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.matches
 
-    test.matches.test()
-    import test.match_bind_unused
+    gdsbin.test.matches.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.match_bind_unused
 
-    test.match_bind_unused.test()
-    import test.match_dictionary
+    gdsbin.test.match_bind_unused.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.match_dictionary
 
-    test.match_dictionary.test()
-    import test.match_multiple_patterns_with_array
+    gdsbin.test.match_dictionary.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.match_multiple_patterns_with_array
 
-    test.match_multiple_patterns_with_array.test()
-    import test.match_multiple_variable_binds_in_pattern
+    gdsbin.test.match_multiple_patterns_with_array.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.match_multiple_variable_binds_in_pattern
 
-    test.match_multiple_variable_binds_in_pattern.test()
-    import test.multiline_arrays
+    gdsbin.test.match_multiple_variable_binds_in_pattern.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.multiline_arrays
 
-    test.multiline_arrays.test()
-    import test.multiline_dictionaries
+    gdsbin.test.multiline_arrays.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.multiline_dictionaries
 
-    test.multiline_dictionaries.test()
-    import test.multiline_if
+    gdsbin.test.multiline_dictionaries.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.multiline_if
 
-    test.multiline_if.test()
-    import test.multiline_strings
+    gdsbin.test.multiline_if.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.multiline_strings
 
-    test.multiline_strings.test()
-    import test.multiline_vector
+    gdsbin.test.multiline_strings.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.multiline_vector
 
-    test.multiline_vector.test()
-    import test.nested_arithmetic
+    gdsbin.test.multiline_vector.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_arithmetic
 
-    test.nested_arithmetic.test()
-    import test.nested_array
+    gdsbin.test.nested_arithmetic.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_array
 
-    test.nested_array.test()
-    import test.nested_dictionary
+    gdsbin.test.nested_array.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_dictionary
 
-    test.nested_dictionary.test()
-    import test.nested_function_calls
+    gdsbin.test.nested_dictionary.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_function_calls
 
-    test.nested_function_calls.test()
-    import test.nested_if
+    gdsbin.test.nested_function_calls.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_if
 
-    test.nested_if.test()
-    import test.nested_match
+    gdsbin.test.nested_if.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_match
 
-    test.nested_match.test()
-    import test.nested_parentheses
+    gdsbin.test.nested_match.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.nested_parentheses
 
-    test.nested_parentheses.test()
-    import test.number_separators
+    gdsbin.test.nested_parentheses.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.number_separators
 
-    test.number_separators.test()
-    import test.operator_assign
+    gdsbin.test.number_separators.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.operator_assign
 
-    test.operator_assign.test()
-    import test.property_setter_getter
+    gdsbin.test.operator_assign.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.property_setter_getter
 
-    test.property_setter_getter.test()
-    import test.semicolon_as_end_statement
+    gdsbin.test.property_setter_getter.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.semicolon_as_end_statement
 
-    test.semicolon_as_end_statement.test()
-    import test.semicolon_as_terminator
+    gdsbin.test.semicolon_as_end_statement.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.semicolon_as_terminator
 
-    test.semicolon_as_terminator.test()
-    import test.signal_declaration
+    gdsbin.test.semicolon_as_terminator.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.signal_declaration
 
-    test.signal_declaration.test()
-    import test.static_typing
+    gdsbin.test.signal_declaration.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.static_typing
 
-    test.static_typing.test()
-    import test.string_formatting
+    gdsbin.test.static_typing.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.string_formatting
 
-    test.string_formatting.test()
-    import test.str_preserves_case
+    gdsbin.test.string_formatting.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.str_preserves_case
 
-    test.str_preserves_case.test()
-    import test.trailing_comma_in_function_args
+    gdsbin.test.str_preserves_case.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.trailing_comma_in_function_args
 
-    test.trailing_comma_in_function_args.test()
-    import test.truthiness
+    gdsbin.test.trailing_comma_in_function_args.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.truthiness
 
-    test.truthiness.test()
-    import test.typed_arrays
+    gdsbin.test.truthiness.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.typed_arrays
 
-    test.typed_arrays.test()
-    import test.variable_declaration
+    gdsbin.test.typed_arrays.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.variable_declaration
 
-    test.variable_declaration.test()
-    import test.whiles
+    gdsbin.test.variable_declaration.test()
+    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
+    import gdsbin.test.whiles
 
-    test.whiles.test()
+    gdsbin.test.whiles.test()
 
 
 def run_vector2():

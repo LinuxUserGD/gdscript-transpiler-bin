@@ -1,7 +1,6 @@
 import datetime
 import math
 import random
-import os
 import sys
 
 _for_time = 0
@@ -11,8 +10,10 @@ _test_a = 1
 
 
 def run():
-    import test.__init__
+    import gdsbin.__init__
 
+    __init__ = type(gdsbin.__init__)(gdsbin.__init__.__name__, gdsbin.__init__.__doc__)
+    __init__.__dict__.update(gdsbin.__init__.__dict__)
     info("add")
     start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
     check(start_ms, add(), 0)

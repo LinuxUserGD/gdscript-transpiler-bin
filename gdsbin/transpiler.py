@@ -161,19 +161,23 @@ def check_new(l):
     NAMES: [String] = ["preload", "load"]
     for n in NAMES:
         name = n + "(" + '"'
-        name += ""
         search = ".gd" + '"'
         search += ").new()"
-        while 0 <= l.find(name) and 0 <= l.find(search):
+        if 0 <= l.find(name) and 0 <= l.find(search):
             l = l.replace(name, "")
             l = l.replace(search, "")
             name = l.split("=")[1]
             name = name.replace(" ", "")
             name = name.replace("//", "")
-            search = name.split("/")[0]
+            lvl = name.split("/")
+            lvl = len(lvl)
+            search = ""
+            for i in range(lvl - 1):
+                search += name.split("/")[i] + "."
+            search = left(search, len(search) - 1)
+            name = name.split("/")[lvl - 1]
             while search.startswith("res:"):
                 search = search.replace("res:", "")
-            name = name.split("/")[1]
             while 0 <= l.find(" = "):
                 l = l.split(" = ")[0]
             while 0 <= l.find("="):
@@ -186,10 +190,11 @@ def check_new(l):
                 l = l.replace(
                     "var " + name, search + "." + name + " = " + name.upper() + ".new()"
                 )
-            name = n + "(" + '"'
-            name += ""
-            search = ".gd" + '"'
-            search += ").new()"
+            s = l.replace("	", "")
+            if s.startswith("."):
+                l = l.replace(s, "")
+                s = right(s, len(s) - 1)
+                l = l + s
     return l
 
 
@@ -569,27 +574,22 @@ def translate(e):
             )
             if 0 <= e.find("."):
                 if 0 <= e.find("gdsbin"):
-                    imp = e.split(".")[1]
+                    packages = e.split(".")
+                    l = len(packages)
+                    imp = packages[l - 1]
                     imp_b = imp.split(" ")[1]
-                    package = e.split(".")[0]
+                    package = ""
+                    while l > 1:
+                        package = packages[l - 2] + "/" + package
+                        l -= 1
+                    package = left(package, len(package) - 1)
                     props.os_imp = True
                     e = "    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))"
                     e += "\n"
                     while 0 <= package.find(" "):
                         e += " "
                         package = right(package, len(package) - 1)
-                    e += "import " + package + "." + imp_b
-                    props.gds_deps[index] = "../" + package + "/" + imp_b
-                elif 0 <= e.find("test"):
-                    imp = e.split(".")[1]
-                    imp_b = imp.split(" ")[1]
-                    package = e.split(".")[0]
-                    props.os_imp = True
-                    e = ""
-                    while 0 <= package.find(" "):
-                        e += " "
-                        package = right(package, len(package) - 1)
-                    e += "import " + package + "." + imp_b
+                    e += "import " + package.replace("/", ".") + "." + imp_b
                     props.gds_deps[index] = "../" + package + "/" + imp_b
             else:
                 # Shallow copy, https://stackoverflow.com/a/11173076
