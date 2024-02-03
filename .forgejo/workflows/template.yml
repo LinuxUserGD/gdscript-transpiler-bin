@@ -75,6 +75,7 @@ jobs:
           echo 'rm -rf $(ls | grep -v "requirements.txt")' >> /run.sh
           echo 'for i in $dir; do mkdir ${i} ; done' >> /run.sh
           echo 'for i in $dir; do cp -r "../${i}"*.py ${i} ; done' >> /run.sh
+          echo 'mkdir -p gdsbin/test; cp -r ../gdsbin/test/*.py gdsbin/test/' >> /run.sh
           echo 'for i in $(echo "setup.py pyproject.toml README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done' >> /run.sh
           echo 'git config --global user.name "LinuxUserGD"' >> /run.sh
           echo 'git config --global user.email "hugegameartgd@gmail.com"' >> /run.sh
