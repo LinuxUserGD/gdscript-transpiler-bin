@@ -1,6 +1,7 @@
 function = ""
 args = []
-ret = ""
+res = ""
+ret = False
 root = None
 
 
