@@ -8,7 +8,8 @@ class_name Function
 
 var function: String = ""
 var args: Array = []
-var ret: String = ""
+var res: String = ""
+var ret: bool = false
 var root = null
 
 func t() -> String:

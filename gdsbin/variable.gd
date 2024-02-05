@@ -1,4 +1,4 @@
-class_name Vari
+class_name Variable
 ## GDScript Transpiler Properties Class
 ##
 ## Properties for Transpiler
@@ -6,7 +6,11 @@ class_name Vari
 
 ## Method to process input string and list of tokens
 
-var vari: String = ""
+var variable: String = ""
+var res = null
+var type: String = ""
+var st: bool = false
+var equ: bool = false
 
 func t() -> String:
 	return "variable"
