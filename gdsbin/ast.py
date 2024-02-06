@@ -31,7 +31,11 @@ def ast(startln, endln, level, root, unit, con):
         elif input[level] == "FUNCTION":
             _function(i, endln, level, root, input, unit, con)
         elif input[level] == "VARIABLE":
-            _variable(root, input, level)
+            is_const = False
+            _variable(root, input, level, is_const)
+        elif input[level] == "CONST":
+            is_const = True
+            _variable(root, input, level, is_const)
         else:
             _call(root, input, level)
     return root
@@ -89,31 +93,76 @@ def _new_call(input, level):
     callnew = type(gdsbin.callnew)(gdsbin.callnew.__name__, gdsbin.callnew.__doc__)
     callnew.__dict__.update(gdsbin.callnew.__dict__)
     s = len(input)
-    if input[level + 1] == "DOT":
-        callnew.name = input[level]
-        callnew.callnew = _new_call(input, level + 2)
-    elif input[level + 1] == "EQUALS SIGN":
-        callnew.name = input[level]
-        callnew.equ = True
-        array = []
-        for i in range(level + 2, len(input)):
-            array.append(input[i])
-        callnew.res = _eval(array)
-    elif input[level + 1] == "LEFT BRACKET" and input[s - 1] == "RIGHT BRACKET":
-        callnew.name = input[level]
-        callnew.function = True
-        callnew.builtin_function = _builtin_function(input[level])
-    else:
-        callnew.name = input[level]
+    if level + 1 < s:
+        if input[level + 1] == "DOT":
+            callnew.name = input[level]
+            callnew.callnew = _new_call(input, level + 2)
+        elif input[level + 1] == "EQUALS SIGN":
+            callnew.name = input[level]
+            callnew.equ = True
+            array = []
+            for i in range(level + 2, len(input)):
+                array.append(input[i])
+            callnew.res = _eval(array)
+        elif input[level + 1] == "LEFT BRACKET" and input[s - 1] == "RIGHT BRACKET":
+            callnew.name = input[level]
+            callnew.function = True
+            callnew.builtin_function = _builtin_function(input[level])
+            args = []
+            for i in range(level + 2, s - 1):
+                args.append(input[i])
+            if len(args) != 0:
+                callnew.args = _eval_function_args(args)
+        else:
+            callnew.name = input[level]
     return callnew
 
 
-def _variable(root, input, level):
+def _eval_string(array):
+    s = ""
+    qu = '"'
+    token = {
+        "NUMBER SIGN": "#",
+        "EXCLAMATION MARK": "!",
+        "SLASH": "/",
+        "BACKSLASH": "\\",
+        "CLASS NAME": "class_name",
+        "EXTENDS": "extends",
+        "NUMBER SIGN 2": "##",
+        "FUNCTION": "func",
+        "LEFT BRACKET": "(",
+        "RIGHT BRACKET": ")",
+        "MINUS": "-",
+        "PLUS": "+",
+        "GREATER THAN": ">",
+        "LESS THAN": "<",
+        "COLON": ":",
+        "EQUALS SIGN": "=",
+        "CURLY LEFT BRACKET": "{",
+        "CURLY RIGHT BRACKET": "}",
+        "TAB": "\t",
+        "DOT": ".",
+        "NEW": "new",
+        "VARIABLE": "var",
+        "CONST": "const",
+        "QUOTATION": qu,
+    }
+    for e in array:
+        s += token[e] if e in token else e
+    return s
+
+
+def _eval_function_args(array):
+    return _eval_string(array).split("COMMA")
+
+
+def _variable(root, input, level, is_const):
     import gdsbin.variable
 
     variable = type(gdsbin.variable)(gdsbin.variable.__name__, gdsbin.variable.__doc__)
     variable.__dict__.update(gdsbin.variable.__dict__)
     variable.variable = input[level + 1]
+    variable.is_const = is_const
     if input[level + 2] == "COLON":
         variable.st = True
         level += 1
@@ -143,6 +192,9 @@ def _eval(array):
     if array[0] == "CURLY LEFT BRACKET" and array[s - 1] == "CURLY RIGHT BRACKET":
         variable = {}
         return variable
+    if array[0] == "QUOTATION" and array[s - 1] == "QUOTATION":
+        variable = _eval_string(array)
+        return variable
     variable = _new_call(array, 0)
     return variable
 
@@ -154,11 +206,21 @@ def _function(startln, endln, level, root, input, unit, con):
     function.__dict__.update(gdsbin.function.__dict__)
     function.args = []
     function.function = input[level + 1]
-    begin = input.index("LEFT BRACKET", level + 2)
-    end = input.index("RIGHT BRACKET", level + 3)
-    arrow1 = input.index("MINUS", level + 4)
-    arrow2 = input.index("GREATER THAN", level + 5)
-    colon = input.index("COLON", level + 4)
+    begin = -1
+    if "LEFT BRACKET" in input:
+        begin = input.index("LEFT BRACKET", level + 2)
+    end = -1
+    if "RIGHT BRACKET" in input:
+        end = input.index("RIGHT BRACKET", level + 3)
+    arrow1 = -1
+    if "MINUS" in input:
+        arrow1 = input.index("MINUS", level + 4)
+    arrow2 = -1
+    if "GREATER THAN" in input:
+        arrow2 = input.index("GREATER THAN", level + 5)
+    colon = -1
+    if "COLON" in input:
+        colon = input.index("COLON", level + 4)
     if arrow1 > 0 and arrow2 > 0:
         function.ret = True
         function.res = input[colon - 1]

@@ -25,6 +25,7 @@ def tokenize(input_string):
         '"',
         "\t",
     ]
+    qu = '"'
     token = {
         "#": "NUMBER SIGN",
         "!": "EXCLAMATION MARK",
@@ -46,8 +47,11 @@ def tokenize(input_string):
         "}": "CURLY RIGHT BRACKET",
         "\t": "TAB",
         ".": "DOT",
+        ",": "COMMA",
         "new": "NEW",
         "var": "VARIABLE",
+        "const": "CONST",
+        qu: "QUOTATION",
     }
     tokens = []
     buffer = ""

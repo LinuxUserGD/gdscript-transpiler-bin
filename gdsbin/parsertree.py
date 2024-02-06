@@ -32,7 +32,10 @@ def printpt(element, level):
                 out += printpt(element.root, level + 1)
             return out
         case "variable":
-            out = "var " + element.variable
+            out = "var"
+            if element.is_const:
+                out = "const"
+            out += " " + element.variable
             if element.st:
                 out += ": "
             if element.type != "":
@@ -49,7 +52,13 @@ def printpt(element, level):
             else:
                 out += element.name
             if element.function:
-                out += "()"
+                out += "("
+                s = len(element.args)
+                if s != 0:
+                    for i in range(0, s - 1, 1):
+                        out += element.args[i] + ", "
+                    out += element.args[s - 1]
+                out += ")"
             while element.callnew != None:
                 element = element.callnew
                 out += "."
@@ -58,7 +67,13 @@ def printpt(element, level):
                 else:
                     out += element.name
                 if element.function:
-                    out += "()"
+                    out += "("
+                    s = len(element.args)
+                    if s != 0:
+                        for i in range(0, s - 1, 1):
+                            out += element.args[i] + ", "
+                        out += element.args[s - 1]
+                    out += ")"
             if element.equ:
                 out += " = "
                 if element.res != None:
@@ -68,7 +83,13 @@ def printpt(element, level):
                         else:
                             out += element.res.name
                         if element.res.function:
-                            out += "()"
+                            out += "("
+                            s = len(element.res.args)
+                            if s != 0:
+                                for i in range(0, s - 1, 1):
+                                    out += element.res.args[i] + ", "
+                                out += element.res.args[s - 1]
+                            out += ")"
                         while element.res.callnew != None:
                             element.res = element.res.callnew
                             out += "."
@@ -77,7 +98,13 @@ def printpt(element, level):
                             else:
                                 out += element.res.name
                             if element.res.function:
-                                out += "()"
+                                out += "("
+                                s = len(element.res.args)
+                                if s != 0:
+                                    for i in range(0, s - 1, 1):
+                                        out += element.res.args[i] + ", "
+                                    out += element.res.args[s - 1]
+                                out += ")"
                     else:
                         out += str(element.res).replace(" ", "")
             return out + "\n"
