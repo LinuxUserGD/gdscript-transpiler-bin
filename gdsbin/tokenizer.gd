@@ -8,6 +8,7 @@ class_name Tokenizer
 ## Method to process input string and list of tokens
 func tokenize(input_string: String) -> Array:
 	var delimiter : Array = ['(', ')', ':', ',', '.', '=', '+', '-', '*', '/', '<', '>', '!', '&', '|', '~', '%', ' ', '[', ']', '{', '}', '"', '\t']
+	const qu: String = '"'
 	var token : Dictionary = {
 		"#": "NUMBER SIGN",
 		"!": "EXCLAMATION MARK",
@@ -29,8 +30,11 @@ func tokenize(input_string: String) -> Array:
 		"}": "CURLY RIGHT BRACKET",
 		"\t": "TAB",
 		".": "DOT",
+		",": "COMMA",
 		"new": "NEW",
 		"var": "VARIABLE",
+		"const": "CONST",
+		qu: "QUOTATION"
 	}
 	var tokens: Array = []
 	var buffer: String = ""

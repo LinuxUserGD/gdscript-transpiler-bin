@@ -36,7 +36,11 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 		elif input[level] == "FUNCTION":
 			_function(i, endln, level, root, input, unit, con)
 		elif input[level] == "VARIABLE":
-			_variable(root, input, level)
+			const is_const: bool = false
+			_variable(root, input, level, is_const)
+		elif input[level] == "CONST":
+			const is_const: bool = true
+			_variable(root, input, level, is_const)
 		else:
 			_call(root, input, level)
 	return root
@@ -73,27 +77,70 @@ func _call(root, input: Array, level: int):
 func _new_call(input: Array, level: int):
 	var callnew = Callnew.new()
 	var s = input.size()
-	if input[level+1] == "DOT":
-		callnew.name = input[level]
-		callnew.callnew = _new_call(input, level+2)
-	elif input[level+1] == "EQUALS SIGN":
-		callnew.name = input[level]
-		callnew.equ = true
-		var array: Array = []
-		for i in range(level+2, input.size()):
-			array.append(input[i])
-		callnew.res = _eval(array)
-	elif input[level+1] == "LEFT BRACKET" && input[s-1] == "RIGHT BRACKET":
-		callnew.name = input[level]
-		callnew.function = true
-		callnew.builtin_function = _builtin_function(input[level])
-	else:
-		callnew.name = input[level]
+	if level+1 < s:
+		if input[level+1] == "DOT":
+			callnew.name = input[level]
+			callnew.callnew = _new_call(input, level+2)
+		elif input[level+1] == "EQUALS SIGN":
+			callnew.name = input[level]
+			callnew.equ = true
+			var array: Array = []
+			for i in range(level+2, input.size()):
+				array.append(input[i])
+			callnew.res = _eval(array)
+		elif input[level+1] == "LEFT BRACKET" && input[s-1] == "RIGHT BRACKET":
+			callnew.name = input[level]
+			callnew.function = true
+			callnew.builtin_function = _builtin_function(input[level])
+			var args: Array = []
+			for i in range(level+2, s-1):
+				args.append(input[i])
+			if args.size() != 0:
+				callnew.args = _eval_function_args(args)
+		else:
+			callnew.name = input[level]
 	return callnew
 
-func _variable(root, input: Array, level: int):
+func _eval_string(array: Array):
+	var s: String = ""
+	const qu: String = '"'
+	var token : Dictionary = {
+		"NUMBER SIGN": "#",
+		"EXCLAMATION MARK": "!",
+		"SLASH": "/",
+		"BACKSLASH": "\\",
+		"CLASS NAME": "class_name",
+		"EXTENDS": "extends",
+		"NUMBER SIGN 2": "##",
+		"FUNCTION": "func",
+		"LEFT BRACKET": "(",
+		"RIGHT BRACKET": ")",
+		"MINUS": "-",
+		"PLUS": "+",
+		"GREATER THAN": ">",
+		"LESS THAN": "<",
+		"COLON": ":",
+		"EQUALS SIGN": "=",
+		"CURLY LEFT BRACKET": "{",
+		"CURLY RIGHT BRACKET": "}",
+		"TAB": "\t",
+		"DOT": ".",
+		"NEW": "new",
+		"VARIABLE": "var",
+		"CONST": "const",
+		"QUOTATION": qu
+	}
+	for e in array:
+		s += token[e] if e in token else e
+	return s
+
+func _eval_function_args(array: Array):
+	return _eval_string(array).split("COMMA")
+
+func _variable(root, input: Array, level: int, is_const: bool):
 	var variable = Variable.new()
 	variable.variable = input[level+1]
+	variable.is_const = is_const
 	if input[level+2]=="COLON":
 		variable.st = true
 		level += 1
@@ -121,6 +168,9 @@ func _eval(array: Array):
 	if array[0] == "CURLY LEFT BRACKET" && array[s-1] == "CURLY RIGHT BRACKET":
 		variable = {}
 		return variable
+	if array[0] == "QUOTATION" && array[s-1] == "QUOTATION":
+		variable = _eval_string(array)
+		return variable
 	variable = _new_call(array, 0)
 	return variable
 
@@ -128,11 +178,21 @@ func _function(startln: int, endln: int, level: int, root, input: Array, unit: A
 	var function = Function.new()
 	function.args = []
 	function.function = input[level+1]
-	var begin = input.find("LEFT BRACKET", level+2)
-	var end = input.find("RIGHT BRACKET", level+3)
-	var arrow1 = input.find("MINUS", level+4)
-	var arrow2 = input.find("GREATER THAN", level+5)
-	var colon = input.find("COLON", level+4)
+	var begin: int = -1
+	if "LEFT BRACKET" in input:
+		begin = input.find("LEFT BRACKET", level+2)
+	var end: int = -1
+	if "RIGHT BRACKET" in input:
+		end = input.find("RIGHT BRACKET", level+3)
+	var arrow1: int = -1
+	if "MINUS" in input:
+		arrow1 = input.find("MINUS", level+4)
+	var arrow2: int = -1
+	if "GREATER THAN" in input:
+		arrow2 = input.find("GREATER THAN", level+5)
+	var colon: int = -1
+	if "COLON" in input:
+		colon = input.find("COLON", level+4)
 	if (arrow1>0 and arrow2>0):
 		function.ret = true
 		function.res = input[colon-1]

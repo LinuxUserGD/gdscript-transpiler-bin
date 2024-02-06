@@ -11,6 +11,7 @@ var res = null
 var type: String = ""
 var st: bool = false
 var equ: bool = false
+var is_const: bool = false
 
 func t() -> String:
 	return "variable"

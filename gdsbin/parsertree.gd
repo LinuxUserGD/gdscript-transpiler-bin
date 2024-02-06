@@ -41,7 +41,10 @@ func printpt(element, level: int) -> String:
 				out += printpt(element.root, level+1)
 			return out
 		"variable":
-			var out = "var " + element.variable
+			var out = "var"
+			if element.is_const:
+				out = "const"
+			out += " " + element.variable
 			if element.st:
 				out += ": "
 			if element.type != "":
@@ -58,7 +61,13 @@ func printpt(element, level: int) -> String:
 			else:
 				out += element.name
 			if element.function:
-				out += "()"
+				out += "("
+				var s = element.args.size()
+				if s!=0:
+					for i in range(0, s-1, 1):
+						out += element.args[i] + ", "
+					out += element.args[s-1]
+				out += ")"
 			while (element.callnew != null):
 				element = element.callnew
 				out += "."
@@ -67,7 +76,13 @@ func printpt(element, level: int) -> String:
 				else:
 					out += element.name
 				if element.function:
-					out += "()"
+					out += "("
+					var s = element.args.size()
+					if s!=0:
+						for i in range(0, s-1, 1):
+							out += element.args[i] + ", "
+						out += element.args[s-1]
+					out += ")"
 			if element.equ:
 				out += " = "
 				if element.res != null:
@@ -77,7 +92,13 @@ func printpt(element, level: int) -> String:
 						else:
 							out += element.res.name
 						if element.res.function:
-							out += "()"
+							out += "("
+							var s = element.res.args.size()
+							if s!=0:
+								for i in range(0, s-1, 1):
+									out += element.res.args[i] + ", "
+								out += element.res.args[s-1]
+							out += ")"
 						while (element.res.callnew != null):
 							element.res = element.res.callnew
 							out += "."
@@ -86,7 +107,13 @@ func printpt(element, level: int) -> String:
 							else:
 								out += element.res.name
 							if element.res.function:
-								out += "()"
+								out += "("
+								var s = element.res.args.size()
+								if s!=0:
+									for i in range(0, s-1, 1):
+										out += element.res.args[i] + ", "
+									out += element.res.args[s-1]
+								out += ")"
 					else:
 						out += str(element.res).replace(" ", "")
 			return out + "\n"
