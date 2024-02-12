@@ -28,66 +28,36 @@ def _init():
         path_format_arg = "format="
         if arg.startswith(path_format_arg) and arg.endswith(".gd"):
             format = True
-            start_stages(arg, format)
+            start_stages(arg, format, __init__.package_name)
             return
         path_exp_arg = "exp="
         if arg.startswith(path_exp_arg):
-            start_exp(arg)
+            start_exp(__init__.package_name)
             return
         compile_arg = "compile="
         if arg.startswith(compile_arg) and arg.endswith(".gd"):
             format = True
-            start_stages(arg, format)
+            start_stages(arg, format, __init__.package_name)
             compile(arg)
-            return
-        if arg == "compile_zig":
-            compile_zig()
-            return
-        if arg == "zig_template":
-            zig_template()
             return
         setup_arg = "setup="
         if arg.startswith(setup_arg):
-            pyproject = False
-            setup(arg, pyproject)
-            return
-        pyproject_arg = "pyproject="
-        if arg.startswith(pyproject_arg):
-            pyproject = True
-            setup(arg, pyproject)
+            setup(
+                __init__.setuptools_min_ver,
+                __init__.package_name,
+                __init__.author,
+                __init__.author_email,
+                __init__.project_url,
+                __init__.download_url,
+                __init__.documentation_url,
+                __init__.source_url,
+                __init__.tracker_url,
+                __init__.description,
+                __init__.proj_license,
+            )
             return
     help()
     return
-
-
-def compile_zig():
-    sys.stdout.write("Building latest Zig toolchain from source")
-    import gdsbin.threads
-
-    threads = type(gdsbin.threads)(gdsbin.threads.__name__, gdsbin.threads.__doc__)
-    threads.__dict__.update(gdsbin.threads.__dict__)
-    threads.start(_build)
-    while threads.is_alive():
-        sys.stdout.write(".")
-    threads.wait_to_finish()
-
-
-def zig_template():
-    print("Building Zig template...")
-    stdout = []
-    if len(stdout) > 0:
-        for out_str in stdout[0].split("\n"):
-            if len(out_str) > 0:
-                print(out_str)
-    stdout = []
-    if len(stdout) > 0:
-        for out_str in stdout[0].split("\n"):
-            if len(out_str) > 0:
-                print(out_str)
-
-
-def _build():
-    stdout = []
 
 
 def compile(arg):
@@ -222,10 +192,10 @@ def start_exp(arg):
     print(string_res)
 
 
-def start_stages(argum, format):
+def start_stages(argum, format, package_name):
     f = False
-    start(argum, f)
-    start(argum, format)
+    start(argum, f, package_name)
+    start(argum, format, package_name)
 
 
 def form(stdout, imp, _imp_string):
@@ -264,49 +234,44 @@ def form(stdout, imp, _imp_string):
     return stdout
 
 
-def setup(arg, pyproject_toml):
-    path_end = arg.split("=")[1]
-    args = path_end.split(".")
-    c = len(args)
-    pathstr = ""
-    for path_str in args:
-        c -= 1
-        if c != 0:
-            pathstr += path_str + "."
-    if 0 <= pathstr.find("/.."):
-        paths = pathstr.split("/")
-        pathstr = ""
-        index = 0
-        for path_arg in paths:
-            if path_arg == ".." and index > 0:
-                path_size = len(pathstr)
-                previous = paths[index - 1]
-                previous_size = len(previous)
-                # remove "/"
-                pathstr = left(pathstr, path_size - 1)
-                path_size = len(pathstr)
-                # remove previous path
-                pathstr = left(pathstr, path_size - previous_size)
-            else:
-                pathstr += path_arg
-                pathstr += "/"
-            index += 1
-        pathstr = left(pathstr, len(pathstr) - 1)
+def setup(
+    setuptools_min_ver,
+    package_name,
+    author,
+    author_email,
+    project_url,
+    download_url,
+    documentation_url,
+    source_url,
+    tracker_url,
+    description,
+    proj_license,
+):
     import gdsbin.transpiler
 
     transpiler = type(gdsbin.transpiler)(
         gdsbin.transpiler.__name__, gdsbin.transpiler.__doc__
     )
     transpiler.__dict__.update(gdsbin.transpiler.__dict__)
-    if pyproject_toml:
-        path2 = "" + pathstr + "toml"
-        transpiler.generate_setup(path2, pyproject_toml)
-    else:
-        path2 = "" + pathstr + "py"
-        transpiler.generate_setup(path2, pyproject_toml)
+    pyproject_path = "" + "pyproject" + "." + "toml"
+    transpiler.generate_pyproject(pyproject_path, setuptools_min_ver)
+    setup_path = "" + "setup" + "." + "py"
+    transpiler.generate_setup(
+        setup_path,
+        package_name,
+        author,
+        author_email,
+        project_url,
+        download_url,
+        documentation_url,
+        source_url,
+        tracker_url,
+        description,
+        proj_license,
+    )
 
 
-def start(arg, stage2):
+def start(arg, stage2, package_name):
     path_end = arg.split("=")[1]
     path = "" + path_end
     args = path_end.split(".")
@@ -345,7 +310,7 @@ def start(arg, stage2):
     )
     transpiler.__dict__.update(gdsbin.transpiler.__dict__)
     content = transpiler.read(path)
-    out = transpiler.transpile(content)
+    out = transpiler.transpile(content, package_name)
     if transpiler.props.verbose:
         print(out)
     transpiler.save(path2, out)
@@ -401,7 +366,7 @@ def start(arg, stage2):
                 result_str += "/"
             result_str = left(result_str, len(result_str) - 1)
             result_str += "gd"
-            start("dep=" + result_str, stage2)
+            start("dep=" + result_str, stage2, package_name)
 
 
 def version_info():
@@ -465,30 +430,24 @@ def help():
     VER_DESC = "show program's version number and exit"
     HELP_DESC = "show this help message and exit"
     FMT_DESC = "transpile and format GDScript files recursively"
-    RUN_DESC = "run GDScript file directly using CPython"
     COMP_DESC = "compile GDScript file to binary using Clang/Nuitka"
     EXP_DESC = "experimental option to tokenize GDScript file"
-    SETUP_DESC = "output a setup.py file to install python project"
-    PYPR_DESC = "output a pyproject.toml file to install python project"
+    SETUP_DESC = "generate a setup.py and pyproject.toml file to install Python project"
     VEC2_DESC = "testing Vector2 implementation"
     PARSER_DESC = "running GDScript tests (not working yet)"
     BENCH_DESC = "running benchmark to compare performance"
-    ZIG_DESC = "build latest Zig toolchain from source"
     print("Usage: gds [options]")
     print("\n")
     print("Options:")
     print("  " + "version                           " + VER_DESC)
     print("  " + "help                              " + HELP_DESC)
     print("  " + "format=../path/to/file.gd         " + FMT_DESC)
-    print("  " + "run=../path/to/file.gd            " + RUN_DESC)
     print("  " + "compile=../path/to/file.gd        " + COMP_DESC)
     print("  " + "exp=../path/to/file.gd            " + EXP_DESC)
     print("  " + "setup=../path/setup.py            " + SETUP_DESC)
-    print("  " + "pyproject=../path/pyproject.toml  " + PYPR_DESC)
     print("  " + "test=vector2                      " + VEC2_DESC)
     print("  " + "test=parser                       " + PARSER_DESC)
     print("  " + "benchmark                         " + BENCH_DESC)
-    print("  " + "compile_zig                       " + ZIG_DESC)
 
 
 def run_benchmark():

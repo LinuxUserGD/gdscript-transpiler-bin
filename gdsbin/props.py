@@ -3,17 +3,11 @@ types = [
     "AABB",
     "Array",
     "Basis",
-    "bool",
     "Callable",
     "Color",
     "Dictionary",
-    "float",
-    "int",
-    "max",
-    "nil",
     "NodePath",
     "Object",
-    "Thread",
     "PackedByteArray",
     "PackedColorArray",
     "PackedFloat32Array",
@@ -25,18 +19,24 @@ types = [
     "PackedVector3Array",
     "Plane",
     "Quaternion",
+    "RID",
     "Rect2",
     "Rect2i",
-    "RID",
     "Signal",
     "String",
     "StringName",
+    "Thread",
     "Transform2D",
     "Transform3D",
     "Vector2",
     "Vector2i",
     "Vector3",
     "Vector3i",
+    "bool",
+    "float",
+    "int",
+    "max",
+    "nil",
     "void",
 ]
 op = [
@@ -178,70 +178,105 @@ repl_dict = {
     "File.new()": "",
     "Thread.new()": "",
 }
-pyproject_toml = [
-    "[build-system]",
-    "requires = ['setuptools>=42']",
-    "build-backend = 'setuptools.build_meta'",
-]
-setup = [
-    "#!/usr/bin/env python",
-    "from setuptools import setup, find_packages",
-    "# Parse version number from gdsbin/version.py:",
-    "with open('gdsbin/version.py') as f:",
-    "    info = {}",
-    "    for line in f:",
-    "        if line.startswith('__version__'):",
-    "            exec(line, info)",
-    "            break",
-    "install_requires = []",
-    "with open('requirements.txt') as f:",
-    "    for line in f:",
-    "        if line and not line.startswith('#'):",
-    "            install_requires.append(line)",
-    "setup_info = dict(",
-    "    name='gdsbin',",
-    "    version=info['__version__'],",
-    "    author='LinuxUserGD',",
-    "    author_email='hugegameartgd@gmail.com',",
-    "    url='https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',",
-    "    download_url='https://linuxusergd.itch.io/gdscript-transpiler-bin',",
-    "    project_urls={",
-    "        'Documentation': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/wiki',",
-    "        'Source': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',",
-    "        'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',",
-    "    },",
-    "    description='GDScript and Python runtime environment',",
-    "    long_description=open('README.md').read(),",
-    "    long_description_content_type='text/markdown',",
-    "    license='MIT',",
-    "    classifiers=[",
-    "        'License :: OSI Approved :: MIT License',",
-    "        'Operating System :: MacOS :: MacOS X',",
-    "        'Operating System :: Microsoft :: Windows',",
-    "        'Operating System :: POSIX :: Linux',",
-    "        'Programming Language :: Python :: 2',",
-    "        'Programming Language :: Python :: 2.7',",
-    "        'Programming Language :: Python :: 3',",
-    "        'Programming Language :: Python :: 3.3',",
-    "        'Programming Language :: Python :: 3.4',",
-    "        'Programming Language :: Python :: 3.5',",
-    "        'Programming Language :: Python :: 3.6',",
-    "        'Programming Language :: Python :: 3.7',",
-    "        'Programming Language :: Python :: 3.8',",
-    "        'Programming Language :: Python :: 3.9',",
-    "        'Programming Language :: Python :: 3.10',",
-    "        'Programming Language :: Python :: 3.11',",
-    "        'Topic :: Software Development :: Libraries :: Python Modules',",
-    "    ],",
-    "    # Package info",
-    "    packages=['gdsbin'] + ['gdsbin.' + pkg for pkg in find_packages('gdsbin')],",
-    "    # Add _ prefix to the names of temporary build dirs",
-    "    options={'build': {'build_base': '_build'}, },",
-    "    zip_safe=True,",
-    "    install_requires=install_requires,",
-    ")",
-    "setup(**setup_info)",
-]
+
+
+def get_pyproject_toml(setuptools_min_version):
+    req = "requires = ['setuptools>=<ver>']"
+    pyproject_toml = [
+        "[build-system]",
+        req.replace("<ver>", str(setuptools_min_version)),
+        "build-backend = 'setuptools.build_meta'",
+    ]
+    return pyproject_toml
+
+
+def get_setup(
+    package_name,
+    author,
+    author_email,
+    project_url,
+    download_url,
+    documentation_url,
+    source_url,
+    tracker_url,
+    description,
+    proj_license,
+):
+    open = "with open('<pkg_name>/version.py') as f:"
+    name = "    name='<pkg_name>',"
+    auth = "    author='<auth>',"
+    email = "    author_email='<email>',"
+    proj_url = "    url='<proj_url>',"
+    down_url = "    download_url='<down_url>',"
+    doc_url = "        'Documentation': '<doc_url>',"
+    src_url = "        'Source': '<src_url>',"
+    tr_url = "'Tracker': '<tr_url>',"
+    desc = "    description='<desc>',"
+    license = "    license='<license>',"
+    pkg_info = "    packages=['<pkg_name>'] + ['<pkg_name>.' + pkg for pkg in find_packages('<pkg_name>')],"
+
+    setup = [
+        "#!/usr/bin/env python",
+        "from setuptools import setup, find_packages",
+        "# Parse version number from version.py:",
+        open.replace("<pkg_name>", package_name),
+        "    info = {}",
+        "    for line in f:",
+        "        if line.startswith('__version__'):",
+        "            exec(line, info)",
+        "            break",
+        "install_requires = []",
+        "with open('requirements.txt') as f:",
+        "    for line in f:",
+        "        if line and not line.startswith('#'):",
+        "            install_requires.append(line)",
+        "setup_info = dict(",
+        name.replace("<pkg_name>", package_name),
+        "    version=info['__version__'],",
+        auth.replace("<auth>", author),
+        email.replace("<email>", author_email),
+        proj_url.replace("<proj_url>", project_url),
+        down_url.replace("<down_url>", download_url),
+        "    project_urls={",
+        doc_url.replace("<doc_url>", documentation_url),
+        src_url.replace("<src_url>", source_url),
+        tr_url.replace("<tr_url>", tracker_url),
+        "    },",
+        desc.replace("<desc>", description),
+        "    long_description=open('README.md').read(),",
+        "    long_description_content_type='text/markdown',",
+        license.replace("<license>", proj_license),
+        "    classifiers=[",
+        "        'License :: OSI Approved :: MIT License',",
+        "        'Operating System :: MacOS :: MacOS X',",
+        "        'Operating System :: Microsoft :: Windows',",
+        "        'Operating System :: POSIX :: Linux',",
+        "        'Programming Language :: Python :: 2',",
+        "        'Programming Language :: Python :: 2.7',",
+        "        'Programming Language :: Python :: 3',",
+        "        'Programming Language :: Python :: 3.3',",
+        "        'Programming Language :: Python :: 3.4',",
+        "        'Programming Language :: Python :: 3.5',",
+        "        'Programming Language :: Python :: 3.6',",
+        "        'Programming Language :: Python :: 3.7',",
+        "        'Programming Language :: Python :: 3.8',",
+        "        'Programming Language :: Python :: 3.9',",
+        "        'Programming Language :: Python :: 3.10',",
+        "        'Programming Language :: Python :: 3.11',",
+        "        'Topic :: Software Development :: Libraries :: Python Modules',",
+        "    ],",
+        "    # Package info",
+        pkg_info.replace("<pkg_name>", package_name),
+        "    # Add _ prefix to the names of temporary build dirs",
+        "    options={'build': {'build_base': '_build'}, },",
+        "    zip_safe=True,",
+        "    install_requires=install_requires,",
+        ")",
+        "setup(**setup_info)",
+    ]
+    return setup
+
+
 py_imp = False
 debug = False
 verbose = False

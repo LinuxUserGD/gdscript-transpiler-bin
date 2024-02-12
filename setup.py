@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-# Parse version number from gdsbin/version.py:
+# Parse version number from version.py:
 with open('gdsbin/version.py') as f:
     info = {}
     for line in f:
@@ -22,7 +22,7 @@ setup_info = dict(
     project_urls={
         'Documentation': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/wiki',
         'Source': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',
-        'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',
+'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',
     },
     description='GDScript and Python runtime environment',
     long_description=open('README.md').read(),

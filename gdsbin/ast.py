@@ -22,22 +22,28 @@ def ast(startln, endln, level, root, unit, con):
             root.elem = []
         if input[level] == "NUMBER SIGN":
             _number_sign(root, conline)
-        elif input[level] == "NUMBER SIGN 2":
+            continue
+        if input[level] == "NUMBER SIGN 2":
             _number_sign(root, conline)
-        elif input[level] == "CLASS NAME":
+            continue
+        if input[level] == "CLASS NAME":
             _classname(root, input, level)
-        elif input[level] == "EXTENDS":
+            continue
+        if input[level] == "EXTENDS":
             _extend(root, input, level)
-        elif input[level] == "FUNCTION":
+            continue
+        if input[level] == "FUNCTION":
             _function(i, endln, level, root, input, unit, con)
-        elif input[level] == "VARIABLE":
+            continue
+        if input[level] == "VARIABLE":
             is_const = False
             _variable(root, input, level, is_const)
-        elif input[level] == "CONST":
+            continue
+        if input[level] == "CONST":
             is_const = True
             _variable(root, input, level, is_const)
-        else:
-            _call(root, input, level)
+            continue
+        _call(root, input, level)
     return root
 
 
@@ -181,9 +187,7 @@ def _variable(root, input, level, is_const):
 
 
 def _builtin_function(function):
-    if function == "NEW":
-        return True
-    return False
+    return function == "NEW"
 
 
 def _eval(array):

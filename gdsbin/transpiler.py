@@ -4,12 +4,11 @@ props = type(gdsbin.props)(gdsbin.props.__name__, gdsbin.props.__doc__)
 props.__dict__.update(gdsbin.props.__dict__)
 
 
-def transpile(content):
-    props.types.sort()
+def transpile(content, package_name):
     t = ""
     for line in content.split("\n"):
         if not line.startswith("##"):
-            t += analyze(line)
+            t += analyze(line, package_name)
     if props.sys_imp:
         props.sys_imp = False
         t = "import sys" + "\n" + t
@@ -108,16 +107,42 @@ def read(path):
     return string
 
 
-def generate_setup(path, pyproject_toml):
+def generate_setup(
+    path,
+    package_name,
+    author,
+    author_email,
+    project_url,
+    download_url,
+    documentation_url,
+    source_url,
+    tracker_url,
+    description,
+    proj_license,
+):
     content = ""
-    if pyproject_toml:
-        file = props.pyproject_toml
-        for line in file:
-            content += line + "\n"
-    else:
-        file = props.setup
-        for line in file:
-            content += line + "\n"
+    file = props.get_setup(
+        package_name,
+        author,
+        author_email,
+        project_url,
+        download_url,
+        documentation_url,
+        source_url,
+        tracker_url,
+        description,
+        proj_license,
+    )
+    for line in file:
+        content += line + "\n"
+    save(path, content)
+
+
+def generate_pyproject(path, setuptools_min_ver):
+    content = ""
+    file = props.get_pyproject_toml(setuptools_min_ver)
+    for line in file:
+        content += line + "\n"
     save(path, content)
 
 
@@ -198,7 +223,7 @@ def check_new(l):
     return l
 
 
-def analyze(l):
+def analyze(l, package_name):
     l = check_match(l)
     l = check_new(l)
     out = ""
@@ -219,7 +244,7 @@ def analyze(l):
             elif c ^ 1 != c + 1:
                 out += '"' + string[i] + '"'
             else:
-                out += translate(string[i])
+                out += translate(string[i], package_name)
             c += 1
     if len(out) > 0:
         res = "res"
@@ -530,7 +555,7 @@ def dict(arg):
     return e
 
 
-def translate(e):
+def translate(e, package_name):
     if e == ",":
         return ","
     if e == "":
@@ -573,7 +598,7 @@ def translate(e):
                 gds_name.lower() + " = import " + gds_name, "import " + gds_name.lower()
             )
             if 0 <= e.find("."):
-                if 0 <= e.find("gdsbin"):
+                if 0 <= e.find(package_name):
                     packages = e.split(".")
                     l = len(packages)
                     imp = packages[l - 1]
@@ -594,7 +619,7 @@ def translate(e):
             else:
                 # Shallow copy, https://stackoverflow.com/a/11173076
                 gds = gds_name.lower()
-                b = "gdsbin." + gds
+                b = package_name + "." + gds
                 str1 = "import " + gds
                 str2 = "import " + b + "; "
                 str3 = (

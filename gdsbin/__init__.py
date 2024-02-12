@@ -1,1 +1,11 @@
+setuptools_min_ver = 42
 package_name = "gdsbin"
+author = "LinuxUserGD"
+author_email = "hugegameartgd@gmail.com"
+project_url = "https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin"
+download_url = "https://linuxusergd.itch.io/gdscript-transpiler-bin"
+documentation_url = "https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/wiki"
+source_url = "https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin"
+tracker_url = "https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues"
+description = "GDScript and Python runtime environment"
+proj_license = "MIT"
