@@ -27,22 +27,28 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 			root.elem = []
 		if input[level] == "NUMBER SIGN":
 			_number_sign(root, conline)
-		elif input[level] == "NUMBER SIGN 2":
+			continue
+		if input[level] == "NUMBER SIGN 2":
 			_number_sign(root, conline)
-		elif input[level] == "CLASS NAME":
+			continue
+		if input[level] == "CLASS NAME":
 			_classname(root, input, level)
-		elif input[level] == "EXTENDS":
+			continue
+		if input[level] == "EXTENDS":
 			_extend(root, input, level)
-		elif input[level] == "FUNCTION":
+			continue
+		if input[level] == "FUNCTION":
 			_function(i, endln, level, root, input, unit, con)
-		elif input[level] == "VARIABLE":
+			continue
+		if input[level] == "VARIABLE":
 			const is_const: bool = false
 			_variable(root, input, level, is_const)
-		elif input[level] == "CONST":
+			continue
+		if input[level] == "CONST":
 			const is_const: bool = true
 			_variable(root, input, level, is_const)
-		else:
-			_call(root, input, level)
+			continue
+		_call(root, input, level)
 	return root
 
 func _number_sign(root, conline: String):
@@ -104,7 +110,7 @@ func _new_call(input: Array, level: int):
 func _eval_string(array: Array):
 	var s: String = ""
 	const qu: String = '"'
-	var token : Dictionary = {
+	const token : Dictionary = {
 		"NUMBER SIGN": "#",
 		"EXCLAMATION MARK": "!",
 		"SLASH": "/",
@@ -158,9 +164,7 @@ func _variable(root, input: Array, level: int, is_const: bool):
 	#print(input)
 
 func _builtin_function(function: String) -> bool:
-	if function == "NEW":
-		return true
-	return false
+	return (function == "NEW")
 
 func _eval(array: Array):
 	var s: int = array.size()

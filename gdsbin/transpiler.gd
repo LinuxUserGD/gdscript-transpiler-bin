@@ -10,15 +10,13 @@ class_name Transpiler
 ## Properties class instance
 var props = Props.new()
 
-
 ## Function to split script into lines and analyze each one.
 ## Imports are added to transpiled python script if required.
-func transpile(content: String) -> String:
-	props.types.sort()
+func transpile(content: String, package_name: String) -> String:
 	var t: String = ""
 	for line in content.split("\n"):
 		if not line.begins_with("##"):
-			t += analyze(line)
+			t += analyze(line, package_name)
 	if props.sys_imp:
 		props.sys_imp = false
 		t = "import sys" + "\n" + t
@@ -117,16 +115,18 @@ func read(path: String) -> String:
 	file.close()
 	return string
 
-func generate_setup(path: String, pyproject_toml: bool) -> void:
+func generate_setup(path: String, package_name: String, author: String, author_email: String, project_url: String, download_url: String, documentation_url: String, source_url: String, tracker_url: String, description: String, proj_license: String) -> void:
 	var content: String = ""
-	if pyproject_toml:
-		var file: Array = props.pyproject_toml
-		for line in file:
-			content += line + "\n"
-	else:
-		var file: Array = props.setup
-		for line in file:
-			content += line + "\n"
+	var file: Array = props.get_setup(package_name, author, author_email, project_url, download_url, documentation_url, source_url, tracker_url, description, proj_license)
+	for line in file:
+		content += line + "\n"
+	save(path, content)
+
+func generate_pyproject(path: String, setuptools_min_ver: int):
+	var content: String = ""
+	var file: Array = props.get_pyproject_toml(setuptools_min_ver)
+	for line in file:
+		content += line + "\n"
 	save(path, content)
 
 ## Function to write final output to a file using File compatibility class
@@ -204,7 +204,7 @@ func check_new(l: String):
 
 ## Function for splitting lines (excluding double quoted Strings) into
 ## readable GDScript syntax expressions which later can be converted
-func analyze(l: String) -> String:
+func analyze(l: String, package_name: String) -> String:
 	l = check_match(l)
 	l = check_new(l)
 	var out: String = ""
@@ -225,7 +225,7 @@ func analyze(l: String) -> String:
 			elif c ^ 1 != c + 1:
 				out += '"' + string[i] + '"'
 			else:
-				out += translate(string[i])
+				out += translate(string[i], package_name)
 			c += 1
 	if out.length() > 0:
 		var res: String = "res"
@@ -522,7 +522,7 @@ func dict(arg: String) -> String:
 
 
 ## Translation function for removing gdscript type hints and internal types
-func translate(e: String) -> String:
+func translate(e: String, package_name: String) -> String:
 	if e == ",":
 		return ","
 	if e == "":
@@ -563,7 +563,7 @@ func translate(e: String) -> String:
 		while e.contains(gds_name.to_lower() + " = import " + gds_name):
 			e = e.replace(gds_name.to_lower() + " = import " + gds_name, "import " + gds_name.to_lower())
 			if e.contains("."):
-				if e.contains("gdsbin"):
+				if e.contains(package_name):
 					var packages: Array = e.split(".")
 					var l: int = packages.size()
 					var imp : String = packages[l-1]
@@ -584,7 +584,7 @@ func translate(e: String) -> String:
 			else:
 				# Shallow copy, https://stackoverflow.com/a/11173076
 				var gds = gds_name.to_lower()
-				var b = "gdsbin." + gds
+				var b = package_name + "." + gds
 				var str1 = "import " + gds
 				var str2 = "import " + b + "; "
 				var str3 = gds + " =  type(" + b + ")(" + b + ".__name__, " + b + ".__doc__); "

@@ -33,7 +33,7 @@ window/vsync/use_vsync=false
 [editor]
 
 movie_writer/mjpeg_quality=1.0
-movie_writer/movie_file="/home/user/Videos/godot.avi"
+movie_writer/movie_file=""
 
 [editor_plugins]
 

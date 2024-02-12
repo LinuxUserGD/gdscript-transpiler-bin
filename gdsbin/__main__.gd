@@ -29,67 +29,25 @@ func _ready() -> void:
 			return
 		var path_format_arg: String = "format="
 		if arg.begins_with(path_format_arg) and arg.ends_with(".gd"):
-			var format: bool = true
-			start_stages(arg, format)
+			const format: bool = true
+			start_stages(arg, format, __init__.package_name)
 			return
 		var path_exp_arg: String = "exp="
 		if arg.begins_with(path_exp_arg):
-			start_exp(arg)
+			start_exp(__init__.package_name)
 			return
 		var compile_arg = "compile="
 		if arg.begins_with(compile_arg) and arg.ends_with(".gd"):
-			var format: bool = true
-			start_stages(arg, format)
+			const format: bool = true
+			start_stages(arg, format, __init__.package_name)
 			compile(arg)
-			return
-		if arg == "compile_zig":
-			compile_zig()
-			return
-		if arg == "zig_template":
-			zig_template()
 			return
 		var setup_arg: String = "setup="
 		if arg.begins_with(setup_arg):
-			var pyproject: bool = false
-			setup(arg, pyproject)
-			return
-		var pyproject_arg: String = "pyproject="
-		if arg.begins_with(pyproject_arg):
-			var pyproject: bool = true
-			setup(arg, pyproject)
+			setup(__init__.setuptools_min_ver, __init__.package_name, __init__.author, __init__.author_email, __init__.project_url, __init__.download_url, __init__.documentation_url, __init__.source_url, __init__.tracker_url, __init__.description, __init__.proj_license)
 			return
 	help()
 	return
-
-## TODO: compile file with zig
-func compile_zig() -> void:
-	printraw("Building latest Zig toolchain from source")
-	var threads = Threads.new()
-	threads.start(_build)
-	while(threads.is_alive()):
-		OS.delay_msec(1000)
-		printraw(".")
-	threads.wait_to_finish()
-
-func zig_template() -> void:
-	print("Building Zig template...")
-	var stdout: Array = []
-	OS.execute('out/host/bin/zig',['build'],stdout,true,false)
-	if(stdout.size() > 0):
-		for out_str in stdout[0].split("\n"):
-			if out_str.length() > 0:
-				print(out_str)
-	stdout = []
-	OS.execute('zig-out/bin/zig-template',['test'],stdout,true,false)
-	if(stdout.size() > 0):
-		for out_str in stdout[0].split("\n"):
-			if out_str.length() > 0:
-				print(out_str)
-
-func _build():
-	var stdout: Array = []
-	OS.execute('sh',['build'],stdout,true,false)
-
 
 ## Function for compiling python script (by path)
 func compile(arg: String) -> void:
@@ -162,10 +120,10 @@ func start_exp(arg: String) -> void:
 	print(string_res)
 
 ## Wrapper function for start()
-func start_stages(argum: String, format: bool) -> void:
-	var f: bool = false
-	start(argum, f)
-	start(argum, format)
+func start_stages(argum: String, format: bool, package_name: String) -> void:
+	const f: bool = false
+	start(argum, f, package_name)
+	start(argum, format, package_name)
 
 ## Format function
 func form(stdout: Array, imp: String, _imp_string: String):
@@ -185,45 +143,16 @@ func form(stdout: Array, imp: String, _imp_string: String):
 	return stdout
 
 ## Function for saving setup.py
-func setup(arg: String, pyproject_toml: bool) -> void:
-	var path_end: String = arg.split("=")[1]
-	var args = path_end.split(".")
-	var c: int = args.size()
-	var pathstr: String = ""
-	for path_str in args:
-		c -= 1
-		if c != 0:
-			pathstr += path_str + "."
-	if pathstr.contains("/.."):
-		var paths: Array = pathstr.split("/")
-		pathstr = ""
-		var index: int = 0
-		for path_arg in paths:
-			if path_arg == ".." and index > 0:
-				var path_size: int = pathstr.length()
-				var previous: String = paths[index-1]
-				var previous_size: int = previous.length()
-				# remove "/"
-				pathstr = pathstr.left(path_size-1)
-				path_size = pathstr.length()
-				# remove previous path
-				pathstr = pathstr.left(path_size-previous_size)
-			else:
-				pathstr += path_arg
-				pathstr += "/"
-			index += 1
-		pathstr = pathstr.left(pathstr.length()-1)
+func setup(setuptools_min_ver: int, package_name: String, author: String, author_email: String, project_url: String, download_url: String, documentation_url: String, source_url: String, tracker_url: String, description: String, proj_license: String) -> void:
 	var transpiler = Transpiler.new()
-	if pyproject_toml:
-		var path2: String = "res://" + pathstr + "toml"
-		transpiler.generate_setup(path2, pyproject_toml)
-	else:
-		var path2: String = "res://" + pathstr + "py"
-		transpiler.generate_setup(path2, pyproject_toml)
+	const pyproject_path: String = "res://" + "pyproject" + "." + "toml"
+	transpiler.generate_pyproject(pyproject_path, setuptools_min_ver)
+	const setup_path = "res://" + "setup" + "." + "py"
+	transpiler.generate_setup(setup_path, package_name, author, author_email, project_url, download_url, documentation_url, source_url, tracker_url, description, proj_license)
 
 
 ## Function for transpiling script (by path)
-func start(arg: String, stage2: bool) -> void:
+func start(arg: String, stage2: bool, package_name: String) -> void:
 	var path_end: String = arg.split("=")[1]
 	var path: String = "res://" + path_end
 	var args = path_end.split(".")
@@ -257,7 +186,7 @@ func start(arg: String, stage2: bool) -> void:
 	var path2: String = "res://" + pathstr + "py"
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
-	var out: String = transpiler.transpile(content)
+	var out: String = transpiler.transpile(content, package_name)
 	if transpiler.props.verbose:
 		print(out)
 	transpiler.save(path2, out)
@@ -313,7 +242,7 @@ func start(arg: String, stage2: bool) -> void:
 				result_str += "/"
 			result_str = result_str.left(result_str.length()-1)
 			result_str += "gd"
-			start("dep=" + result_str, stage2)
+			start("dep=" + result_str, stage2, package_name)
 
 
 ## Prints Python and Godot Engine version information to console
@@ -349,33 +278,27 @@ func version_info() -> void:
 
 ## Help function which prints all possible commands
 func help() -> void:
-	const VER_DESC = "show program's version number and exit"
-	const HELP_DESC = "show this help message and exit"
-	const FMT_DESC = "transpile and format GDScript files recursively"
-	const RUN_DESC = "run GDScript file directly using CPython"
-	const COMP_DESC = "compile GDScript file to binary using Clang/Nuitka"
-	const EXP_DESC = "experimental option to tokenize GDScript file"
-	const SETUP_DESC = "output a setup.py file to install python project"
-	const PYPR_DESC = "output a pyproject.toml file to install python project"
-	const VEC2_DESC = "testing Vector2 implementation"
-	const PARSER_DESC = "running GDScript tests (not working yet)"
-	const BENCH_DESC = "running benchmark to compare performance"
-	const ZIG_DESC = "build latest Zig toolchain from source"
+	const VER_DESC: String = "show program's version number and exit"
+	const HELP_DESC: String = "show this help message and exit"
+	const FMT_DESC: String = "transpile and format GDScript files recursively"
+	const COMP_DESC: String = "compile GDScript file to binary using Clang/Nuitka"
+	const EXP_DESC: String = "experimental option to tokenize GDScript file"
+	const SETUP_DESC: String = "generate a setup.py and pyproject.toml file to install Python project"
+	const VEC2_DESC: String = "testing Vector2 implementation"
+	const PARSER_DESC: String = "running GDScript tests (not working yet)"
+	const BENCH_DESC: String = "running benchmark to compare performance"
 	print("Usage: gds [options]")
 	print()
 	print("Options:")
 	print("  " + "version                           " + VER_DESC)
 	print("  " + "help                              " + HELP_DESC)
 	print("  " + "format=../path/to/file.gd         " + FMT_DESC)
-	print("  " + "run=../path/to/file.gd            " + RUN_DESC)
 	print("  " + "compile=../path/to/file.gd        " + COMP_DESC)
 	print("  " + "exp=../path/to/file.gd            " + EXP_DESC)
 	print("  " + "setup=../path/setup.py            " + SETUP_DESC)
-	print("  " + "pyproject=../path/pyproject.toml  " + PYPR_DESC)
 	print("  " + "test=vector2                      " + VEC2_DESC)
 	print("  " + "test=parser                       " + PARSER_DESC)
 	print("  " + "benchmark                         " + BENCH_DESC)
-	print("  " + "compile_zig                       " + ZIG_DESC)
 ## Testing benchmark
 func run_benchmark() -> void:
 	var gdsbin: Dictionary = {}

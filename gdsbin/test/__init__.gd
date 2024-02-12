@@ -4,4 +4,4 @@
 ##
 
 ## Name of project (so file is not empty)
-var package_name: String = "test"
+const package_name: String = "test"

@@ -8,21 +8,15 @@ class_name Props
 var extend: Array = []
 
 ## Godot built-in types
-var types: Array = [
+const types: Array = [
 	"AABB",
 	"Array",
 	"Basis",
-	"bool",
 	"Callable",
 	"Color",
 	"Dictionary",
-	"float",
-	"int",
-	"max",
-	"nil",
 	"NodePath",
 	"Object",
-	"Thread",
 	"PackedByteArray",
 	"PackedColorArray",
 	"PackedFloat32Array",
@@ -34,18 +28,24 @@ var types: Array = [
 	"PackedVector3Array",
 	"Plane",
 	"Quaternion",
+	"RID",
 	"Rect2",
 	"Rect2i",
-	"RID",
 	"Signal",
 	"String",
 	"StringName",
+	"Thread",
 	"Transform2D",
 	"Transform3D",
 	"Vector2",
 	"Vector2i",
 	"Vector3",
 	"Vector3i",
+	"bool",
+	"float",
+	"int",
+	"max",
+	"nil",
 	"void"
 ]
 ## Common gdscript operations (for parsing)
@@ -116,71 +116,89 @@ const repl_dict: Dictionary = {
 	"Thread.new()": "",
 }
 
-const pyproject_toml: Array = [
-	"[build-system]",
-	"requires = ['setuptools>=42']",
-	"build-backend = 'setuptools.build_meta'",
-]
+func get_pyproject_toml(setuptools_min_version: int) -> Array:
+	var req: String = "requires = ['setuptools>=<ver>']"
+	var pyproject_toml: Array = [
+		"[build-system]",
+		req.replace("<ver>", str(setuptools_min_version)),
+		"build-backend = 'setuptools.build_meta'",
+	]
+	return pyproject_toml
 
-const setup: Array = [
-	"#!/usr/bin/env python",
-	"from setuptools import setup, find_packages",
-	"# Parse version number from gdsbin/version.py:",
-	"with open('gdsbin/version.py') as f:",
-	"    info = {}",
-	"    for line in f:",
-	"        if line.startswith('__version__'):",
-	"            exec(line, info)",
-	"            break",
-	"install_requires = []",
-	"with open('requirements.txt') as f:",
-	"    for line in f:",
-	"        if line and not line.startswith('#'):",
-	"            install_requires.append(line)",
-	"setup_info = dict(",
-	"    name='gdsbin',",
-	"    version=info['__version__'],",
-	"    author='LinuxUserGD',",
-	"    author_email='hugegameartgd@gmail.com',",
-	"    url='https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',",
-	"    download_url='https://linuxusergd.itch.io/gdscript-transpiler-bin',",
-	"    project_urls={",
-	"        'Documentation': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/wiki',",
-	"        'Source': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',",
-	"        'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',",
-	"    },",
-	"    description='GDScript and Python runtime environment',",
-	"    long_description=open('README.md').read(),",
-	"    long_description_content_type='text/markdown',",
-	"    license='MIT',",
-	"    classifiers=[",
-	"        'License :: OSI Approved :: MIT License',",
-	"        'Operating System :: MacOS :: MacOS X',",
-	"        'Operating System :: Microsoft :: Windows',",
-	"        'Operating System :: POSIX :: Linux',",
-	"        'Programming Language :: Python :: 2',",
-	"        'Programming Language :: Python :: 2.7',",
-	"        'Programming Language :: Python :: 3',",
-	"        'Programming Language :: Python :: 3.3',",
-	"        'Programming Language :: Python :: 3.4',",
-	"        'Programming Language :: Python :: 3.5',",
-	"        'Programming Language :: Python :: 3.6',",
-	"        'Programming Language :: Python :: 3.7',",
-	"        'Programming Language :: Python :: 3.8',",
-	"        'Programming Language :: Python :: 3.9',",
-	"        'Programming Language :: Python :: 3.10',",
-	"        'Programming Language :: Python :: 3.11',",
-	"        'Topic :: Software Development :: Libraries :: Python Modules',",
-	"    ],",
-	"    # Package info",
-	"    packages=['gdsbin'] + ['gdsbin.' + pkg for pkg in find_packages('gdsbin')],",
-	"    # Add _ prefix to the names of temporary build dirs",
-	"    options={'build': {'build_base': '_build'}, },",
-	"    zip_safe=True,",
-	"    install_requires=install_requires,",
-	")",
-	"setup(**setup_info)",
-]
+func get_setup(package_name: String, author: String, author_email: String, project_url: String, download_url: String, documentation_url: String, source_url: String, tracker_url: String, description: String, proj_license: String) -> Array:
+	const open: String = "with open('<pkg_name>/version.py') as f:"
+	const name: String = "    name='<pkg_name>',"
+	const auth: String = "    author='<auth>',"
+	const email: String = "    author_email='<email>',"
+	const proj_url: String = "    url='<proj_url>',"
+	const down_url: String = "    download_url='<down_url>',"
+	const doc_url: String = "        'Documentation': '<doc_url>',"
+	const src_url: String = "        'Source': '<src_url>',"
+	const tr_url: String = "'Tracker': '<tr_url>',"
+	const desc: String = "    description='<desc>',"
+	const license: String = "    license='<license>',"
+	const pkg_info: String = "    packages=['<pkg_name>'] + ['<pkg_name>.' + pkg for pkg in find_packages('<pkg_name>')],"
+	
+	var setup: Array = [
+		"#!/usr/bin/env python",
+		"from setuptools import setup, find_packages",
+		"# Parse version number from version.py:",
+		open.replace("<pkg_name>", package_name),
+		"    info = {}",
+		"    for line in f:",
+		"        if line.startswith('__version__'):",
+		"            exec(line, info)",
+		"            break",
+		"install_requires = []",
+		"with open('requirements.txt') as f:",
+		"    for line in f:",
+		"        if line and not line.startswith('#'):",
+		"            install_requires.append(line)",
+		"setup_info = dict(",
+		name.replace("<pkg_name>", package_name),
+		"    version=info['__version__'],",
+		auth.replace("<auth>", author),
+		email.replace("<email>", author_email),
+		proj_url.replace("<proj_url>", project_url),
+		down_url.replace("<down_url>", download_url),
+		"    project_urls={",
+		doc_url.replace("<doc_url>", documentation_url),
+		src_url.replace("<src_url>", source_url),
+		tr_url.replace("<tr_url>", tracker_url),
+		"    },",
+		desc.replace("<desc>", description),
+		"    long_description=open('README.md').read(),",
+		"    long_description_content_type='text/markdown',",
+		license.replace("<license>", proj_license),
+		"    classifiers=[",
+		"        'License :: OSI Approved :: MIT License',",
+		"        'Operating System :: MacOS :: MacOS X',",
+		"        'Operating System :: Microsoft :: Windows',",
+		"        'Operating System :: POSIX :: Linux',",
+		"        'Programming Language :: Python :: 2',",
+		"        'Programming Language :: Python :: 2.7',",
+		"        'Programming Language :: Python :: 3',",
+		"        'Programming Language :: Python :: 3.3',",
+		"        'Programming Language :: Python :: 3.4',",
+		"        'Programming Language :: Python :: 3.5',",
+		"        'Programming Language :: Python :: 3.6',",
+		"        'Programming Language :: Python :: 3.7',",
+		"        'Programming Language :: Python :: 3.8',",
+		"        'Programming Language :: Python :: 3.9',",
+		"        'Programming Language :: Python :: 3.10',",
+		"        'Programming Language :: Python :: 3.11',",
+		"        'Topic :: Software Development :: Libraries :: Python Modules',",
+		"    ],",
+		"    # Package info",
+		pkg_info.replace("<pkg_name>", package_name),
+		"    # Add _ prefix to the names of temporary build dirs",
+		"    options={'build': {'build_base': '_build'}, },",
+		"    zip_safe=True,",
+		"    install_requires=install_requires,",
+		")",
+		"setup(**setup_info)",
+	]
+	return setup
 
 ## Add additional python import to transpiled script if required
 var py_imp: bool = false

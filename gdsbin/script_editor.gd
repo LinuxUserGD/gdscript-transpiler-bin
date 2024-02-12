@@ -143,9 +143,12 @@ func {name}(arg1 = '', arg2 = '', arg3 = '', arg4 = '', arg5 = '', arg6 = '', ar
 # The script shim that will be inserted at the end of the user-provided script.
 var script_shim := ""
 
+var package_name: String = ""
 
 func _ready() -> void:
-	transpile()
+	var __init__ = preload("__init__.gd").new()
+	package_name = __init__.package_name
+	transpile(package_name)
 	# Add in the missing bits of syntax highlighting for GDScript.
 	for keyword in KEYWORDS:
 		ch.add_keyword_color(keyword, KEYWORD_COLOR)
@@ -233,8 +236,8 @@ func _gui_input(event: InputEvent) -> void:
 			set_caret_column(get_caret_column()+1)
 			
 
-func transpile():
-	$/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.set_text(_main.transpile($/root/MainWindow/HSplitContainer/VBoxContainer/ScriptEditor.get_text()))
+func transpile(pkg_name: String):
+	$/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.set_text(_main.transpile($/root/MainWindow/HSplitContainer/VBoxContainer/ScriptEditor.get_text(), pkg_name))
 
 
 func _on_run_button_2_pressed():
@@ -256,4 +259,4 @@ func _on_run_button_2_pressed():
 
 
 func _on_script_editor_text_changed():
-	transpile()
+	transpile(package_name)
