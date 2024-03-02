@@ -4,12 +4,6 @@
 	remote = origin
 	branch = master
 	update = rebase
-[submodule "zig"]
-	path = zig
-	url = https://github.com/LinuxUserGD/zig.git
-	remote = origin
-	branch = android
-	update = rebase
 [submodule "zig-template"]
 	path = zig-template
 	url = https://codeberg.org/LinuxUserGD/zig-template.git
