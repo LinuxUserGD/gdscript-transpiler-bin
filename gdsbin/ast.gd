@@ -144,7 +144,7 @@ func _eval_function_args(array: Array):
 	return _eval_string(array).split("COMMA")
 
 func _variable(root, input: Array, level: int, is_const: bool):
-	var variable = Variable.new()
+	var variable = VARIABLE.new()
 	variable.variable = input[level+1]
 	variable.is_const = is_const
 	if input[level+2]=="COLON":

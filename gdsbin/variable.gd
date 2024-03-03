@@ -1,4 +1,4 @@
-class_name Variable
+class_name VARIABLE
 ## GDScript Transpiler Properties Class
 ##
 ## Properties for Transpiler
