@@ -99,6 +99,8 @@ jobs:
         uses: https://codeberg.org/LinuxUserGD/setup-alpine@master
         with:
           branch: edge
+          extra-repositories: |
+            https://dl-cdn.alpinelinux.org/alpine/edge/testing
           arch: x86_64
           packages: >
             sqlite-static
