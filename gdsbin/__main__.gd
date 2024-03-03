@@ -192,6 +192,7 @@ func start(arg: String, stage2: bool, stage3: bool, package_name: String) -> Arr
 		print("Transpiling " + pathstr + "gd...")
 	var path2: String = "res://" + pathstr + "py"
 	var transpiler = Transpiler.new()
+	transpiler.set_def([])
 	var content: String = transpiler.read(path)
 	var out: String = transpiler.transpile(content, package_name)
 	if transpiler.defs.verbose:

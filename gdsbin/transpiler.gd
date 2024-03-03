@@ -594,6 +594,23 @@ func translate(e: String, package_name: String) -> String:
 
 func set_def(arr: Array):
 	if arr.size() != 17:
+		defs.py_imp = false
+		defs.debug = false
+		defs.verbose = false
+		defs.init_def = false
+		defs.thread_def = false
+		defs.resize_def = false
+		defs.right_def = false
+		defs.left_def = false
+		defs.newinstance_def = false
+		defs.sys_imp = false
+		defs.os_imp = false
+		defs.nuitka_imp = false
+		defs.black_imp = false
+		defs.math_imp = false
+		defs.rand_imp = false
+		defs.datetime_imp = false
+		defs.zig_imp = false
 		return
 	defs.py_imp = (defs.py_imp || arr[0])
 	defs.debug = (defs.debug || arr[1])
