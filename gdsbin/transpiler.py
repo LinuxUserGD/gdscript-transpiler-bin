@@ -645,6 +645,23 @@ def translate(e, package_name):
 
 def set_def(arr):
     if len(arr) != 17:
+        defs.py_imp = False
+        defs.debug = False
+        defs.verbose = False
+        defs.init_def = False
+        defs.thread_def = False
+        defs.resize_def = False
+        defs.right_def = False
+        defs.left_def = False
+        defs.newinstance_def = False
+        defs.sys_imp = False
+        defs.os_imp = False
+        defs.nuitka_imp = False
+        defs.black_imp = False
+        defs.math_imp = False
+        defs.rand_imp = False
+        defs.datetime_imp = False
+        defs.zig_imp = False
         return
     defs.py_imp = defs.py_imp or arr[0]
     defs.debug = defs.debug or arr[1]

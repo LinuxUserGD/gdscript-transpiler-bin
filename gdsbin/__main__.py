@@ -320,6 +320,7 @@ def start(arg, stage2, stage3, package_name):
         gdsbin.transpiler.__name__, gdsbin.transpiler.__doc__
     )
     transpiler.__dict__.update(gdsbin.transpiler.__dict__)
+    transpiler.set_def([])
     content = transpiler.read(path)
     out = transpiler.transpile(content, package_name)
     if transpiler.defs.verbose:
