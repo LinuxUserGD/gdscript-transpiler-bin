@@ -30,7 +30,8 @@ func _ready() -> void:
 		var path_format_arg: String = "format="
 		if arg.begins_with(path_format_arg) and arg.ends_with(".gd"):
 			const format: bool = true
-			start_stages(arg, format, __init__.package_name)
+			const comp: bool = false
+			start_stages(arg, format, comp, __init__.package_name)
 			return
 		var path_exp_arg: String = "exp="
 		if arg.begins_with(path_exp_arg):
@@ -39,8 +40,8 @@ func _ready() -> void:
 		var compile_arg = "compile="
 		if arg.begins_with(compile_arg) and arg.ends_with(".gd"):
 			const format: bool = true
-			start_stages(arg, format, __init__.package_name)
-			compile(arg)
+			const comp: bool = true
+			start_stages(arg, format, comp, __init__.package_name)
 			return
 		var setup_arg: String = "setup="
 		if arg.begins_with(setup_arg):
@@ -50,7 +51,7 @@ func _ready() -> void:
 	return
 
 ## Function for compiling python script (by path)
-func compile(arg: String) -> void:
+func compile(arg: String, defs) -> void:
 	var path_end: String = arg.split("=")[1]
 	var args = path_end.split(".")
 	var c: int = args.size()
@@ -61,7 +62,7 @@ func compile(arg: String) -> void:
 			pathstr += path_str + "."
 	var nuitka: String = "import nuitka.__main__;"
 	nuitka += "import sys;"
-	nuitka += "x='python';"
+	nuitka += "x=sys.executable;"
 	nuitka += "y='"
 	nuitka += pathstr
 	nuitka += "py"
@@ -85,13 +86,18 @@ func compile(arg: String) -> void:
 	# bugfix "No such file or directory: Grammar3.10.10.final.0.pickle"
 	nuitka += "--include-package-data=blib2to3"
 	nuitka += "';"
-	nuitka += "f='"
-	nuitka += "--include-package-data=ziglang"
-	nuitka += "';"
-	nuitka += "g='"
-	nuitka += "--noinclude-data-files=ziglang/doc"
-	nuitka += "';"
-	nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f,g]"
+	if defs.zig_imp:
+		nuitka += "f='"
+		nuitka += "--include-package-data=ziglang"
+		nuitka += "';"
+		nuitka += "g='"
+		nuitka += "--noinclude-data-files=ziglang/doc"
+		nuitka += "';"
+		nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f,g]"
+	else:
+		nuitka += "sys.argv=[x,y,z,a,b,c,d,e]"
+	# AttributeError: module '__main__' has no attribute '__file__'. Did you mean: '__name__'?
+	nuitka += ";sys.modules['__main__'].__file__=sys.modules['__main__'].__name__"
 	var stdout: Array = []
 	print("Compiling " + pathstr + "py...")
 	OS.execute('python',['-c',nuitka+ ';nuitka.__main__.main()'],stdout,true,false)
@@ -120,10 +126,11 @@ func start_exp(arg: String) -> void:
 	print(string_res)
 
 ## Wrapper function for start()
-func start_stages(argum: String, format: bool, package_name: String) -> void:
+func start_stages(argum: String, format: bool, comp: bool, package_name: String) -> void:
 	const f: bool = false
-	start(argum, f, package_name)
-	start(argum, format, package_name)
+	const c: bool = false
+	start(argum, f, c, package_name)
+	start(argum, format, comp, package_name)
 
 ## Format function
 func form(stdout: Array, imp: String, _imp_string: String):
@@ -152,7 +159,7 @@ func setup(setuptools_min_ver: int, package_name: String, author: String, author
 
 
 ## Function for transpiling script (by path)
-func start(arg: String, stage2: bool, package_name: String) -> void:
+func start(arg: String, stage2: bool, stage3: bool, package_name: String) -> Array:
 	var path_end: String = arg.split("=")[1]
 	var path: String = "res://" + path_end
 	var args = path_end.split(".")
@@ -187,7 +194,7 @@ func start(arg: String, stage2: bool, package_name: String) -> void:
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
 	var out: String = transpiler.transpile(content, package_name)
-	if transpiler.props.verbose:
+	if transpiler.defs.verbose:
 		print(out)
 	transpiler.save(path2, out)
 	var deps : Array = []
@@ -242,7 +249,11 @@ func start(arg: String, stage2: bool, package_name: String) -> void:
 				result_str += "/"
 			result_str = result_str.left(result_str.length()-1)
 			result_str += "gd"
-			start("dep=" + result_str, stage2, package_name)
+			const comp = false
+			transpiler.set_def(start("dep=" + result_str, stage2, comp, package_name))
+	if stage3:
+		compile(arg, transpiler.defs)
+	return transpiler.get_def()
 
 
 ## Prints Python and Godot Engine version information to console
