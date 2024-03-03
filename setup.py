@@ -22,7 +22,7 @@ setup_info = dict(
     project_urls={
         'Documentation': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/wiki',
         'Source': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin',
-'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',
+        'Tracker': 'https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/issues',
     },
     description='GDScript and Python runtime environment',
     long_description=open('README.md').read(),

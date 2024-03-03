@@ -202,24 +202,11 @@ def get_setup(
     description,
     proj_license,
 ):
-    open = "with open('<pkg_name>/version.py') as f:"
-    name = "    name='<pkg_name>',"
-    auth = "    author='<auth>',"
-    email = "    author_email='<email>',"
-    proj_url = "    url='<proj_url>',"
-    down_url = "    download_url='<down_url>',"
-    doc_url = "        'Documentation': '<doc_url>',"
-    src_url = "        'Source': '<src_url>',"
-    tr_url = "'Tracker': '<tr_url>',"
-    desc = "    description='<desc>',"
-    license = "    license='<license>',"
-    pkg_info = "    packages=['<pkg_name>'] + ['<pkg_name>.' + pkg for pkg in find_packages('<pkg_name>')],"
-
     setup = [
         "#!/usr/bin/env python",
         "from setuptools import setup, find_packages",
         "# Parse version number from version.py:",
-        open.replace("<pkg_name>", package_name),
+        "with open('%s/version.py') as f:" % package_name,
         "    info = {}",
         "    for line in f:",
         "        if line.startswith('__version__'):",
@@ -231,21 +218,21 @@ def get_setup(
         "        if line and not line.startswith('#'):",
         "            install_requires.append(line)",
         "setup_info = dict(",
-        name.replace("<pkg_name>", package_name),
+        "    name='%s'," % package_name,
         "    version=info['__version__'],",
-        auth.replace("<auth>", author),
-        email.replace("<email>", author_email),
-        proj_url.replace("<proj_url>", project_url),
-        down_url.replace("<down_url>", download_url),
+        "    author='%s'," % author,
+        "    author_email='%s'," % author_email,
+        "    url='%s'," % project_url,
+        "    download_url='%s'," % download_url,
         "    project_urls={",
-        doc_url.replace("<doc_url>", documentation_url),
-        src_url.replace("<src_url>", source_url),
-        tr_url.replace("<tr_url>", tracker_url),
+        "        'Documentation': '%s'," % documentation_url,
+        "        'Source': '%s'," % source_url,
+        "        'Tracker': '%s'," % tracker_url,
         "    },",
-        desc.replace("<desc>", description),
+        "    description='%s'," % description,
         "    long_description=open('README.md').read(),",
         "    long_description_content_type='text/markdown',",
-        license.replace("<license>", proj_license),
+        "    license='%s'," % proj_license,
         "    classifiers=[",
         "        'License :: OSI Approved :: MIT License',",
         "        'Operating System :: MacOS :: MacOS X',",
@@ -266,7 +253,9 @@ def get_setup(
         "        'Topic :: Software Development :: Libraries :: Python Modules',",
         "    ],",
         "    # Package info",
-        pkg_info.replace("<pkg_name>", package_name),
+        "    packages=['%s']" % package_name
+        + " + ['%s.' + pkg " % package_name
+        + "for pkg in find_packages('%s')]," % package_name,
         "    # Add _ prefix to the names of temporary build dirs",
         "    options={'build': {'build_base': '_build'}, },",
         "    zip_safe=True,",
