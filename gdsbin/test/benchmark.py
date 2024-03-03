@@ -1,6 +1,10 @@
+#!/usr/bin/env python
 import datetime
+import black
+from nuitka import Version
 import math
 import random
+import os
 import sys
 
 _for_time = 0
@@ -509,8 +513,20 @@ def test_int_array_assign():
     stop("PoolIntArray set element", _time_before)
 
 
+def left(s, amount):
+    return s[:amount]
+
+
+def right(s, amount):
+    return s[len(s) - amount :]
+
+
 def resize(arr, size):
     if len(arr) == 0:
         arr.append(None)
     arr *= size
     return arr
+
+
+if __name__ == "__main__":
+    _init()

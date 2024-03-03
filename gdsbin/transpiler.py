@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+import datetime
+import black
+from nuitka import Version
+import math
+import random
+import os
+import sys
 import gdsbin.props
 
 props = type(gdsbin.props)(gdsbin.props.__name__, gdsbin.props.__doc__)
@@ -169,6 +177,18 @@ def check_match(l):
     return l
 
 
+def check_format(l):
+    while 0 <= l.find("% [") and l.endswith("]"):
+        l = l.replace("% [", "% (")
+        index = len(l) - 1
+        l[index] = ")"
+    while 0 <= l.find("%[") and l.endswith("]"):
+        l = l.replace("%[", "% (")
+        index = len(l) - 1
+        l[index] = ")"
+    return l
+
+
 def check_new(l):
     NAMES: [String] = ["preload", "load"]
     for n in NAMES:
@@ -213,6 +233,7 @@ def check_new(l):
 def analyze(l, package_name):
     l = check_match(l)
     l = check_new(l)
+    l = check_format(l)
     out = ""
     quote = "'"
     quote += '"'
@@ -672,3 +693,14 @@ def left(s, amount):
 
 def right(s, amount):
     return s[len(s) - amount :]
+
+
+def resize(arr, size):
+    if len(arr) == 0:
+        arr.append(None)
+    arr *= size
+    return arr
+
+
+if __name__ == "__main__":
+    _init()

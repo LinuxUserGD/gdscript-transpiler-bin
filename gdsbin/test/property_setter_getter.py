@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+import datetime
+import black
+from nuitka import Version
+import math
+import random
+import os
+import sys
 case # 4.0+ replacement for `setget`:
 _backing= 0
 case property:
@@ -32,3 +40,14 @@ def test():
     self.property = 5000
     print(self.property)
     print(self._backing)
+def left(s, amount):
+    return s[:amount]
+def right(s, amount):
+    return s[len(s)-amount:]
+def resize(arr, size):
+    if len(arr)==0:
+        arr.append(None)
+    arr *= size
+    return arr
+if __name__=="__main__":
+    _init()
