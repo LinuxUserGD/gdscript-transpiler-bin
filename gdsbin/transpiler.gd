@@ -149,6 +149,16 @@ func check_match(l: String):
 			count -= 1
 	return l
 
+func check_format(l: String):
+	while l.contains("% [") and l.ends_with("]"):
+		l = l.replace("% [", "% (")
+		var index = l.length()-1
+		l[index] = ")"
+	while l.contains("%[") and l.ends_with("]"):
+		l = l.replace("%[", "% (")
+		var index = l.length()-1
+		l[index] = ")"
+	return l
 
 func check_new(l: String):
 	const NAMES: Array[String] = ["preload", "load"]
@@ -191,6 +201,7 @@ func check_new(l: String):
 func analyze(l: String, package_name: String) -> String:
 	l = check_match(l)
 	l = check_new(l)
+	l = check_format(l)
 	var out: String = ""
 	var quote: String = "'"
 	quote += '"'
