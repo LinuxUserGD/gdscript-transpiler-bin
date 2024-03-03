@@ -126,24 +126,11 @@ func get_pyproject_toml(setuptools_min_version: int) -> Array:
 	return pyproject_toml
 
 func get_setup(package_name: String, author: String, author_email: String, project_url: String, download_url: String, documentation_url: String, source_url: String, tracker_url: String, description: String, proj_license: String) -> Array:
-	const open: String = "with open('<pkg_name>/version.py') as f:"
-	const name: String = "    name='<pkg_name>',"
-	const auth: String = "    author='<auth>',"
-	const email: String = "    author_email='<email>',"
-	const proj_url: String = "    url='<proj_url>',"
-	const down_url: String = "    download_url='<down_url>',"
-	const doc_url: String = "        'Documentation': '<doc_url>',"
-	const src_url: String = "        'Source': '<src_url>',"
-	const tr_url: String = "'Tracker': '<tr_url>',"
-	const desc: String = "    description='<desc>',"
-	const license: String = "    license='<license>',"
-	const pkg_info: String = "    packages=['<pkg_name>'] + ['<pkg_name>.' + pkg for pkg in find_packages('<pkg_name>')],"
-	
 	var setup: Array = [
 		"#!/usr/bin/env python",
 		"from setuptools import setup, find_packages",
 		"# Parse version number from version.py:",
-		open.replace("<pkg_name>", package_name),
+		"with open('%s/version.py') as f:" % package_name,
 		"    info = {}",
 		"    for line in f:",
 		"        if line.startswith('__version__'):",
@@ -155,21 +142,21 @@ func get_setup(package_name: String, author: String, author_email: String, proje
 		"        if line and not line.startswith('#'):",
 		"            install_requires.append(line)",
 		"setup_info = dict(",
-		name.replace("<pkg_name>", package_name),
+		"    name='%s'," % package_name,
 		"    version=info['__version__'],",
-		auth.replace("<auth>", author),
-		email.replace("<email>", author_email),
-		proj_url.replace("<proj_url>", project_url),
-		down_url.replace("<down_url>", download_url),
+		"    author='%s'," % author,
+		"    author_email='%s'," % author_email,
+		"    url='%s'," % project_url,
+		"    download_url='%s'," % download_url,
 		"    project_urls={",
-		doc_url.replace("<doc_url>", documentation_url),
-		src_url.replace("<src_url>", source_url),
-		tr_url.replace("<tr_url>", tracker_url),
+		"        'Documentation': '%s'," % documentation_url,
+		"        'Source': '%s'," % source_url,
+		"        'Tracker': '%s'," % tracker_url,
 		"    },",
-		desc.replace("<desc>", description),
+		"    description='%s'," % description,
 		"    long_description=open('README.md').read(),",
 		"    long_description_content_type='text/markdown',",
-		license.replace("<license>", proj_license),
+		"    license='%s'," % proj_license,
 		"    classifiers=[",
 		"        'License :: OSI Approved :: MIT License',",
 		"        'Operating System :: MacOS :: MacOS X',",
@@ -190,7 +177,7 @@ func get_setup(package_name: String, author: String, author_email: String, proje
 		"        'Topic :: Software Development :: Libraries :: Python Modules',",
 		"    ],",
 		"    # Package info",
-		pkg_info.replace("<pkg_name>", package_name),
+		"    packages=['%s']" % package_name + " + ['%s.' + pkg " % package_name + "for pkg in find_packages('%s')]," % package_name,
 		"    # Add _ prefix to the names of temporary build dirs",
 		"    options={'build': {'build_base': '_build'}, },",
 		"    zip_safe=True,",
