@@ -149,6 +149,7 @@ jobs:
             xz
             openjdk21-jdk
             wine
+            pdm
           shell-name: alpine.sh
 
       - name: Install pyenv, compile python3.11 and gdscript-transpiler-bin
@@ -162,8 +163,12 @@ jobs:
           echo 'eval "$(pyenv init -)"' >> /run.sh
           echo 'eval "$(pyenv virtualenv-init -)"' >> /run.sh
           echo 'CC=clang CXX=clang++ pyenv install 3.11 && pyenv global 3.11' >> /run.sh
+          echo 'git clone https://github.com/ziglang/zig-pypi.git && cd zig-pypi && pdm install && pdm run make_wheels.py --version master --platform x86_64-linux && cd -' >> /run.sh
+          echo 'pip3 install zig-pypi/dist/*.whl' >> /run.sh
           echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin' >> /run.sh
-          echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages' >> /run.sh
+          echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages --no-deps' >> /run.sh
+          echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git@develop' >> /run.sh
+          echo 'pip3 install black' >> /run.sh
           grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
           echo 'python -m gdsbin format=bin/gds.gd' >> /run.sh
           echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
