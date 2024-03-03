@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-import datetime
-import black
-from nuitka import Version
-import math
-import random
-import os
-import sys
-
-
 def ast(startln, endln, level, root, unit, con):
     for i in range(startln, endln, 1):
         input = unit[i]
@@ -249,22 +239,3 @@ def _function(startln, endln, level, root, input, unit, con):
     function.root = ast(startln + 1, endln, level + 1, function.root, unit, con)
     root.elem.append(function)
     # print(input)
-
-
-def left(s, amount):
-    return s[:amount]
-
-
-def right(s, amount):
-    return s[len(s) - amount :]
-
-
-def resize(arr, size):
-    if len(arr) == 0:
-        arr.append(None)
-    arr *= size
-    return arr
-
-
-if __name__ == "__main__":
-    _init()

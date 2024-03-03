@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-import datetime
-import black
-from nuitka import Version
-import math
-import random
-import os
-import sys
-
-
 def test():
     # The assertions below should all evaluate to `true` for this test to pass.
     assert true
@@ -33,22 +23,3 @@ def test():
     assert Rect2i(1, 1, 0, 0)
     # A fully black color is only truthy if its alpha component is not equal to `1`.
     assert Color(0, 0, 0, 0.5)
-
-
-def left(s, amount):
-    return s[:amount]
-
-
-def right(s, amount):
-    return s[len(s) - amount :]
-
-
-def resize(arr, size):
-    if len(arr) == 0:
-        arr.append(None)
-    arr *= size
-    return arr
-
-
-if __name__ == "__main__":
-    _init()
