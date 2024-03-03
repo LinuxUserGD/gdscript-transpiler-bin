@@ -2,6 +2,10 @@ import gdsbin.props
 
 props = type(gdsbin.props)(gdsbin.props.__name__, gdsbin.props.__doc__)
 props.__dict__.update(gdsbin.props.__dict__)
+import gdsbin.defs
+
+defs = type(gdsbin.defs)(gdsbin.defs.__name__, gdsbin.defs.__doc__)
+defs.__dict__.update(gdsbin.defs.__dict__)
 
 
 def transpile(content, package_name):
@@ -9,47 +13,33 @@ def transpile(content, package_name):
     for line in content.split("\n"):
         if not line.startswith("##"):
             t += analyze(line, package_name)
-    if props.sys_imp:
-        props.sys_imp = False
+    if defs.sys_imp:
         t = "import sys" + "\n" + t
-    if props.os_imp:
-        props.os_imp = False
+    if defs.os_imp:
         t = "import os" + "\n" + t
-    if props.rand_imp:
-        props.rand_imp = False
+    if defs.rand_imp:
         t = "import random" + "\n" + t
-    if props.math_imp:
-        props.math_imp = False
+    if defs.math_imp:
         t = "import math" + "\n" + t
-    if props.nuitka_imp:
-        props.nuitka_imp = False
+    if defs.nuitka_imp:
         t = "from nuitka import Version" + "\n" + t
-    if props.black_imp:
-        props.black_imp = False
+    if defs.black_imp:
         t = "import black" + "\n" + t
-    if props.zig_imp:
-        props.zig_imp = False
-        t = "import ziglang.__main__" + "\n" + t
-    if props.datetime_imp:
-        props.datetime_imp = False
+    if defs.datetime_imp:
         t = "import datetime" + "\n" + t
-    if props.py_imp:
-        props.py_imp = False
+    if defs.py_imp:
         t = "#!/usr/bin/env python" + "\n" + t
-    if props.left_def:
-        props.left_def = False
+    if defs.left_def:
         t += "def left(s, amount):"
         t += "\n"
         t += "    return s[:amount]"
         t += "\n"
-    if props.right_def:
-        props.right_def = False
+    if defs.right_def:
         t += "def right(s, amount):"
         t += "\n"
         t += "    return s[len(s)-amount:]"
         t += "\n"
-    if props.thread_def:
-        props.thread_def = False
+    if defs.thread_def:
         t += "class Thread:"
         t += "\n"
         t += "    def start(self, function):"
@@ -58,8 +48,7 @@ def transpile(content, package_name):
         t += "\n"
         t += "    def is_alive(self):"
         t += "        return True"
-    if props.resize_def:
-        props.resize_def = False
+    if defs.resize_def:
         t += "def resize(arr, size):"
         t += "\n"
         t += "    i"
@@ -74,8 +63,7 @@ def transpile(content, package_name):
         t += "\n"
         t += "    return arr"
         t += "\n"
-    if props.init_def:
-        props.init_def = False
+    if defs.init_def:
         t += "i"
         t += "f"
         t += " __name__=="
@@ -86,8 +74,7 @@ def transpile(content, package_name):
         t += "\n"
         t += "    _init()"
         t += "\n"
-    if props.newinstance_def:
-        props.newinstance_def = False
+    if defs.newinstance_def:
         t += "def newinstance(m):"
         t += "\n"
         t += "    i = type(m)(m.__name__, m.__doc__)"
@@ -277,7 +264,7 @@ def dict(arg):
         e += props.repl_dict[arg]
         e += "	Thread()"
         e += " "
-        props.thread_def = True
+        defs.thread_def = True
         return e
     while arg.startswith("	"):
         e += "	"
@@ -322,15 +309,19 @@ def dict(arg):
         "';print(black.__version__)'],stdout,true,false)",
         "_black_],stdout,true,false)",
         "';nuitka.__main__.main()'],stdout,true,false)",
-        "';ziglang.__main__'],stdout,true,false)",
     ]:
         e += props.repl_dict[arg]
         e += " "
         return e
+    if arg == "';ziglang.__main__'],stdout,true,false)":
+        e += props.repl_dict[arg]
+        e += " "
+        defs.zig_imp = True
+        return e
     if arg == "_ready()" or arg == "_init()":
         e += props.repl_dict[arg]
         e += " "
-        props.init_def = True
+        defs.init_def = True
         return e
     if arg.endswith("_ready()"):
         arg = arg.replace("_ready()", props.repl_dict["_ready()"])
@@ -349,26 +340,26 @@ def dict(arg):
         return e
     if arg == "OS.execute('python',['-c','import":
         e += props.repl_dict[arg]
-        props.sys_imp = True
+        defs.sys_imp = True
         return e
     if arg == "OS.execute('python',['-c',import_str1+":
         e += props.repl_dict[arg]
-        props.nuitka_imp = True
+        defs.nuitka_imp = True
         return e
     if arg == "OS.execute('python',['-c',nuitka+":
         e += props.repl_dict[arg]
         return e
     if arg == "OS.execute('python',['-c',import_str2+":
         e += props.repl_dict[arg]
-        props.black_imp = True
+        defs.black_imp = True
         return e
     if arg == "OS.execute('python',['-c',import_str3+":
         e += props.repl_dict[arg]
-        props.sys_imp = True
+        defs.sys_imp = True
         return e
     if arg == "OS.execute('python',['-c',imp+":
         e += props.repl_dict[arg]
-        props.black_imp = True
+        defs.black_imp = True
         return e
     if arg == "OS.execute('python',['-c',xpy+":
         e += props.repl_dict[arg]
@@ -379,11 +370,11 @@ def dict(arg):
     if arg == "quit()" or arg == "self.quit()":
         e += props.repl_dict[arg]
         e += " "
-        props.sys_imp = True
+        defs.sys_imp = True
         return e
     if arg == "#!/usr/bin/godot":
         e += props.repl_dict[arg]
-        props.py_imp = True
+        defs.py_imp = True
         e += " "
         return e
     while 0 <= arg.find(".to_lower()"):
@@ -394,11 +385,11 @@ def dict(arg):
         con = True
     while 0 <= arg.find("printraw("):
         arg = arg.replace("printraw(", "sys.stdout.write(")
-        props.sys_imp = True
+        defs.sys_imp = True
         con = True
     while 0 <= arg.find(".resize("):
         arg = arg.replace("resize(", "")
-        props.resize_def = True
+        defs.resize_def = True
         if 0 <= arg.find("("):
             arg = arg.replace("(", "(resize(")
         else:
@@ -422,12 +413,12 @@ def dict(arg):
     while 0 <= arg.find(".right("):
         arg = arg.replace(".right(", ", ")
         arg = "right(" + arg
-        props.right_def = True
+        defs.right_def = True
         con = True
     while 0 <= arg.find(".left("):
         arg = arg.replace(".left(", ", ")
         arg = "left(" + arg
-        props.left_def = True
+        defs.left_def = True
         con = True
     while 0 <= arg.find(".open"):
         arg = arg.replace(".open", " = open")
@@ -464,7 +455,7 @@ def dict(arg):
         con = True
     while 0 <= arg.find("randi()"):
         arg = arg.replace("randi()", "random.randint(0, 2147483647)")
-        props.rand_imp = True
+        defs.rand_imp = True
         con = True
     while 0 <= arg.find(".push_back("):
         arg = arg.replace(".push_back(", ".append(")
@@ -495,7 +486,7 @@ def dict(arg):
             "Time.get_ticks_msec()",
             "round(datetime.datetime.utcnow().timestamp() * 1000)",
         )
-        props.datetime_imp = True
+        defs.datetime_imp = True
         con = True
     while 0 <= arg.find("OS.get_cmdline_args()"):
         arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
@@ -520,19 +511,19 @@ def dict(arg):
         con = True
     while 0 <= arg.find("sqrt(") and not 0 <= arg.find("math.sqrt("):
         arg = arg.replace("sqrt(", "math.sqrt(")
-        props.math_imp = True
+        defs.math_imp = True
         con = True
     while 0 <= arg.find("atan2(") and not 0 <= arg.find("math.atan2("):
         arg = arg.replace("atan2(", "math.atan2(")
-        props.math_imp = True
+        defs.math_imp = True
         con = True
     while 0 <= arg.find("sin(") and not 0 <= arg.find("math.sin("):
         arg = arg.replace("sin(", "math.sin(")
-        props.math_imp = True
+        defs.math_imp = True
         con = True
     while 0 <= arg.find("cos(") and not 0 <= arg.find("math.cos("):
         arg = arg.replace("cos(", "math.cos(")
-        props.math_imp = True
+        defs.math_imp = True
         con = True
     found = False
     for type in props.types:
@@ -548,7 +539,7 @@ def dict(arg):
         e += arg
         e += " "
         return e
-    if props.debug:
+    if defs.debug:
         print("DEBUG: " + arg)
     e += arg
     e += " "
@@ -608,7 +599,7 @@ def translate(e, package_name):
                         package = packages[l - 2] + "/" + package
                         l -= 1
                     package = left(package, len(package) - 1)
-                    props.os_imp = True
+                    defs.os_imp = True
                     e = "    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), '..')))"
                     e += "\n"
                     while 0 <= package.find(" "):
@@ -629,6 +620,50 @@ def translate(e, package_name):
                 e = e.replace(str1, str2 + str3 + str4)
         index += 1
     return e
+
+
+def set_def(arr):
+    if len(arr) != 17:
+        return
+    defs.py_imp = defs.py_imp or arr[0]
+    defs.debug = defs.debug or arr[1]
+    defs.verbose = defs.verbose or arr[2]
+    defs.init_def = defs.init_def or arr[3]
+    defs.thread_def = defs.thread_def or arr[4]
+    defs.resize_def = defs.resize_def or arr[5]
+    defs.right_def = defs.right_def or arr[6]
+    defs.left_def = defs.left_def or arr[7]
+    defs.newinstance_def = defs.newinstance_def or arr[8]
+    defs.sys_imp = defs.sys_imp or arr[9]
+    defs.os_imp = defs.os_imp or arr[10]
+    defs.nuitka_imp = defs.nuitka_imp or arr[11]
+    defs.black_imp = defs.black_imp or arr[12]
+    defs.math_imp = defs.math_imp or arr[13]
+    defs.rand_imp = defs.math_imp or arr[14]
+    defs.datetime_imp = defs.datetime_imp or arr[15]
+    defs.zig_imp = defs.zig_imp or arr[16]
+
+
+def get_def():
+    return [
+        defs.py_imp,
+        defs.debug,
+        defs.verbose,
+        defs.init_def,
+        defs.thread_def,
+        defs.resize_def,
+        defs.right_def,
+        defs.left_def,
+        defs.newinstance_def,
+        defs.sys_imp,
+        defs.os_imp,
+        defs.nuitka_imp,
+        defs.black_imp,
+        defs.math_imp,
+        defs.rand_imp,
+        defs.datetime_imp,
+        defs.zig_imp,
+    ]
 
 
 def left(s, amount):

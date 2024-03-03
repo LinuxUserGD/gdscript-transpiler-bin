@@ -28,7 +28,8 @@ def _init():
         path_format_arg = "format="
         if arg.startswith(path_format_arg) and arg.endswith(".gd"):
             format = True
-            start_stages(arg, format, __init__.package_name)
+            comp = False
+            start_stages(arg, format, comp, __init__.package_name)
             return
         path_exp_arg = "exp="
         if arg.startswith(path_exp_arg):
@@ -37,8 +38,8 @@ def _init():
         compile_arg = "compile="
         if arg.startswith(compile_arg) and arg.endswith(".gd"):
             format = True
-            start_stages(arg, format, __init__.package_name)
-            compile(arg)
+            comp = True
+            start_stages(arg, format, comp, __init__.package_name)
             return
         setup_arg = "setup="
         if arg.startswith(setup_arg):
@@ -60,7 +61,7 @@ def _init():
     return
 
 
-def compile(arg):
+def compile(arg, defs):
     path_end = arg.split("=")[1]
     args = path_end.split(".")
     c = len(args)
@@ -71,7 +72,7 @@ def compile(arg):
             pathstr += path_str + "."
     nuitka = "import nuitka.__main__;"
     nuitka += "import sys;"
-    nuitka += "x='python';"
+    nuitka += "x=sys.executable;"
     nuitka += "y='"
     nuitka += pathstr
     nuitka += "py"
@@ -95,13 +96,18 @@ def compile(arg):
     # bugfix "No such file or directory: Grammar3.10.10.final.0.pickle"
     nuitka += "--include-package-data=blib2to3"
     nuitka += "';"
-    nuitka += "f='"
-    nuitka += "--include-package-data=ziglang"
-    nuitka += "';"
-    nuitka += "g='"
-    nuitka += "--noinclude-data-files=ziglang/doc"
-    nuitka += "';"
-    nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f,g]"
+    if defs.zig_imp:
+        nuitka += "f='"
+        nuitka += "--include-package-data=ziglang"
+        nuitka += "';"
+        nuitka += "g='"
+        nuitka += "--noinclude-data-files=ziglang/doc"
+        nuitka += "';"
+        nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f,g]"
+    else:
+        nuitka += "sys.argv=[x,y,z,a,b,c,d,e]"
+    # AttributeError: module '__main__' has no attribute '__file__'. Did you mean: '__name__'?
+    nuitka += ";sys.modules['__main__'].__file__=sys.modules['__main__'].__name__"
     stdout = []
     print("Compiling " + pathstr + "py...")
     import subprocess
@@ -192,10 +198,11 @@ def start_exp(arg):
     print(string_res)
 
 
-def start_stages(argum, format, package_name):
+def start_stages(argum, format, comp, package_name):
     f = False
-    start(argum, f, package_name)
-    start(argum, format, package_name)
+    c = False
+    start(argum, f, c, package_name)
+    start(argum, format, comp, package_name)
 
 
 def form(stdout, imp, _imp_string):
@@ -271,7 +278,7 @@ def setup(
     )
 
 
-def start(arg, stage2, package_name):
+def start(arg, stage2, stage3, package_name):
     path_end = arg.split("=")[1]
     path = "" + path_end
     args = path_end.split(".")
@@ -311,7 +318,7 @@ def start(arg, stage2, package_name):
     transpiler.__dict__.update(gdsbin.transpiler.__dict__)
     content = transpiler.read(path)
     out = transpiler.transpile(content, package_name)
-    if transpiler.props.verbose:
+    if transpiler.defs.verbose:
         print(out)
     transpiler.save(path2, out)
     deps = []
@@ -366,7 +373,11 @@ def start(arg, stage2, package_name):
                 result_str += "/"
             result_str = left(result_str, len(result_str) - 1)
             result_str += "gd"
-            start("dep=" + result_str, stage2, package_name)
+            comp = False
+            transpiler.set_def(start("dep=" + result_str, stage2, comp, package_name))
+    if stage3:
+        compile(arg, transpiler.defs)
+    return transpiler.get_def()
 
 
 def version_info():

@@ -277,23 +277,6 @@ def get_setup(
     return setup
 
 
-py_imp = False
-debug = False
-verbose = False
-init_def = False
-thread_def = False
-resize_def = False
-right_def = False
-left_def = False
-newinstance_def = False
-sys_imp = False
-os_imp = False
-nuitka_imp = False
-black_imp = False
-math_imp = False
-rand_imp = False
-datetime_imp = False
-zig_imp = False
 gds_deps = []
 gds_class = ["File"]
 gd_class = [
