@@ -533,6 +533,12 @@ func translate(e: String, package_name: String) -> String:
 		var script_name : String = e.split(" ")[1]
 		if script_name not in props.types:
 			props.extend.append(script_name)
+	var var_test: String = e
+	while var_test.begins_with("	"):
+		var_test = var_test.replace("	", "")
+	for variable in ["var ", "const "]:
+		if var_test.begins_with(variable) and not var_test.contains("="):
+			e += " = null"
 	var args: Array = e.split(" ")
 	e = ""
 	for arg in args:
