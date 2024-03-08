@@ -6,7 +6,8 @@ export.cfg
 data_*/
 
 # Godot 4+ specific ignores
-.godot/
+.godot/*
+!.godot/global_script_class_cache.cfg
 export_presets.cfg
 
 # Python

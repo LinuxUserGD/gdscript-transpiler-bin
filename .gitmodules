@@ -10,3 +10,6 @@
 	remote = origin
 	branch = dev
 	update = rebase
+[submodule "docker/gentoo-docker-images"]
+	path = docker/gentoo-docker-images
+	url = https://github.com/gentoo/gentoo-docker-images.git
