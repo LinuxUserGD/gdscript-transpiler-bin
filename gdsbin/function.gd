@@ -10,7 +10,7 @@ var function: String = ""
 var args: Array = []
 var res: String = ""
 var ret: bool = false
-var root = null
+var root
 
 func t() -> String:
 	return "function"

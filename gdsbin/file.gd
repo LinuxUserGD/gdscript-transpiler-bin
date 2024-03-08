@@ -7,7 +7,7 @@ class_name File
 
 
 ## Internal File variable (using FileAccess)
-var file: FileAccess = null
+var file: FileAccess
 var path: String = ""
 
 ## FileOpts enum options for different FileAccess types

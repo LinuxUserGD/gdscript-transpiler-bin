@@ -168,7 +168,7 @@ func _builtin_function(function: String) -> bool:
 
 func _eval(array: Array):
 	var s: int = array.size()
-	var variable = null
+	var variable
 	if array[0] == "CURLY LEFT BRACKET" && array[s-1] == "CURLY RIGHT BRACKET":
 		variable = {}
 		return variable

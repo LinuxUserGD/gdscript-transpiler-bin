@@ -7,7 +7,7 @@ class_name VARIABLE
 ## Method to process input string and list of tokens
 
 var variable: String = ""
-var res = null
+var res
 var type: String = ""
 var st: bool = false
 var equ: bool = false
