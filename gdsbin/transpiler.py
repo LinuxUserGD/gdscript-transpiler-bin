@@ -571,6 +571,12 @@ def translate(e, package_name):
         script_name = e.split(" ")[1]
         if script_name not in props.types:
             props.extend.append(script_name)
+    var_test = e
+    while var_test.startswith("	"):
+        var_test = var_test.replace("	", "")
+    for variable in ["var ", "const "]:
+        if var_test.startswith(variable) and not 0 <= var_test.find("="):
+            e += " = null"
     args = e.split(" ")
     e = ""
     for arg in args:
