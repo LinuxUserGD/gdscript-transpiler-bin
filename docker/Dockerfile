@@ -9,16 +9,24 @@ RUN <<-EOF
     echo "dev-python/pdm ~amd64" >> /etc/portage/package.accept_keywords/custom
     echo "dev-python/gdsbin **" >> /etc/portage/package.accept_keywords/custom
     echo "dev-python/Nuitka ~amd64" >> /etc/portage/package.accept_keywords/custom
+    echo "dev-python/dep-logic ~amd64" >> /etc/portage/package.accept_keywords/custom
+    echo "dev-python/truststore ~amd64" >> /etc/portage/package.accept_keywords/custom
+    echo "dev-python/unearth ~amd64" >> /etc/portage/package.accept_keywords/custom
+    echo "dev-python/findpython ~amd64" >> /etc/portage/package.accept_keywords/custom
+    echo "dev-python/shellingham ~amd64" >> /etc/portage/package.accept_keywords/custom
     echo "Compiling git, eselect-repository..."
     EMERGE_DEFAULT_OPTS="--jobs 6" emerge dev-vcs/git app-eselect/eselect-repository
     echo "Adding custom overlay..."
     eselect repository enable gentoo
+    eselect repository add clang-musl git https://github.com/clang-musl-overlay/clang-musl-overlay.git
     eselect repository add LinuxUserGD-overlay git https://codeberg.org/LinuxUserGD/overlay.git
     emerge --sync
     echo "Updating system..."
     EMERGE_DEFAULT_OPTS="--jobs 4" emerge --update --newuse --changed-use --deep --with-bdeps=y --keep-going @installed
     echo "Compiling pdm, go, gdsbin, scons"
-    EMERGE_DEFAULT_OPTS="--jobs 4" emerge dev-python/pdm dev-lang/go dev-python/gdsbin dev-build/scons dev-python/pip
+    EMERGE_DEFAULT_OPTS="--jobs 4" emerge dev-python/pdm dev-lang/go dev-python/gdsbin::LinuxUserGD-overlay dev-build/scons dev-python/pip net-libs/nodejs::clang-musl
+    emerge --oneshot @preserved-rebuild
+    emerge -pv --depclean
     echo "Compiling butler..."
     git clone https://codeberg.org/LinuxUserGD/butler.git --single-branch --depth 1 && cd butler
     go build

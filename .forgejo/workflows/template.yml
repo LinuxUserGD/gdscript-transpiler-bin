@@ -13,7 +13,7 @@ jobs:
     permissions: write-all
     runs-on: linux-docker
     container:
-      image: codeberg.org/linuxusergd/amd64-musl-llvm:latest
+      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
     name: ${{ matrix.name }}
     outputs:
       status: ${{ steps.early.outputs.status }}
@@ -91,7 +91,7 @@ jobs:
   deploy-linux:
     runs-on: linux-docker
     container:
-      image: codeberg.org/linuxusergd/amd64-musl-llvm:latest
+      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
     name: Deploy (Alpine Linux x86_64)
     needs: build-linux
 
