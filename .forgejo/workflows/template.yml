@@ -70,7 +70,7 @@ jobs:
           echo 'python3 -m gdsbin setup=setup.py' >> /run.sh
           echo 'python3 -m gdsbin pyproject=pyproject.toml' >> /run.sh
           echo 'echo "Uploading files..."' >> /run.sh
-          echo 'rm -rf addons gdUnit4 zig zig-template' >> /run.sh
+          echo 'rm -rf addons docker gdUnit4 zig-template' >> /run.sh
           echo 'dir=$(echo */)' >> /run.sh
           echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python && cd gdscript-transpiler-bin' >> /run.sh
           grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
