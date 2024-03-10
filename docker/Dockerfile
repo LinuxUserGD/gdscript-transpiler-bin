@@ -1,4 +1,4 @@
-FROM gentoo/stage3:amd64-musl-llvm
+FROM gentoo/stage3:amd64-musl-llvm as build
 
 RUN <<-EOF
     cd /var/db/repos
@@ -27,6 +27,9 @@ RUN <<-EOF
     EMERGE_DEFAULT_OPTS="--jobs 4" emerge dev-python/pdm dev-lang/go dev-python/gdsbin::LinuxUserGD-overlay dev-build/scons dev-python/pip net-libs/nodejs::clang-musl
     emerge --oneshot @preserved-rebuild
     emerge -pv --depclean
+    rm -rf /var/db/repos/*
+    rm -rf /var/tmp/portage/*
+    rm -rf /var/cache/distfiles/*
     echo "Compiling butler..."
     git clone https://codeberg.org/LinuxUserGD/butler.git --single-branch --depth 1 && cd butler
     go build
@@ -37,7 +40,7 @@ RUN <<-EOF
     pdm install
     pdm run make_wheels.py --version master --platform x86_64-linux
     cd -
-    python -m pip install zig-pypi/dist/*.whl --break-system-packages
+    python -m pip install --no-cache-dir zig-pypi/dist/*.whl --break-system-packages
     rm -rf zig-pypi
     echo "Building Pixel Engine (Godot Engine fork)..."
     git clone https://github.com/LinuxUserGD/pixel-engine.git --single-branch --depth 1
@@ -53,6 +56,13 @@ RUN <<-EOF
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
     CC=clang CXX=clang++ pyenv install 3.11 && pyenv global 3.11
+    cd ~/.pyenv
+    rm -rf $(echo * | sed "s/versions//g")
+    rm -rf $(echo .*)
+    cd -
 EOF
+
+FROM scratch
+COPY --from=build / /
 
 CMD ["/bin/bash"]
