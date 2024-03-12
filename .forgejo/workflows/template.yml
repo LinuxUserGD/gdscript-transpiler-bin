@@ -30,63 +30,31 @@ jobs:
       - name: Check-out repository
         uses: https://codeberg.org/actions/checkout@main
 
-      - name: Setup latest Alpine Linux
-        uses: https://codeberg.org/LinuxUserGD/setup-alpine@master
-        with:
-          branch: edge
-          arch: x86_64
-          packages: >
-            coreutils
-            wget
-            curl
-            git
-            bash
-            tar
-            sed
-            grep
-            file
-            gzip
-            xz
-            python3
-            python3-dev
-            py3-pip
-            py3-wheel
-            musl-dev
-            gcc
-          shell-name: alpine.sh
-
-      - name: Run script inside Alpine chroot
+      - name: Run script
         id: early
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin && rm *.import' > /run.sh
-          echo 'rm project.godot' >> /run.sh
-          echo 'pip3 install --no-binary :all: git+https://github.com/python/mypy.git --break-system-packages' >> /run.sh
-          echo 'pip3 install --no-binary :all: git+https://github.com/psf/black.git --break-system-packages' >> /run.sh
-          echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages' >> /run.sh
-          echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git --break-system-packages' >> /run.sh
-          echo 'python3 -m gdsbin format=bin/gds.gd' >> /run.sh
-          echo 'python3 -m gdsbin setup=setup.py' >> /run.sh
-          echo 'python3 -m gdsbin pyproject=pyproject.toml' >> /run.sh
-          echo 'echo "Uploading files..."' >> /run.sh
-          echo 'rm -rf addons docker gdUnit4 zig-template' >> /run.sh
-          echo 'dir=$(echo */)' >> /run.sh
-          echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python && cd gdscript-transpiler-bin' >> /run.sh
-          grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
-          echo 'rm -rf $(ls | grep -v "requirements.txt")' >> /run.sh
-          echo 'for i in $dir; do mkdir ${i} ; done' >> /run.sh
-          echo 'for i in $dir; do cp -r "../${i}"*.py ${i} ; done' >> /run.sh
-          echo 'mkdir -p gdsbin/test; cp -r ../gdsbin/test/*.py gdsbin/test/' >> /run.sh
-          echo 'for i in $(echo "setup.py pyproject.toml README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done' >> /run.sh
-          echo 'git config --global user.name "LinuxUserGD"' >> /run.sh
-          echo 'git config --global user.email "hugegameartgd@gmail.com"' >> /run.sh
-          echo 'git add -A' >> /run.sh
-          echo '[ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 0; }' >> /run.sh
-          echo 'cd ..' >> /run.sh
-          echo 'echo ${PWD}' >> /run.sh
-          chmod +x /run.sh
-          cat /run.sh | alpine.sh --root
+          rm *.import
+          rm project.godot
+          python -m gdsbin format=bin/gds.gd
+          python -m gdsbin setup=setup.py
+          python -m gdsbin pyproject=pyproject.toml
+          echo "Uploading files..."
+          rm -rf addons docker gdUnit4 zig-template
+          dir=$(echo */)
+          git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python && cd gdscript-transpiler-bin
+          rm -rf $(ls | grep -v "requirements.txt")
+          for i in $dir; do mkdir ${i} ; done
+          for i in $dir; do cp -r "../${i}"*.py ${i} ; done
+          mkdir -p gdsbin/test; cp -r ../gdsbin/test/*.py gdsbin/test/
+          for i in $(echo "setup.py pyproject.toml README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done
+          git config --global user.name "LinuxUserGD"
+          git config --global user.email "hugegameartgd@gmail.com"
+          git add -A
+          [ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 0; }
+          cd ..
+          echo ${PWD}
 
   deploy-linux:
     runs-on: linux-docker
@@ -99,95 +67,15 @@ jobs:
       - name: Check-out repository
         uses: https://codeberg.org/actions/checkout@main
 
-      - name: Setup latest Alpine Linux
-        uses: https://codeberg.org/LinuxUserGD/setup-alpine@master
-        with:
-          branch: edge
-          extra-repositories: |
-            https://dl-cdn.alpinelinux.org/alpine/edge/testing
-          arch: x86_64
-          packages: >
-            sqlite-static
-            sqlite-dev
-            sqlite-tcl
-            readline-static
-            readline-dev
-            coreutils
-            alsa-lib-dev
-            libffi-dev
-            ncurses-dev
-            tcl-dev
-            tk-dev
-            zlib-dev
-            gettext-tiny
-            gettext-tiny-dev
-            wget
-            curl
-            perl
-            gcc
-            libgcc
-            clang17-static
-            clang17-dev
-            clang17-extra-tools
-            clang17-libclang
-            clang17-libs
-            llvm-libunwind-static
-            llvm17-static
-            llvm17-dev
-            llvm-runtimes
-            llvm-libunwind-dev
-            llvm17-libs
-            compiler-rt
-            musl-dev
-            musl-libintl
-            openssl-dev
-            openssl
-            linux-headers
-            patchelf
-            pkgconf
-            make
-            git
-            bash
-            tar
-            file
-            gzip
-            xz-dev
-            xz
-            pdm
-            go
-          shell-name: alpine.sh
-
-      - name: Install pyenv, compile python3.11 and gdscript-transpiler-bin
+      - name: Compile gdscript-transpiler-bin
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo 'curl https://pyenv.run | bash' > /run.sh
-          echo '. /etc/profile' >> /run.sh
-          echo 'export PYENV_ROOT="$HOME/.pyenv"' >> /run.sh
-          echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> /run.sh
-          echo 'eval "$(pyenv init -)"' >> /run.sh
-          echo 'eval "$(pyenv virtualenv-init -)"' >> /run.sh
-          echo 'CC=clang CXX=clang++ pyenv install 3.11 && pyenv global 3.11' >> /run.sh
-          echo 'git clone https://github.com/ziglang/zig-pypi.git && cd zig-pypi && pdm install && pdm run make_wheels.py --version master --platform x86_64-linux && cd -' >> /run.sh
-          echo 'pip3 install zig-pypi/dist/*.whl' >> /run.sh
-          echo 'git clone https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git && cd gdscript-transpiler-bin' >> /run.sh
-          echo 'pip3 install git+https://oauth:$CUSTOMTOKEN@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --break-system-packages --no-deps' >> /run.sh
-          echo 'pip3 install git+https://github.com/Nuitka/Nuitka.git@develop' >> /run.sh
-          echo 'pip3 install black' >> /run.sh
-          grep -l '$CUSTOMTOKEN' /run.sh | xargs sed -i "s/\$CUSTOMTOKEN/${{ secrets.GITHUB_TOKEN }}/g"
-          echo 'python -m gdsbin format=bin/gds.gd' >> /run.sh
-          echo 'python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds' >> /run.sh
-          echo 'git clone https://codeberg.org/LinuxUserGD/butler.git && cd butler && go build && mv ./butler ../butler_bin && cd ..' >> /run.sh
-          echo 'export BUTLER_API_KEY=$BUTLER_CREDENTIALS' >> /run.sh
-          echo 'echo $BUTLER_API_KEY > key.txt' >> /run.sh
-          echo './butler_bin -i key.txt push $PACKAGE $ITCH_USER/$ITCH_GAME:$CHANNEL' >> /run.sh
-          grep -l '$BUTLER_CREDENTIALS' /run.sh | xargs sed -i "s/\$BUTLER_CREDENTIALS/${{ secrets.BUTLER_CREDENTIALS }}/g"
-          grep -l '$CHANNEL' /run.sh | xargs sed -i "s/\$CHANNEL/linux/g"
-          grep -l '$ITCH_GAME' /run.sh | xargs sed -i "s/\$ITCH_GAME/gdscript-transpiler-bin/g"
-          grep -l '$ITCH_USER' /run.sh | xargs sed -i "s/\$ITCH_USER/linuxusergd/g"
-          grep -l '$PACKAGE' /run.sh | xargs sed -i "s/\$PACKAGE/gds/g"
-          chmod +x /run.sh
-          cat /run.sh | alpine.sh --root
+          python -m gdsbin format=bin/gds.gd
+          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
+          export BUTLER_API_KEY=${{ secrets.BUTLER_CREDENTIALS }}
+          echo $BUTLER_API_KEY > key.txt
+          butler -i key.txt push gds linuxusergd/gdscript-transpiler-bin:linux
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3
