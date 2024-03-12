@@ -39,7 +39,6 @@ jobs:
           rm project.godot
           python -m gdsbin format=bin/gds.gd
           python -m gdsbin setup=setup.py
-          python -m gdsbin pyproject=pyproject.toml
           echo "Uploading files..."
           rm -rf addons docker gdUnit4 zig-template
           dir=$(echo */)
@@ -72,7 +71,8 @@ jobs:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python -m gdsbin format=bin/gds.gd
-          python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
+          ~/.pyenv/versions/3.11.8/bin/python -m pip install git+https://github.com/Nuitka/Nuitka.git@develop --break-system-packages
+          ~/.pyenv/versions/3.11.8/bin/python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
           export BUTLER_API_KEY=${{ secrets.BUTLER_CREDENTIALS }}
           echo $BUTLER_API_KEY > key.txt
           butler -i key.txt push gds linuxusergd/gdscript-transpiler-bin:linux
