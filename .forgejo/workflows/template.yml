@@ -38,10 +38,10 @@ jobs:
           rm *.import
           rm project.godot
           rm -rf addons docker gdUnit4 zig-template
-          python -m gdsbin format=bin/gds.gd
-          python -m gdsbin setup=setup.py
-          python -m pip uninstall -y gdsbin --break-system-packages
           git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
+          python -m pip uninstall -y gdsbin --break-system-packages
+          python gdscript-transpiler-bin/bin/gds.py format=bin/gds.gd
+          python gdscript-transpiler-bin/bin/gds.py setup=setup.py
           cp gdscript-transpiler-bin/requirements.txt .
           pip install .  --no-cache-dir --no-deps --break-system-packages
           rm -rf gdsbin.egg-info _build
@@ -79,6 +79,8 @@ jobs:
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          python -m pip uninstall -y gdsbin --break-system-packages
+          python -m pip install git+https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --no-cache-dir --no-deps --break-system-packages
           python -m gdsbin format=bin/gds.gd
           for i in blib2to3 ziglang black nuitka zstandard click ordered_set mypy_extensions.py _black_version.py pathspec platformdirs packaging; do cp -r /usr/lib/python3.11/site-packages/$i ~/.pyenv/versions/3.11.8/lib/python3.11/site-packages/ ; done
           CC=/usr/lib/llvm/17/bin/clang ~/.pyenv/versions/3.11.8/bin/python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --include-package-data=blib2to3 --include-package-data=ziglang --noinclude-data-files=ziglang/doc --remove-output -o gds
