@@ -576,7 +576,10 @@ def translate(e, package_name):
         var_test = var_test.replace("	", "")
     for variable in ["var ", "const "]:
         if var_test.startswith(variable) and not 0 <= var_test.find("="):
-            e += " = null"
+            if 0 <= var_test.find("#"):
+                e = e.split("#")[0] + "= null #" + e.split("#")[1]
+            else:
+                e += " = null"
     args = e.split(" ")
     e = ""
     for arg in args:
