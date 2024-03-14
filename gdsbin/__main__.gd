@@ -31,17 +31,17 @@ func _ready() -> void:
 		if arg.begins_with(path_format_arg) and arg.ends_with(".gd"):
 			const format: bool = true
 			const comp: bool = false
-			start_stages(arg, format, comp, __init__.package_name)
+			start(arg, format, comp, __init__.package_name)
 			return
 		var path_exp_arg: String = "exp="
 		if arg.begins_with(path_exp_arg):
-			start_exp(__init__.package_name)
+			start_exp(arg, __init__.package_name)
 			return
 		var compile_arg = "compile="
 		if arg.begins_with(compile_arg) and arg.ends_with(".gd"):
 			const format: bool = true
 			const comp: bool = true
-			start_stages(arg, format, comp, __init__.package_name)
+			start(arg, format, comp, __init__.package_name)
 			return
 		var setup_arg: String = "setup="
 		if arg.begins_with(setup_arg):
@@ -107,7 +107,7 @@ func compile(arg: String, defs) -> void:
 				print(out_str)
 
 ## Tokenize script (by path)
-func start_exp(arg: String) -> void:
+func start_exp(arg: String, _package_name: String) -> void:
 	var path_end: String = arg.split("=")[1]
 	var path: String = "res://" + path_end
 	var transpiler = Transpiler.new()
@@ -124,13 +124,6 @@ func start_exp(arg: String) -> void:
 	var parsertree = Parsertree.new()
 	var string_res = parsertree.printpt(ast_res, 0)
 	print(string_res)
-
-## Wrapper function for start()
-func start_stages(argum: String, format: bool, comp: bool, package_name: String) -> void:
-	const f: bool = false
-	const c: bool = false
-	start(argum, f, c, package_name)
-	start(argum, format, comp, package_name)
 
 ## Format function
 func form(stdout: Array, imp: String, _imp_string: String):
@@ -314,12 +307,14 @@ func help() -> void:
 ## Testing benchmark
 func run_benchmark() -> void:
 	var gdsbin: Dictionary = {}
+	gdsbin.test = {}
 	gdsbin.test.benchmark = Benchmark.new()
 	gdsbin.test.benchmark.run()
 
 ## GDScript parser tests
 func run_parser() -> void:
 	var gdsbin: Dictionary = {}
+	gdsbin.test = {}
 	gdsbin.test.advanced_expression_matching = Advanced_expression_matching.new()
 	gdsbin.test.advanced_expression_matching.test()
 	gdsbin.test.arrays = Arrays.new()

@@ -22,6 +22,7 @@ func tokenize(input_string: String) -> Array:
 		")": "RIGHT BRACKET",
 		"-": "MINUS",
 		"+": "PLUS",
+		"*": "ASTERISK",
 		">": "GREATER THAN",
 		"<": "LESS THAN",
 		":": "COLON",

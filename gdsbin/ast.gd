@@ -94,6 +94,14 @@ func _new_call(input: Array, level: int):
 			for i in range(level+2, input.size()):
 				array.append(input[i])
 			callnew.res = _eval(array)
+		elif input[level+1] in ["PLUS", "MINUS", "ASTERISK", "SLASH"]:
+			callnew.name = input[level]
+			callnew.equ = true
+			callnew.op = input[level+1]
+			var array: Array = []
+			for i in range(level+3, input.size()):
+				array.append(input[i])
+			callnew.res = _eval(array)
 		elif input[level+1] == "LEFT BRACKET" && input[s-1] == "RIGHT BRACKET":
 			callnew.name = input[level]
 			callnew.function = true
@@ -106,6 +114,11 @@ func _new_call(input: Array, level: int):
 		else:
 			callnew.name = input[level]
 	return callnew
+
+func _eval_dictionary(_array: Array):
+	var dictionary = DICTIONARY.new()
+	dictionary.items = []
+	return dictionary
 
 func _eval_string(array: Array):
 	var s: String = ""
@@ -136,12 +149,14 @@ func _eval_string(array: Array):
 		"CONST": "const",
 		"QUOTATION": qu
 	}
-	for e in array:
-		s += token[e] if e in token else e
-	return s
+	for i in range(1, array.size()-1):
+		s += token[array[i]] if array[i] in token else array[i]
+	var string = STRING.new()
+	string.string = s
+	return string
 
 func _eval_function_args(array: Array):
-	return _eval_string(array).split("COMMA")
+	return _eval_string(array).string.split("COMMA")
 
 func _variable(root, input: Array, level: int, is_const: bool):
 	var variable = VARIABLE.new()
@@ -170,7 +185,7 @@ func _eval(array: Array):
 	var s: int = array.size()
 	var variable
 	if array[0] == "CURLY LEFT BRACKET" && array[s-1] == "CURLY RIGHT BRACKET":
-		variable = {}
+		variable = _eval_dictionary(array)
 		return variable
 	if array[0] == "QUOTATION" && array[s-1] == "QUOTATION":
 		variable = _eval_string(array)

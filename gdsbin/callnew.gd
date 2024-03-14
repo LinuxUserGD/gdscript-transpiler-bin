@@ -10,6 +10,7 @@ var equ: bool = false
 var res
 var name: String = ""
 var function: bool = false
+var op: String = ""
 var args: Array = []
 var builtin_function: bool = false
 var callnew: Callnew
