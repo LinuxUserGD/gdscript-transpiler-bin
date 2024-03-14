@@ -39,6 +39,7 @@ def tokenize(input_string):
         ")": "RIGHT BRACKET",
         "-": "MINUS",
         "+": "PLUS",
+        "*": "ASTERISK",
         ">": "GREATER THAN",
         "<": "LESS THAN",
         ":": "COLON",

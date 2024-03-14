@@ -29,17 +29,17 @@ def _init():
         if arg.startswith(path_format_arg) and arg.endswith(".gd"):
             format = True
             comp = False
-            start_stages(arg, format, comp, __init__.package_name)
+            start(arg, format, comp, __init__.package_name)
             return
         path_exp_arg = "exp="
         if arg.startswith(path_exp_arg):
-            start_exp(__init__.package_name)
+            start_exp(arg, __init__.package_name)
             return
         compile_arg = "compile="
         if arg.startswith(compile_arg) and arg.endswith(".gd"):
             format = True
             comp = True
-            start_stages(arg, format, comp, __init__.package_name)
+            start(arg, format, comp, __init__.package_name)
             return
         setup_arg = "setup="
         if arg.startswith(setup_arg):
@@ -158,7 +158,7 @@ def compile(arg, defs):
                 print(out_str)
 
 
-def start_exp(arg):
+def start_exp(arg, _package_name):
     path_end = arg.split("=")[1]
     path = "" + path_end
     import gdsbin.transpiler
@@ -196,13 +196,6 @@ def start_exp(arg):
     parsertree.__dict__.update(gdsbin.parsertree.__dict__)
     string_res = parsertree.printpt(ast_res, 0)
     print(string_res)
-
-
-def start_stages(argum, format, comp, package_name):
-    f = False
-    c = False
-    start(argum, f, c, package_name)
-    start(argum, format, comp, package_name)
 
 
 def form(stdout, imp, _imp_string):
@@ -464,6 +457,7 @@ def help():
 
 def run_benchmark():
     gdsbin = {}
+    gdsbin.test = {}
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.benchmark
 
@@ -472,6 +466,7 @@ def run_benchmark():
 
 def run_parser():
     gdsbin = {}
+    gdsbin.test = {}
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.advanced_expression_matching
 

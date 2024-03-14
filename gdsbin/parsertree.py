@@ -43,7 +43,12 @@ def printpt(element, level):
             if element.equ:
                 out += " = "
                 if element.res != None:
-                    out += str(element.res).replace(" ", "")
+                    if element.res.t() == "string":
+                        out += '"'
+                        out += element.res.string
+                        out += '"'
+                    elif element.res.t() == "dictionary":
+                        out += "{}"
             return out + "\n"
         case "call":
             out = ""
@@ -75,9 +80,24 @@ def printpt(element, level):
                         out += element.args[s - 1]
                     out += ")"
             if element.equ:
-                out += " = "
+                if element.op == "":
+                    out += " = "
+                elif element.op == "PLUS":
+                    out += " += "
+                elif element.op == "MINUS":
+                    out += " -= "
+                elif element.op == "ASTERISK":
+                    out += " *= "
+                elif element.op == "SLASH":
+                    out += " /= "
                 if element.res != None:
-                    if element.res.t() == "call":
+                    if element.res.t() == "string":
+                        out += '"'
+                        out += element.res.string
+                        out += '"'
+                    elif element.res.t() == "dictionary":
+                        out += "{}"
+                    elif element.res.t() == "call":
                         if element.res.builtin_function:
                             out += element.res.name.lower()
                         else:

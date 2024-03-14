@@ -110,6 +110,14 @@ def _new_call(input, level):
             for i in range(level + 2, len(input)):
                 array.append(input[i])
             callnew.res = _eval(array)
+        elif input[level + 1] in ["PLUS", "MINUS", "ASTERISK", "SLASH"]:
+            callnew.name = input[level]
+            callnew.equ = True
+            callnew.op = input[level + 1]
+            array = []
+            for i in range(level + 3, len(input)):
+                array.append(input[i])
+            callnew.res = _eval(array)
         elif input[level + 1] == "LEFT BRACKET" and input[s - 1] == "RIGHT BRACKET":
             callnew.name = input[level]
             callnew.function = True
@@ -122,6 +130,17 @@ def _new_call(input, level):
         else:
             callnew.name = input[level]
     return callnew
+
+
+def _eval_dictionary(_array):
+    import gdsbin.dictionary
+
+    dictionary = type(gdsbin.dictionary)(
+        gdsbin.dictionary.__name__, gdsbin.dictionary.__doc__
+    )
+    dictionary.__dict__.update(gdsbin.dictionary.__dict__)
+    dictionary.items = []
+    return dictionary
 
 
 def _eval_string(array):
@@ -153,13 +172,18 @@ def _eval_string(array):
         "CONST": "const",
         "QUOTATION": qu,
     }
-    for e in array:
-        s += token[e] if e in token else e
-    return s
+    for i in range(1, len(array) - 1):
+        s += token[array[i]] if array[i] in token else array[i]
+    import gdsbin.string
+
+    string = type(gdsbin.string)(gdsbin.string.__name__, gdsbin.string.__doc__)
+    string.__dict__.update(gdsbin.string.__dict__)
+    string.string = s
+    return string
 
 
 def _eval_function_args(array):
-    return _eval_string(array).split("COMMA")
+    return _eval_string(array).string.split("COMMA")
 
 
 def _variable(root, input, level, is_const):
@@ -194,7 +218,7 @@ def _eval(array):
     s = len(array)
     variable = None
     if array[0] == "CURLY LEFT BRACKET" and array[s - 1] == "CURLY RIGHT BRACKET":
-        variable = {}
+        variable = _eval_dictionary(array)
         return variable
     if array[0] == "QUOTATION" and array[s - 1] == "QUOTATION":
         variable = _eval_string(array)
