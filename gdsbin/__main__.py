@@ -456,8 +456,7 @@ def help():
 
 
 def run_benchmark():
-    gdsbin = {}
-    gdsbin.test = {}
+    gdsbin = {"test": {}}
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.benchmark
 
@@ -465,8 +464,7 @@ def run_benchmark():
 
 
 def run_parser():
-    gdsbin = {}
-    gdsbin.test = {}
+    gdsbin = {"test": {}}
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.advanced_expression_matching
 
