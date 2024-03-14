@@ -306,15 +306,13 @@ func help() -> void:
 	print("  " + "benchmark                         " + BENCH_DESC)
 ## Testing benchmark
 func run_benchmark() -> void:
-	var gdsbin: Dictionary = {}
-	gdsbin.test = {}
+	var gdsbin: Dictionary = {"test": {}}
 	gdsbin.test.benchmark = Benchmark.new()
 	gdsbin.test.benchmark.run()
 
 ## GDScript parser tests
 func run_parser() -> void:
-	var gdsbin: Dictionary = {}
-	gdsbin.test = {}
+	var gdsbin: Dictionary = {"test": {}}
 	gdsbin.test.advanced_expression_matching = Advanced_expression_matching.new()
 	gdsbin.test.advanced_expression_matching.test()
 	gdsbin.test.arrays = Arrays.new()
