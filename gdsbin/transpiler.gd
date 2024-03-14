@@ -538,7 +538,10 @@ func translate(e: String, package_name: String) -> String:
 		var_test = var_test.replace("	", "")
 	for variable in ["var ", "const "]:
 		if var_test.begins_with(variable) and not var_test.contains("="):
-			e += " = null"
+			if var_test.contains("#"):
+				e = e.split("#")[0] + "= null #" + e.split("#")[1]
+			else:
+				e += " = null"
 	var args: Array = e.split(" ")
 	e = ""
 	for arg in args:
