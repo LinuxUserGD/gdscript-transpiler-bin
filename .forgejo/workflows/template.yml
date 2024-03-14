@@ -37,12 +37,21 @@ jobs:
         run: |
           rm *.import
           rm project.godot
+          rm -rf addons docker gdUnit4 zig-template
+          python -m gdsbin format=bin/gds.gd
+          python -m gdsbin setup=setup.py
+          python -m pip uninstall -y gdsbin --break-system-packages
+          git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
+          cp gdscript-transpiler-bin/requirements.txt .
+          pip install .  --no-cache-dir --no-deps --break-system-packages
+          rm -rf gdsbin.egg-info _build
+          rm pyproject.toml
+          find . ! -path "./gdscript-transpiler-bin/*" -name "*.py" -type f | xargs rm --
           python -m gdsbin format=bin/gds.gd
           python -m gdsbin setup=setup.py
           echo "Uploading files..."
-          rm -rf addons docker gdUnit4 zig-template
-          dir=$(echo */)
-          git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python && cd gdscript-transpiler-bin
+          dir=$(find */ -maxdepth 0 -type d ! -name "gdscript-transpiler-bin")
+          cd gdscript-transpiler-bin
           rm -rf $(ls | grep -v "requirements.txt")
           for i in $dir; do mkdir ${i} ; done
           for i in $dir; do cp -r "../${i}"*.py ${i} ; done
