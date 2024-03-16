@@ -93,7 +93,7 @@ def _call(root, input, level):
     # print(input)
 
 
-def _arg_call(input: Array, level):
+def _arg_call(input, level):
     import gdsbin.callnew
 
     callnew = type(gdsbin.callnew)(gdsbin.callnew.__name__, gdsbin.callnew.__doc__)
