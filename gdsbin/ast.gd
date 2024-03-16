@@ -80,6 +80,19 @@ func _call(root, input: Array, level: int):
 	root.elem.append(callx)
 	#print(input)
 
+func _arg_call(input: Array, level: int):
+	var callnew = Callnew.new()
+	var s = input.size()
+	if level+1 < s:
+		if input[level+1] == "DOT":
+			callnew.name = input[level]
+			callnew.callnew = _new_call(input, level+2)
+		else:
+			callnew.name = _eval_string(input, 0).string
+	else:
+		callnew.name = input[level]
+	return callnew
+
 func _new_call(input: Array, level: int):
 	var callnew = Callnew.new()
 	var s = input.size()
@@ -112,7 +125,9 @@ func _new_call(input: Array, level: int):
 			if args.size() != 0:
 				callnew.args = _eval_function_args(args)
 		else:
-			callnew.name = input[level]
+			callnew.name = _eval_string(input, 0).string
+	else:
+		callnew.name = input[level]
 	return callnew
 
 func _eval_dictionary(_array: Array):
@@ -120,7 +135,7 @@ func _eval_dictionary(_array: Array):
 	dictionary.items = []
 	return dictionary
 
-func _eval_string(array: Array):
+func _eval_string(array: Array, level: int):
 	var s: String = ""
 	const qu: String = '"'
 	const token : Dictionary = {
@@ -149,14 +164,23 @@ func _eval_string(array: Array):
 		"CONST": "const",
 		"QUOTATION": qu
 	}
-	for i in range(1, array.size()-1):
+	for i in range(level, array.size()):
 		s += token[array[i]] if array[i] in token else array[i]
 	var string = STRING.new()
 	string.string = s
 	return string
 
 func _eval_function_args(array: Array):
-	return _eval_string(array).string.split("COMMA")
+	var arr: Array = []
+	var ast_arr: Array = []
+	array.append("COMMA")
+	for i in range(0, array.size()):
+		if array[i] == "COMMA":
+			ast_arr.append(_arg_call(arr, 0))
+			arr = []
+		else:
+			arr.append(array[i])
+	return ast_arr
 
 func _variable(root, input: Array, level: int, is_const: bool):
 	var variable = VARIABLE.new()
@@ -188,7 +212,7 @@ func _eval(array: Array):
 		variable = _eval_dictionary(array)
 		return variable
 	if array[0] == "QUOTATION" && array[s-1] == "QUOTATION":
-		variable = _eval_string(array)
+		variable = _eval_string(array, 0)
 		return variable
 	variable = _new_call(array, 0)
 	return variable
@@ -202,25 +226,27 @@ func _function(startln: int, endln: int, level: int, root, input: Array, unit: A
 		begin = input.find("LEFT BRACKET", level+2)
 	var end: int = -1
 	if "RIGHT BRACKET" in input:
-		end = input.find("RIGHT BRACKET", level+3)
+		end = input.find("RIGHT BRACKET", begin+1)
 	var arrow1: int = -1
 	if "MINUS" in input:
-		arrow1 = input.find("MINUS", level+4)
+		arrow1 = input.find("MINUS", end+1)
 	var arrow2: int = -1
 	if "GREATER THAN" in input:
-		arrow2 = input.find("GREATER THAN", level+5)
+		arrow2 = input.find("GREATER THAN", arrow1+1)
 	var colon: int = -1
 	if "COLON" in input:
-		colon = input.find("COLON", level+4)
+		colon = input.find("COLON", end+1)
 	if (arrow1>0 and arrow2>0):
 		function.ret = true
 		function.res = input[colon-1]
 	var add: bool = true
 	while (end-begin > 1):
 		if add:
-			function.args.append(input[begin+1])
+			var string = STRING.new()
+			string.string = input[begin+1]
+			function.args.append(string)
 			add = false
-		if input[begin+1] == ",":
+		if input[begin+1] == "COMMA":
 			add = true
 		begin += 1
 	function.root = ast(startln+1, endln, level+1, function.root, unit, con)
