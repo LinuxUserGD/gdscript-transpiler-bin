@@ -20,8 +20,8 @@ def printpt(element, level):
             s = len(element.args)
             if s != 0:
                 for i in range(0, s - 1, 1):
-                    out += element.args[i] + ", "
-                out += element.args[s - 1]
+                    out += element.args[i].string + ", "
+                out += element.args[s - 1].string
             out += ")"
             if element.ret:
                 out += " -> "
@@ -44,88 +44,96 @@ def printpt(element, level):
                 out += " = "
                 if element.res != None:
                     if element.res.t() == "string":
-                        out += '"'
                         out += element.res.string
-                        out += '"'
                     elif element.res.t() == "dictionary":
                         out += "{}"
             return out + "\n"
         case "call":
-            out = ""
-            if element.builtin_function:
-                out += element.name.lower()
-            else:
-                out += element.name
-            if element.function:
-                out += "("
-                s = len(element.args)
-                if s != 0:
-                    for i in range(0, s - 1, 1):
-                        out += element.args[i] + ", "
-                    out += element.args[s - 1]
-                out += ")"
-            while element.callnew != None:
-                element = element.callnew
-                out += "."
-                if element.builtin_function:
-                    out += element.name.lower()
+            return parse_call(element) + "\n"
+    return ""
+
+
+def parse_call(element):
+    out = ""
+    if element.builtin_function:
+        out += element.name.lower()
+    else:
+        out += element.name
+    if element.function:
+        out += "("
+        s = len(element.args)
+        if s != 0:
+            for i in range(0, s - 1, 1):
+                out += element.args[i].name + ", "
+            out += element.args[s - 1].name
+        out += ")"
+    while element.callnew != None:
+        element = element.callnew
+        out += "."
+        if element.builtin_function:
+            out += element.name.lower()
+        else:
+            out += element.name
+        if element.function:
+            out += "("
+            s = len(element.args)
+            if s != 0:
+                for i in range(0, s - 1, 1):
+                    out += element.args[i].name
+                    out += ", "
+                out += element.args[s - 1].name
+                if element.args[s - 1].callnew != None:
+                    out += "."
+                    out += element.args[s - 1].callnew.name
+            out += ")"
+    if element.equ:
+        if element.op == "":
+            out += " = "
+        elif element.op == "PLUS":
+            out += " += "
+        elif element.op == "MINUS":
+            out += " -= "
+        elif element.op == "ASTERISK":
+            out += " *= "
+        elif element.op == "SLASH":
+            out += " /= "
+        if element.res != None:
+            if element.res.t() == "string":
+                out += element.res.string
+            elif element.res.t() == "dictionary":
+                out += "{}"
+            elif element.res.t() == "call":
+                if element.res.builtin_function:
+                    out += element.res.name.lower()
                 else:
-                    out += element.name
-                if element.function:
+                    out += element.res.name
+                if element.res.function:
                     out += "("
-                    s = len(element.args)
+                    s = len(element.res.args)
                     if s != 0:
                         for i in range(0, s - 1, 1):
-                            out += element.args[i] + ", "
-                        out += element.args[s - 1]
-                    out += ")"
-            if element.equ:
-                if element.op == "":
-                    out += " = "
-                elif element.op == "PLUS":
-                    out += " += "
-                elif element.op == "MINUS":
-                    out += " -= "
-                elif element.op == "ASTERISK":
-                    out += " *= "
-                elif element.op == "SLASH":
-                    out += " /= "
-                if element.res != None:
-                    if element.res.t() == "string":
-                        out += '"'
-                        out += element.res.string
-                        out += '"'
-                    elif element.res.t() == "dictionary":
-                        out += "{}"
-                    elif element.res.t() == "call":
-                        if element.res.builtin_function:
-                            out += element.res.name.lower()
-                        else:
-                            out += element.res.name
-                        if element.res.function:
-                            out += "("
-                            s = len(element.res.args)
-                            if s != 0:
-                                for i in range(0, s - 1, 1):
-                                    out += element.res.args[i] + ", "
-                                out += element.res.args[s - 1]
-                            out += ")"
-                        while element.res.callnew != None:
-                            element.res = element.res.callnew
+                            out += element.res.args[i].name + ", "
+                        out += element.res.args[s - 1].name
+                        if element.res.args[s - 1].callnew != None:
                             out += "."
-                            if element.res.builtin_function:
-                                out += element.res.name.lower()
-                            else:
-                                out += element.res.name
-                            if element.res.function:
-                                out += "("
-                                s = len(element.res.args)
-                                if s != 0:
-                                    for i in range(0, s - 1, 1):
-                                        out += element.res.args[i] + ", "
-                                    out += element.res.args[s - 1]
-                                out += ")"
+                            out += printpt(element.res.args[s - 1].callnew, 0)
+                    out += ")"
+                while element.res.callnew != None:
+                    element.res = element.res.callnew
+                    out += "."
+                    if element.res.builtin_function:
+                        out += element.res.name.lower()
                     else:
-                        out += str(element.res).replace(" ", "")
-            return out + "\n"
-    return ""
+                        out += element.res.name
+                    if element.res.function:
+                        out += "("
+                        s = len(element.res.args)
+                        if s != 0:
+                            for i in range(0, s - 1, 1):
+                                out += element.res.args[i].name
+                                out += ", "
+                            out += element.res.args[s - 1].name
+                        out += ")"
+            else:
+                out += str(element.res).replace(" ", "")
+    return out

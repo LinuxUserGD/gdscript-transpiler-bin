@@ -93,6 +93,23 @@ def _call(root, input, level):
     # print(input)
 
 
+def _arg_call(input: Array, level):
+    import gdsbin.callnew
+
+    callnew = type(gdsbin.callnew)(gdsbin.callnew.__name__, gdsbin.callnew.__doc__)
+    callnew.__dict__.update(gdsbin.callnew.__dict__)
+    s = len(input)
+    if level + 1 < s:
+        if input[level + 1] == "DOT":
+            callnew.name = input[level]
+            callnew.callnew = _new_call(input, level + 2)
+        else:
+            callnew.name = _eval_string(input, 0).string
+    else:
+        callnew.name = input[level]
+    return callnew
+
+
 def _new_call(input, level):
     import gdsbin.callnew
 
@@ -128,7 +145,9 @@ def _new_call(input, level):
             if len(args) != 0:
                 callnew.args = _eval_function_args(args)
         else:
-            callnew.name = input[level]
+            callnew.name = _eval_string(input, 0).string
+    else:
+        callnew.name = input[level]
     return callnew
 
 
@@ -143,7 +162,7 @@ def _eval_dictionary(_array):
     return dictionary
 
 
-def _eval_string(array):
+def _eval_string(array, level):
     s = ""
     qu = '"'
     token = {
@@ -172,7 +191,7 @@ def _eval_string(array):
         "CONST": "const",
         "QUOTATION": qu,
     }
-    for i in range(1, len(array) - 1):
+    for i in range(level, len(array)):
         s += token[array[i]] if array[i] in token else array[i]
     import gdsbin.string
 
@@ -183,7 +202,16 @@ def _eval_string(array):
 
 
 def _eval_function_args(array):
-    return _eval_string(array).string.split("COMMA")
+    arr = []
+    ast_arr = []
+    array.append("COMMA")
+    for i in range(0, len(array)):
+        if array[i] == "COMMA":
+            ast_arr.append(_arg_call(arr, 0))
+            arr = []
+        else:
+            arr.append(array[i])
+    return ast_arr
 
 
 def _variable(root, input, level, is_const):
@@ -221,7 +249,7 @@ def _eval(array):
         variable = _eval_dictionary(array)
         return variable
     if array[0] == "QUOTATION" and array[s - 1] == "QUOTATION":
-        variable = _eval_string(array)
+        variable = _eval_string(array, 0)
         return variable
     variable = _new_call(array, 0)
     return variable
@@ -239,25 +267,30 @@ def _function(startln, endln, level, root, input, unit, con):
         begin = input.index("LEFT BRACKET", level + 2)
     end = -1
     if "RIGHT BRACKET" in input:
-        end = input.index("RIGHT BRACKET", level + 3)
+        end = input.index("RIGHT BRACKET", begin + 1)
     arrow1 = -1
     if "MINUS" in input:
-        arrow1 = input.index("MINUS", level + 4)
+        arrow1 = input.index("MINUS", end + 1)
     arrow2 = -1
     if "GREATER THAN" in input:
-        arrow2 = input.index("GREATER THAN", level + 5)
+        arrow2 = input.index("GREATER THAN", arrow1 + 1)
     colon = -1
     if "COLON" in input:
-        colon = input.index("COLON", level + 4)
+        colon = input.index("COLON", end + 1)
     if arrow1 > 0 and arrow2 > 0:
         function.ret = True
         function.res = input[colon - 1]
     add = True
     while end - begin > 1:
         if add:
-            function.args.append(input[begin + 1])
+            import gdsbin.string
+
+            string = type(gdsbin.string)(gdsbin.string.__name__, gdsbin.string.__doc__)
+            string.__dict__.update(gdsbin.string.__dict__)
+            string.string = input[begin + 1]
+            function.args.append(string)
             add = False
-        if input[begin + 1] == ",":
+        if input[begin + 1] == "COMMA":
             add = True
         begin += 1
     function.root = ast(startln + 1, endln, level + 1, function.root, unit, con)
