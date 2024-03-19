@@ -21,10 +21,10 @@ def ast(startln, endln, level, root, unit, con):
             root.__dict__.update(gdsbin.root.__dict__)
             root.elem = []
         if input[level] == "NUMBER SIGN":
-            _number_sign(root, conline)
+            _number_sign(root, conline, level)
             continue
         if input[level] == "NUMBER SIGN 2":
-            _number_sign(root, conline)
+            _number_sign(root, conline, level)
             continue
         if input[level] == "CLASS NAME":
             _classname(root, input, level)
@@ -34,6 +34,12 @@ def ast(startln, endln, level, root, unit, con):
             continue
         if input[level] == "FUNCTION":
             _function(i, endln, level, root, input, unit, con)
+            continue
+        if input[level] == "FOR":
+            _for_in(i, endln, level, root, input, unit, con)
+            continue
+        if input[level] == "IF":
+            _if_cond(i, endln, level, root, input, unit, con)
             continue
         if input[level] == "VARIABLE":
             is_const = False
@@ -47,22 +53,22 @@ def ast(startln, endln, level, root, unit, con):
     return root
 
 
-def _number_sign(root, conline):
+def _number_sign(root, conline, level):
     import gdsbin.comment
 
     comment = type(gdsbin.comment)(gdsbin.comment.__name__, gdsbin.comment.__doc__)
     comment.__dict__.update(gdsbin.comment.__dict__)
-    comment.comment = conline
+    comment.comment = _cut_string(conline, level)
     root.elem.append(comment)
     # print(input)
 
 
-def _number_sign_2(root, conline):
+def _number_sign_2(root, conline, level):
     import gdsbin.comment
 
     comment = type(gdsbin.comment)(gdsbin.comment.__name__, gdsbin.comment.__doc__)
     comment.__dict__.update(gdsbin.comment.__dict__)
-    comment.comment = conline
+    comment.comment = _cut_string(conline, level)
     root.elem.append(comment)
     # print(input)
 
@@ -135,18 +141,19 @@ def _new_call(input, level):
             for i in range(level + 3, len(input)):
                 array.append(input[i])
             callnew.res = _eval(array)
-        elif input[level + 1] == "LEFT BRACKET" and input[s - 1] == "RIGHT BRACKET":
+        elif input[level + 1] == "LEFT BRACKET" and "RIGHT BRACKET" in input:
+            end = input.index("RIGHT BRACKET", level + 2)
             callnew.name = input[level]
             callnew.function = True
             callnew.builtin_function = _builtin_function(input[level])
             args = []
-            for i in range(level + 2, s - 1):
+            for i in range(level + 2, end):
                 args.append(input[i])
             if len(args) != 0:
                 callnew.args = _eval_function_args(args)
         else:
             callnew.name = _eval_string(input, 0).string
-    else:
+    elif level + 1 == s:
         callnew.name = input[level]
     return callnew
 
@@ -160,6 +167,11 @@ def _eval_dictionary(_array):
     dictionary.__dict__.update(gdsbin.dictionary.__dict__)
     dictionary.items = []
     return dictionary
+
+
+def _cut_string(msg, level):
+    l = len(msg)
+    return right(msg, l - level)
 
 
 def _eval_string(array, level):
@@ -255,6 +267,41 @@ def _eval(array):
     return variable
 
 
+def _for_in(startln, endln, level, root, input, unit, con):
+    import gdsbin.forloop
+
+    forloop = type(gdsbin.forloop)(gdsbin.forloop.__name__, gdsbin.forloop.__doc__)
+    forloop.__dict__.update(gdsbin.forloop.__dict__)
+    begin = -1
+    if "IN" in input:
+        begin = input.index("IN", level + 2)
+    end = len(input)
+    f = []
+    for i in range(level + 1, begin):
+        f.append(input[i])
+    x = []
+    for i in range(begin + 1, end - 1):
+        x.append(input[i])
+    forloop.f = _new_call(f, 0)
+    forloop.i = _new_call(x, 0)
+    forloop.root = ast(startln + 1, endln, level + 1, forloop.root, unit, con)
+    root.elem.append(forloop)
+
+
+def _if_cond(startln, endln, level, root, input, unit, con):
+    import gdsbin.ifcond
+
+    ifcond = type(gdsbin.ifcond)(gdsbin.ifcond.__name__, gdsbin.ifcond.__doc__)
+    ifcond.__dict__.update(gdsbin.ifcond.__dict__)
+    end = len(input)
+    i = []
+    for x in range(level + 1, end - 1):
+        i.append(input[x])
+    ifcond.i = _new_call(i, 0)
+    ifcond.root = ast(startln + 1, endln, level + 1, ifcond.root, unit, con)
+    root.elem.append(ifcond)
+
+
 def _function(startln, endln, level, root, input, unit, con):
     import gdsbin.function
 
@@ -296,3 +343,7 @@ def _function(startln, endln, level, root, input, unit, con):
     function.root = ast(startln + 1, endln, level + 1, function.root, unit, con)
     root.elem.append(function)
     # print(input)
+
+
+def right(s, amount):
+    return s[len(s) - amount :]

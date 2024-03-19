@@ -52,6 +52,9 @@ def tokenize(input_string):
         "new": "NEW",
         "var": "VARIABLE",
         "const": "CONST",
+        "for": "FOR",
+        "in": "IN",
+        "if": "IF",
         qu: "QUOTATION",
     }
     tokens = []
