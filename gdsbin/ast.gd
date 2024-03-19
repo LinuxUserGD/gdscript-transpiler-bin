@@ -26,10 +26,10 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 			root = Root.new()
 			root.elem = []
 		if input[level] == "NUMBER SIGN":
-			_number_sign(root, conline)
+			_number_sign(root, conline, level)
 			continue
 		if input[level] == "NUMBER SIGN 2":
-			_number_sign(root, conline)
+			_number_sign(root, conline, level)
 			continue
 		if input[level] == "CLASS NAME":
 			_classname(root, input, level)
@@ -39,6 +39,12 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 			continue
 		if input[level] == "FUNCTION":
 			_function(i, endln, level, root, input, unit, con)
+			continue
+		if input[level] == "FOR":
+			_for_in(i, endln, level, root, input, unit, con)
+			continue
+		if input[level] == "IF":
+			_if_cond(i, endln, level, root, input, unit, con)
 			continue
 		if input[level] == "VARIABLE":
 			const is_const: bool = false
@@ -51,15 +57,15 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 		_call(root, input, level)
 	return root
 
-func _number_sign(root, conline: String):
+func _number_sign(root, conline: String, level: int):
 	var comment = Comment.new()
-	comment.comment = conline
+	comment.comment = _cut_string(conline, level)
 	root.elem.append(comment)
 	#print(input)
 
-func _number_sign_2(root, conline: String):
+func _number_sign_2(root, conline: String, level: int):
 	var comment = Comment.new()
-	comment.comment = conline
+	comment.comment = _cut_string(conline, level)
 	root.elem.append(comment)
 	#print(input)
 
@@ -115,18 +121,19 @@ func _new_call(input: Array, level: int):
 			for i in range(level+3, input.size()):
 				array.append(input[i])
 			callnew.res = _eval(array)
-		elif input[level+1] == "LEFT BRACKET" && input[s-1] == "RIGHT BRACKET":
+		elif input[level+1] == "LEFT BRACKET" and "RIGHT BRACKET" in input:
+			var end = input.find("RIGHT BRACKET", level+2)
 			callnew.name = input[level]
 			callnew.function = true
 			callnew.builtin_function = _builtin_function(input[level])
 			var args: Array = []
-			for i in range(level+2, s-1):
+			for i in range(level+2, end):
 				args.append(input[i])
 			if args.size() != 0:
 				callnew.args = _eval_function_args(args)
 		else:
 			callnew.name = _eval_string(input, 0).string
-	else:
+	elif level+1 == s:
 		callnew.name = input[level]
 	return callnew
 
@@ -134,6 +141,10 @@ func _eval_dictionary(_array: Array):
 	var dictionary = DICTIONARY.new()
 	dictionary.items = []
 	return dictionary
+
+func _cut_string(msg: String, level: int):
+	var l = msg.length()
+	return msg.right(l-level)
 
 func _eval_string(array: Array, level: int):
 	var s: String = ""
@@ -216,6 +227,33 @@ func _eval(array: Array):
 		return variable
 	variable = _new_call(array, 0)
 	return variable
+
+func _for_in(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
+	var forloop = FORLOOP.new()
+	var begin: int = -1
+	if "IN" in input:
+		begin = input.find("IN", level+2)
+	var end: int = input.size()
+	var f: Array = []
+	for i in range(level+1, begin):
+		f.append(input[i])
+	var x: Array = []
+	for i in range(begin+1, end-1):
+		x.append(input[i])
+	forloop.f = _new_call(f, 0)
+	forloop.i = _new_call(x, 0)
+	forloop.root = ast(startln+1, endln, level+1, forloop.root, unit, con)
+	root.elem.append(forloop)
+
+func _if_cond(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
+	var ifcond = IFCOND.new()
+	var end: int = input.size()
+	var i: Array = []
+	for x in range(level+1, end-1):
+		i.append(input[x])
+	ifcond.i = _new_call(i, 0)
+	ifcond.root = ast(startln+1, endln, level+1, ifcond.root, unit, con)
+	root.elem.append(ifcond)
 
 func _function(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
 	var function = Function.new()

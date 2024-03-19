@@ -29,8 +29,8 @@ func printpt(element, level: int) -> String:
 			var s = element.args.size()
 			if s!=0:
 				for i in range(0, s-1, 1):
-					out += element.args[i].string + ", "
-				out += element.args[s-1].string
+					out += eval_call(element.args[i]) + ", "
+				out += eval_call(element.args[s-1])
 			out += ")"
 			if element.ret:
 				out += " -> "
@@ -51,16 +51,70 @@ func printpt(element, level: int) -> String:
 				out += element.type
 			if element.equ:
 				out += " = "
-				if element.res != null:
-					if element.res.t() == "string":
-						out += element.res.string
-					elif element.res.t() == "dictionary":
-						out += "{}"
+				out += eval_call(element.res)
 			return out + "\n"
+		"forloop":
+			var out = "for"
+			out += " " + parse_call(element.f)
+			out += " " + "in"
+			out += " " + parse_call(element.i)
+			out += ":"
+			out += "\n"
+			if (element.root != null):
+				out += printpt(element.root, level+1)
+			return out
+		"cond":
+			var out = "i"
+			out += "f"
+			out += " " + parse_call(element.i)
+			out += ":"
+			out += "\n"
+			if (element.root != null):
+				out += printpt(element.root, level+1)
+			return out
 		"call":
 			return parse_call(element) + "\n"
 	return ""
 
+func eval_call(element):
+	var out: String = ""
+	if element != null:
+		if element.t() == "string":
+			out += element.string
+		elif element.t() == "dictionary":
+			out += "{}"
+		elif element.t() == "call":
+			if element.builtin_function:
+				out += element.name.to_lower()
+			else:
+				out += element.name
+			if element.function:
+				out += "("
+				var s = element.args.size()
+				if s!=0:
+					for i in range(0, s-1, 1):
+						out += eval_call(element.args[i]) + ", "
+					out += eval_call(element.args[s-1])
+				out += ")"
+			while (element.callnew != null):
+				element = element.callnew
+				out += "."
+				if element.builtin_function:
+					out += element.name.to_lower()
+				else:
+					out += element.name
+				if element.function:
+					out += "("
+					var s = element.args.size()
+					if s!=0:
+						for i in range(0, s-1, 1):
+							out += eval_call(element.args[i])
+							out += ", "
+						out += eval_call(element.args[s-1])
+					out += ")"
+		else:
+			out += str(element).replace(" ", "")
+	return out
 
 func parse_call(element):
 	var out = ""
@@ -73,8 +127,8 @@ func parse_call(element):
 		var s = element.args.size()
 		if s!=0:
 			for i in range(0, s-1, 1):
-				out += element.args[i].name + ", "
-			out += element.args[s-1].name
+				out += eval_call(element.args[i]) + ", "
+			out += eval_call(element.args[s-1])
 		out += ")"
 	while (element.callnew != null):
 		element = element.callnew
@@ -88,12 +142,9 @@ func parse_call(element):
 			var s = element.args.size()
 			if s!=0:
 				for i in range(0, s-1, 1):
-					out += element.args[i].name
+					out += eval_call(element.args[i])
 					out += ", "
-				out += element.args[s-1].name
-				if element.args[s-1].callnew != null:
-					out += "."
-					out += element.args[s-1].callnew.name
+				out += eval_call(element.args[s-1])
 			out += ")"
 	if element.equ:
 		if element.op == "":
@@ -106,43 +157,5 @@ func parse_call(element):
 			out += " *= "
 		elif element.op == "SLASH":
 			out += " /= "
-		if element.res != null:
-			if element.res.t() == "string":
-				out += element.res.string
-			elif element.res.t() == "dictionary":
-				out += "{}"
-			elif element.res.t() == "call":
-				if element.res.builtin_function:
-					out += element.res.name.to_lower()
-				else:
-					out += element.res.name
-				if element.res.function:
-					out += "("
-					var s = element.res.args.size()
-					if s!=0:
-						for i in range(0, s-1, 1):
-							out += element.res.args[i].name + ", "
-						out += element.res.args[s-1].name
-						if element.res.args[s-1].callnew != null:
-							out += "."
-							out += printpt(element.res.args[s-1].callnew, 0)
-					out += ")"
-				while (element.res.callnew != null):
-					element.res = element.res.callnew
-					out += "."
-					if element.res.builtin_function:
-						out += element.res.name.to_lower()
-					else:
-						out += element.res.name
-					if element.res.function:
-						out += "("
-						var s = element.res.args.size()
-						if s!=0:
-							for i in range(0, s-1, 1):
-								out += element.res.args[i].name
-								out += ", "
-							out += element.res.args[s-1].name
-						out += ")"
-			else:
-				out += str(element.res).replace(" ", "")
+		out += eval_call(element.res)
 	return out

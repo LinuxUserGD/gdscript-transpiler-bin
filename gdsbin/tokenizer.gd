@@ -35,6 +35,9 @@ func tokenize(input_string: String) -> Array:
 		"new": "NEW",
 		"var": "VARIABLE",
 		"const": "CONST",
+		"for": "FOR",
+		"in": "IN",
+		"if": "IF",
 		qu: "QUOTATION"
 	}
 	var tokens: Array = []
