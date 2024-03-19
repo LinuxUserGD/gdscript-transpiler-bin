@@ -87,9 +87,6 @@ def eval_call(element):
                     for i in range(0, s - 1, 1):
                         out += eval_call(element.args[i]) + ", "
                     out += eval_call(element.args[s - 1])
-                    if element.args[s - 1].callnew != None:
-                        out += "."
-                        out += printpt(element.args[s - 1].callnew, 0)
                 out += ")"
             while element.callnew != None:
                 element = element.callnew
@@ -141,9 +138,6 @@ def parse_call(element):
                     out += eval_call(element.args[i])
                     out += ", "
                 out += eval_call(element.args[s - 1])
-                if element.args[s - 1].callnew != None:
-                    out += "."
-                    out += element.args[s - 1].callnew.name
             out += ")"
     if element.equ:
         if element.op == "":
@@ -156,43 +150,5 @@ def parse_call(element):
             out += " *= "
         elif element.op == "SLASH":
             out += " /= "
-        if element.res != None:
-            if element.res.t() == "string":
-                out += element.res.string
-            elif element.res.t() == "dictionary":
-                out += "{}"
-            elif element.res.t() == "call":
-                if element.res.builtin_function:
-                    out += element.res.name.lower()
-                else:
-                    out += element.res.name
-                if element.res.function:
-                    out += "("
-                    s = len(element.res.args)
-                    if s != 0:
-                        for i in range(0, s - 1, 1):
-                            out += eval_call(element.res.args[i]) + ", "
-                        out += eval_call(element.res.args[s - 1])
-                        if element.res.args[s - 1].callnew != None:
-                            out += "."
-                            out += printpt(element.res.args[s - 1].callnew, 0)
-                    out += ")"
-                while element.res.callnew != None:
-                    element.res = element.res.callnew
-                    out += "."
-                    if element.res.builtin_function:
-                        out += element.res.name.lower()
-                    else:
-                        out += element.res.name
-                    if element.res.function:
-                        out += "("
-                        s = len(element.res.args)
-                        if s != 0:
-                            for i in range(0, s - 1, 1):
-                                out += eval_call(element.res.args[i])
-                                out += ", "
-                            out += eval_call(element.res.args[s - 1])
-                        out += ")"
-            else:
-                out += str(element.res).replace(" ", "")
+        out += eval_call(element.res)
     return out
