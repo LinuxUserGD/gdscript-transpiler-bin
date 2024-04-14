@@ -1,3 +1,4 @@
 ziglang
 Nuitka @ git+https://github.com/Nuitka/Nuitka.git@develop
+ruff
 black
