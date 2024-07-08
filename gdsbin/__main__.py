@@ -90,20 +90,16 @@ def compile(arg, defs):
     nuitka += "d='"
     nuitka += "--assume-yes-for-downloads"
     nuitka += "';"
-    nuitka += "e='"
-    # bugfix "No such file or directory: Grammar3.10.10.final.0.pickle"
-    nuitka += "--include-package-data=blib2to3"
-    nuitka += "';"
     if defs.zig_imp:
-        nuitka += "f='"
+        nuitka += "e='"
         nuitka += "--include-package-data=ziglang"
         nuitka += "';"
-        nuitka += "g='"
+        nuitka += "f='"
         nuitka += "--noinclude-data-files=ziglang/doc"
         nuitka += "';"
-        nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f,g]"
+        nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f]"
     else:
-        nuitka += "sys.argv=[x,y,z,a,b,c,d,e]"
+        nuitka += "sys.argv=[x,y,z,a,b,c,d]"
     # AttributeError: module '__main__' has no attribute '__file__'. Did you mean: '__name__'?
     nuitka += ";sys.modules['__main__'].__file__=sys.modules['__main__'].__name__"
     stdout = []
