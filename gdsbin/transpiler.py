@@ -15,16 +15,14 @@ def transpile(content, package_name):
             t += analyze(line, package_name)
     if defs.sys_imp:
         t = "import sys" + "\n" + t
+    if defs.subprocess_imp:
+        t = "import subprocess" + "\n" + t
     if defs.os_imp:
         t = "import os" + "\n" + t
     if defs.rand_imp:
         t = "import random" + "\n" + t
     if defs.math_imp:
         t = "import math" + "\n" + t
-    if defs.nuitka_imp:
-        t = "from nuitka import Version" + "\n" + t
-    if defs.black_imp:
-        t = "import black" + "\n" + t
     if defs.datetime_imp:
         t = "import datetime" + "\n" + t
     if defs.py_imp:
@@ -39,6 +37,17 @@ def transpile(content, package_name):
         t += "\n"
         t += "    return s[len(s)-amount:]"
         t += "\n"
+    if defs.execute_def:
+        t += "def py_execute(program, args):"
+        t += "\n"
+        t += "    args = [program] + args"
+        t += "\n"
+        t += "    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)"
+        t += "\n"
+        t += "    stdout, stderr = proc.communicate()"
+        t += "\n"
+        t += "    return [stdout.decode('utf-8')]"
+        t += "\n"
     if defs.thread_def:
         t += "class Thread:"
         t += "\n"
@@ -48,6 +57,7 @@ def transpile(content, package_name):
         t += "\n"
         t += "    def is_alive(self):"
         t += "        return True"
+        t += "\n"
     if defs.resize_def:
         t += "def resize(arr, size):"
         t += "\n"
@@ -317,19 +327,9 @@ def dict(arg):
         "false",
         "&&",
         "||",
-        "sys;print(sys.version)'],stdout,true,false)",
-        "';print(Version.getNuitkaVersion())'],stdout,true,false)",
-        "';print(black.__version__)'],stdout,true,false)",
-        "_black_],stdout,true,false)",
-        "';nuitka.__main__.main()'],stdout,true,false)",
     ]:
         e += props.repl_dict[arg]
         e += " "
-        return e
-    if arg == "';ziglang.__main__'],stdout,true,false)":
-        e += props.repl_dict[arg]
-        e += " "
-        defs.zig_imp = True
         return e
     if arg == "_ready()" or arg == "_init()":
         e += props.repl_dict[arg]
@@ -351,34 +351,10 @@ def dict(arg):
         e += arg
         e += " "
         return e
-    if arg == "OS.execute('python',['-c','import":
+    if arg == "OS.execute(program,args,stdout)":
         e += props.repl_dict[arg]
-        defs.sys_imp = True
-        return e
-    if arg == "OS.execute('python',['-c',import_str1+":
-        e += props.repl_dict[arg]
-        defs.nuitka_imp = True
-        return e
-    if arg == "OS.execute('python',['-c',nuitka+":
-        e += props.repl_dict[arg]
-        return e
-    if arg == "OS.execute('python',['-c',import_str2+":
-        e += props.repl_dict[arg]
-        defs.black_imp = True
-        return e
-    if arg == "OS.execute('python',['-c',import_str3+":
-        e += props.repl_dict[arg]
-        defs.sys_imp = True
-        return e
-    if arg == "OS.execute('python',['-c',imp+":
-        e += props.repl_dict[arg]
-        defs.black_imp = True
-        return e
-    if arg == "OS.execute('python',['-c',xpy+":
-        e += props.repl_dict[arg]
-        return e
-    if arg == "OS.execute('python',['-c',nuitka+":
-        e += props.repl_dict[arg]
+        defs.subprocess_imp = True
+        defs.execute_def = True
         return e
     if arg == "quit()" or arg == "self.quit()":
         e += props.repl_dict[arg]
@@ -503,6 +479,7 @@ def dict(arg):
         con = True
     while 0 <= arg.find("OS.get_cmdline_args()"):
         arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
+        defs.sys_imp = True
         con = True
     while 0 <= arg.find("Engine.get_version_info()"):
         arg = arg.replace(
@@ -511,13 +488,13 @@ def dict(arg):
                 {
                     "major": 4,
                     "minor": 2,
-                    "patch": 1,
-                    "hex": 262657,
+                    "patch": 2,
+                    "hex": 262658,
                     "status": "stable",
                     "build": "gentoo",
-                    "year": 2023,
-                    "hash": "b09f793f564a6c95dc76acc654b390e68441bd01",
-                    "string": "4.2.1-stable (gentoo)",
+                    "year": 2024,
+                    "hash": "15073afe3856abd2aa1622492fe50026c7d63dc1",
+                    "string": "4.2.2-stable (gentoo)",
                 }
             ),
         )
@@ -654,15 +631,14 @@ def set_def(arr):
         defs.resize_def = False
         defs.right_def = False
         defs.left_def = False
+        defs.execute_def = False
         defs.newinstance_def = False
         defs.sys_imp = False
+        defs.subprocess_imp = False
         defs.os_imp = False
-        defs.nuitka_imp = False
-        defs.black_imp = False
         defs.math_imp = False
         defs.rand_imp = False
         defs.datetime_imp = False
-        defs.zig_imp = False
         return
     defs.py_imp = defs.py_imp or arr[0]
     defs.debug = defs.debug or arr[1]
@@ -672,15 +648,14 @@ def set_def(arr):
     defs.resize_def = defs.resize_def or arr[5]
     defs.right_def = defs.right_def or arr[6]
     defs.left_def = defs.left_def or arr[7]
-    defs.newinstance_def = defs.newinstance_def or arr[8]
-    defs.sys_imp = defs.sys_imp or arr[9]
-    defs.os_imp = defs.os_imp or arr[10]
-    defs.nuitka_imp = defs.nuitka_imp or arr[11]
-    defs.black_imp = defs.black_imp or arr[12]
+    defs.execute_def = defs.execute_def or arr[8]
+    defs.newinstance_def = defs.newinstance_def or arr[9]
+    defs.sys_imp = defs.sys_imp or arr[10]
+    defs.subprocess_imp = defs.sys_imp or arr[11]
+    defs.os_imp = defs.os_imp or arr[12]
     defs.math_imp = defs.math_imp or arr[13]
     defs.rand_imp = defs.math_imp or arr[14]
     defs.datetime_imp = defs.datetime_imp or arr[15]
-    defs.zig_imp = defs.zig_imp or arr[16]
 
 
 def get_def():
@@ -693,15 +668,14 @@ def get_def():
         defs.resize_def,
         defs.right_def,
         defs.left_def,
+        defs.execute_def,
         defs.newinstance_def,
         defs.sys_imp,
+        defs.subprocess_imp,
         defs.os_imp,
-        defs.nuitka_imp,
-        defs.black_imp,
         defs.math_imp,
         defs.rand_imp,
         defs.datetime_imp,
-        defs.zig_imp,
     ]
 
 

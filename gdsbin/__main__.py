@@ -1,5 +1,3 @@
-import black
-from nuitka import Version
 import os
 import sys
 
@@ -110,48 +108,13 @@ def compile(arg, defs):
     nuitka += ";sys.modules['__main__'].__file__=sys.modules['__main__'].__name__"
     stdout = []
     print("Compiling " + pathstr + "py...")
-    import subprocess
+    import gdsbin.application
 
-    x = sys.executable
-    xx = "-m"
-    xxx = "nuitka"
-    y = pathstr + "py"
-    z = "--onefile"
-    a = "--lto=yes"
-    b = "--static-libpython=no"
-    c = "--clang"
-    d = "--assume-yes-for-downloads"
-    e = "--include-package-data=blib2to3"
-    f = "--include-package-data=ziglang"
-    g = "--noinclude-data-files=ziglang/doc"
-    args = [
-        x
-        + " "
-        + xx
-        + " "
-        + xxx
-        + " "
-        + y
-        + " "
-        + z
-        + " "
-        + a
-        + " "
-        + b
-        + " "
-        + c
-        + " "
-        + d
-        + " "
-        + e
-        + " "
-        + f
-        + " "
-        + g
-    ]
-    proc = subprocess.Popen(args, shell=True)
-    proc.communicate()
-    stdout = []
+    application = type(gdsbin.application)(
+        gdsbin.application.__name__, gdsbin.application.__doc__
+    )
+    application.__dict__.update(gdsbin.application.__dict__)
+    stdout = application.execute("python", ["-c", nuitka + ";nuitka.__main__.main()"])
     if len(stdout) > 0:
         for out_str in stdout[0].split("\n"):
             if len(out_str) > 0:
@@ -196,42 +159,6 @@ def start_exp(arg, _package_name):
     parsertree.__dict__.update(gdsbin.parsertree.__dict__)
     string_res = parsertree.printpt(ast_res, 0)
     print(string_res)
-
-
-def form(stdout, imp, _imp_string):
-    args = {
-        "src": "src",
-        "fast": "False",
-        "write_back": "write_back",
-        "mode": "mode",
-        "report": "report",
-    }
-    args_str = ""
-    for arg in args:
-        args_str += arg + "=" + args[arg] + ","
-    args_str = left(args_str, len(args_str) - 1)
-    _black_ = ";black.reformat_one(" + args_str + ")"
-    versions = set()
-    mode = black.mode.Mode(
-        target_versions=versions,
-        line_length=black.const.DEFAULT_LINE_LENGTH,
-        is_pyi=False,
-        is_ipynb=False,
-        skip_source_first_line=False,
-        string_normalization=True,
-        magic_trailing_comma=True,
-        preview=False,
-        python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),
-    )
-    report = black.report.Report(check=False, diff=False, quiet=True, verbose=False)
-    write_back = black.WriteBack.from_configuration(
-        check=False, diff=False, color=False
-    )
-    src = black.Path(_imp_string + "py")
-    black.reformat_one(
-        src=src, fast=False, write_back=write_back, mode=mode, report=report
-    )
-    return stdout
 
 
 def setup(
@@ -321,41 +248,14 @@ def start(arg, stage2, stage3, package_name):
     transpiler.props.gds_deps = []
     if stage2:
         print("Formatting " + pathstr + "py...")
-    stdout = []
-    imp_string = "import black"
-    bl = ";mode=black.mode.Mode(target_versions=versions,"
-    bl += "line_length=black.const.DEFAULT_LINE_LENGTH,is_pyi=False,is_ipynb=False,"
-    bl += "skip_source_first_line=False,string_normalization=True,magic_trailing_comma=True,"
-    bl += "preview=False,"
-    bl += "python_cell_magics=set(black.handle_ipynb_magics.PYTHON_CELL_MAGICS),)"
-    imp_string += ";versions=set()"
-    imp_string += bl
-    imp_string += ";write_back = black.WriteBack.from_configuration"
-    imp_string += "("
-    imp_string += "check="
-    imp_string += "False"
-    imp_string += ","
-    imp_string += "di"
-    imp_string += "ff"
-    imp_string += "=False,color="
-    imp_string += "False);report=black.report.Report"
-    imp_string += "("
-    imp_string += "check="
-    imp_string += "False"
-    imp_string += ","
-    imp_string += "di"
-    imp_string += "ff"
-    imp_string += "=False,quiet="
-    imp_string += "True,verbose="
-    imp_string += "False);src=black.Path"
-    imp_string += "("
-    imp_string += "'"
-    imp_string += pathstr
-    imp_string += "'"
-    imp_string += "+'py"
-    imp_string += "')"
     if stage2:
-        stdout = form(stdout, imp_string, pathstr)
+        import gdsbin.application
+
+        application = type(gdsbin.application)(
+            gdsbin.application.__name__, gdsbin.application.__doc__
+        )
+        application.__dict__.update(gdsbin.application.__dict__)
+        application.execute("ruff", ["format", pathstr + "py"])
     for dep in deps:
         if dep != deps[0]:
             path_arr = pathstr.split("/")
@@ -378,13 +278,13 @@ def version_info():
     info = {
         "major": 4,
         "minor": 2,
-        "patch": 1,
-        "hex": 262657,
+        "patch": 2,
+        "hex": 262658,
         "status": "stable",
         "build": "gentoo",
-        "year": 2023,
-        "hash": "b09f793f564a6c95dc76acc654b390e68441bd01",
-        "string": "4.2.1-stable (gentoo)",
+        "year": 2024,
+        "hash": "15073afe3856abd2aa1622492fe50026c7d63dc1",
+        "string": "4.2.2-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
@@ -409,26 +309,33 @@ def version_info():
         + "."
         + left(id, 9)
     )
-    stdout = []
-    stdout = [sys.version]
-    print("Python" + "\n" + stdout[0].split("\n")[0])
-    stdout = []
-    import_str1 = "from nuitka import Version"
-    stdout = [Version.getNuitkaVersion()]
-    print("Nuitka" + "\n" + stdout[0].split("\n")[0])
-    stdout = []
-    import_str2 = "import black"
-    stdout = [black.__version__]
-    print("Black" + "\n" + stdout[0].split("\n")[0])
-    stdout = []
-    import_str3 = "import sys; sys.argv=['zig', 'version']; import ziglang.__main__"
-    print("Zig")
-    sys.argv = ["zig", "version"]
-    import ziglang.__main__
+    out = []
+    import gdsbin.application
 
-    stdout = [ziglang.__main__]
-    print(stdout[0].split("\n")[0])
-    stdout = []
+    application = type(gdsbin.application)(
+        gdsbin.application.__name__, gdsbin.application.__doc__
+    )
+    application.__dict__.update(gdsbin.application.__dict__)
+    print("Python")
+    out = application.execute("python", ["-c", "import sys;print(sys.version)"])
+    print(out[0].split("\n")[0])
+    print("Nuitka")
+    out = application.execute(
+        "python", ["-c", "from nuitka import Version;print(Version.getNuitkaVersion())"]
+    )
+    print(out[0].split("\n")[0])
+    print("Ruff")
+    out = application.execute("ruff", ["version"])
+    print(out[0].split("\n")[0].split(" ")[1])
+    print("Zig")
+    out = application.execute(
+        "python",
+        [
+            "-c",
+            "import sys; sys.argv=['zig', 'version']; import ziglang.__main__;ziglang.__main__",
+        ],
+    )
+    print(out[0].split("\n")[0])
 
 
 def help():
