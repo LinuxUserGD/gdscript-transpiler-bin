@@ -90,16 +90,7 @@ def compile(arg, defs):
     nuitka += "d='"
     nuitka += "--assume-yes-for-downloads"
     nuitka += "';"
-    if defs.zig_imp:
-        nuitka += "e='"
-        nuitka += "--include-package-data=ziglang"
-        nuitka += "';"
-        nuitka += "f='"
-        nuitka += "--noinclude-data-files=ziglang/doc"
-        nuitka += "';"
-        nuitka += "sys.argv=[x,y,z,a,b,c,d,e,f]"
-    else:
-        nuitka += "sys.argv=[x,y,z,a,b,c,d]"
+    nuitka += "sys.argv=[x,y,z,a,b,c,d]"
     # AttributeError: module '__main__' has no attribute '__file__'. Did you mean: '__name__'?
     nuitka += ";sys.modules['__main__'].__file__=sys.modules['__main__'].__name__"
     stdout = []
