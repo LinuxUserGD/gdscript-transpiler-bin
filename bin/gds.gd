@@ -9,7 +9,7 @@ extends SceneTree
 
 ## Run main application
 func _init() -> void:
-	var gdspy: Dictionary = {}
-	gdspy.__main__ = __Main__.new()
-	gdspy.__main__._ready()
+	var gdsbin: Dictionary = {}
+	gdsbin.__main__ = __Main__.new()
+	gdsbin.__main__._ready()
 	quit()

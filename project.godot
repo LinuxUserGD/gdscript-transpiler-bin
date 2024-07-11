@@ -11,8 +11,10 @@ config_version=5
 [application]
 
 config/name="GDScript2PythonTranspiler"
-run/main_scene="res://gdspy/main.tscn"
-config/features=PackedStringArray("4.1")
+config/version="0.1.5"
+config/tags=PackedStringArray("godot4", "python", "testing")
+run/main_scene="res://gdsbin/main.tscn"
+config/features=PackedStringArray("4.2")
 run/low_processor_mode=true
 boot_splash/show_image=false
 boot_splash/fullsize=false
@@ -33,7 +35,6 @@ window/vsync/use_vsync=false
 [editor]
 
 movie_writer/mjpeg_quality=1.0
-movie_writer/movie_file="/home/user/Videos/godot.avi"
 
 [editor_plugins]
 
@@ -63,12 +64,13 @@ tab={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
+renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 quality/driver/driver_name="GLES2"
 quality/intended_usage/framebuffer_allocation=1
 quality/intended_usage/framebuffer_allocation.mobile=1
 vram_compression/import_etc=true
-vram_compression/import_etc2=false
+vram_compression/import_etc2=true
 environment/default_clear_color=Color(0.1245, 0.142775, 0.15, 1)
 environment/default_environment="res://default_env.tres"

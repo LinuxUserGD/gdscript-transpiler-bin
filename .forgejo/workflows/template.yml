@@ -1,0 +1,99 @@
+name: Template
+on:
+  push:
+    branches:
+      - 'dev'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-linux:
+    permissions: write-all
+    runs-on: linux-docker
+    container:
+      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
+    name: ${{ matrix.name }}
+    outputs:
+      status: ${{ steps.early.outputs.status }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Minimal Template (target=editor, everything disabled)
+            cache-name: linux-template-minimal
+            target: editor
+            tests: false
+            artifact: true
+    steps:
+      - name: Check-out repository
+        uses: https://codeberg.org/actions/checkout@main
+
+      - name: Run script
+        id: early
+        env:
+          CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm *.import
+          rm project.godot
+          rm -rf addons docker gdUnit4 zig-template
+          git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
+          python gdscript-transpiler-bin/bin/gds.py format=bin/gds.gd
+          python gdscript-transpiler-bin/bin/gds.py setup=setup.py
+          cp gdscript-transpiler-bin/requirements.txt .
+          rm -rf /usr/lib/python3.12/site-packages/gdsbin
+          rm -rf /usr/lib/python3.12/site-packages/gdsbin*
+          rm -rf /usr/share/doc/gdsbin*
+          pip install .  --no-cache-dir --no-deps --break-system-packages --force-reinstall
+          rm -rf gdsbin.egg-info _build
+          rm pyproject.toml
+          find . ! -path "./gdscript-transpiler-bin/*" -name "*.py" -type f | xargs rm --
+          python -m gdsbin format=bin/gds.gd
+          python -m gdsbin setup=setup.py
+          echo "Uploading files..."
+          dir=$(find */ -maxdepth 0 -type d ! -name "gdscript-transpiler-bin")
+          cd gdscript-transpiler-bin
+          rm -rf $(ls | grep -v "requirements.txt")
+          for i in $dir; do mkdir ${i} ; done
+          for i in $dir; do cp -r "../${i}"*.py ${i} ; done
+          mkdir -p gdsbin/test; cp -r ../gdsbin/test/*.py gdsbin/test/
+          for i in $(echo "setup.py pyproject.toml README.md CONTRIBUTING.md CREDITS.md LICENSE.md icon.svg python.svg mit.svg Godot-v.svg"); do cp ../${i} . ; done
+          git config --global user.name "LinuxUserGD"
+          git config --global user.email "hugegameartgd@gmail.com"
+          git add -A
+          [ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 0; }
+          cd ..
+          echo ${PWD}
+
+  deploy-linux:
+    runs-on: linux-docker
+    container:
+      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
+    name: Deploy (Alpine Linux x86_64)
+    needs: build-linux
+
+    steps:
+      - name: Check-out repository
+        uses: https://codeberg.org/actions/checkout@main
+
+      - name: Compile gdscript-transpiler-bin
+        env:
+          CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf /usr/lib/python3.12/site-packages/gdsbin
+          rm -rf /usr/lib/python3.12/site-packages/gdsbin*
+          rm -rf /usr/share/doc/gdsbin*
+          python -m pip install git+https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --no-cache-dir --no-deps --break-system-packages --force-reinstall
+          python -m gdsbin format=bin/gds.gd
+          for i in ziglang nuitka zstandard ordered_set; do cp -r /usr/lib/python3.12/site-packages/$i ~/.pyenv/versions/3.12.4/lib/python3.12/site-packages/ ; done
+          CC=/usr/lib/llvm/17/bin/clang ~/.pyenv/versions/3.12.4/bin/python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --remove-output -o gds
+          export BUTLER_API_KEY=${{ secrets.BUTLER_CREDENTIALS }}
+          echo $BUTLER_API_KEY > key.txt
+          butler -i key.txt push gds linuxusergd/gdscript-transpiler-bin:linux
+
+      - name: Upload main.dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: Linux Build
+          path: /home/runner/work/gdscript-transpiler-bin/gdscript-transpiler-bin/gds

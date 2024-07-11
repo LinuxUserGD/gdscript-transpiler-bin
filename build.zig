@@ -6,12 +6,12 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const bin = b.addExecutable(.{
         .name = name,
-        .root_source_file = .{ .path = "zig-template/src/main.zig" },
+        .root_source_file = b.path("zig-template/src/main.zig"),
         .target = target,
         .optimize = builtin.Mode.ReleaseFast,
+        .strip = true,
     });
-    bin.rdynamic = true;
-    bin.strip = true;
+    bin.rdynamic = false;
     b.installArtifact(bin);
 }
 

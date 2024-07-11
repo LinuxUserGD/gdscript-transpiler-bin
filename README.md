@@ -8,11 +8,11 @@
 
 `gdscript-transpiler-bin` is a GDScript compiler (using [Nuitka](https://github.com/Nuitka/Nuitka)), minimal scripts can be transpiled to Python.
 
-Binary builds are compiled using [GitHub Actions](https://github.com/LinuxUserGD/GDScript2PythonTranspiler/actions) for Alpine Linux, macOS and Windows x86_64.
+Binary builds are compiled using [Forgejo Actions](https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/actions) for Alpine Linux, macOS and Windows x86_64.
 
 Other compatible platforms: Android (aarch64 and x86_64).
 
-Also see [generated Python source from GDScript](https://github.com/LinuxUserGD/gdscript-transpiler-source).
+Also see [generated Python source from GDScript](https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin/src/branch/python).
 
 
 [![Video](preview.gif)](preview.gif)
@@ -40,16 +40,18 @@ git submodule update --init --remote --progress
 ### Python environment (stage1)
 Installing python gds
 ```
-python -m pip install git+https://github.com/LinuxUserGD/gdscript-transpiler-source.git
+python -m pip install gdsbin
+
+python -m pip install git+https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python
 ```
 
-- `python -m gdspy help`
+- `python -m gdsbin help`
 
-- `python -m gdspy run=bin/gds.gd`
+- `python -m gdsbin run=bin/gds.gd`
 
-- `python -m gdspy format=bin/gds.gd`
+- `python -m gdsbin format=bin/gds.gd`
 
-- `python -m gdspy compile=bin/gds.gd`
+- `python -m gdsbin compile=bin/gds.gd`
 
 ### Nuitka compiled binary (stage2)
 Installing gds binary (available at [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin))
