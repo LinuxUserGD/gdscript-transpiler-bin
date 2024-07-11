@@ -59,7 +59,7 @@ def _init():
     return
 
 
-def compile(arg, defs):
+def compile(arg):
     path_end = arg.split("=")[1]
     args = path_end.split(".")
     c = len(args)
@@ -257,7 +257,7 @@ def start(arg, stage2, stage3, package_name):
             comp = False
             transpiler.set_def(start("dep=" + result_str, stage2, comp, package_name))
     if stage3:
-        compile(arg, transpiler.defs)
+        compile(arg)
     return transpiler.get_def()
 
 
@@ -315,13 +315,7 @@ def version_info():
     out = application.execute("ruff", ["version"])
     print(out[0].split("\n")[0].split(" ")[1])
     print("Zig")
-    out = application.execute(
-        "python",
-        [
-            "-c",
-            "import sys; sys.argv=['zig', 'version']; import ziglang.__main__;ziglang.__main__",
-        ],
-    )
+    out = application.execute("zig", ["version"])
     print(out[0].split("\n")[0])
 
 
