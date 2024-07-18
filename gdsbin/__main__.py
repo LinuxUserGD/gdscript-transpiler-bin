@@ -264,14 +264,14 @@ def start(arg, stage2, stage3, package_name):
 def version_info():
     info = {
         "major": 4,
-        "minor": 2,
-        "patch": 2,
-        "hex": 262658,
-        "status": "stable",
+        "minor": 3,
+        "patch": 0,
+        "hex": 262912,
+        "status": "beta",
         "build": "gentoo",
-        "year": 2024,
-        "hash": "15073afe3856abd2aa1622492fe50026c7d63dc1",
-        "string": "4.2.2-stable (gentoo)",
+        "hash": "82cedc83c9069125207c128f9a07ce3d82c317cc",
+        "timestamp": 0,
+        "string": "4.3-beta (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
