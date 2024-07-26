@@ -490,11 +490,11 @@ def dict(arg):
                     "minor": 3,
                     "patch": 0,
                     "hex": 262912,
-                    "status": "beta",
+                    "status": "rc",
                     "build": "gentoo",
-                    "hash": "82cedc83c9069125207c128f9a07ce3d82c317cc",
+                    "hash": "e343dbbcc1030f04dc5833f1c19d267a17332ca9",
                     "timestamp": 0,
-                    "string": "4.3-beta (gentoo)",
+                    "string": "4.3-rc (gentoo)",
                 }
             ),
         )
