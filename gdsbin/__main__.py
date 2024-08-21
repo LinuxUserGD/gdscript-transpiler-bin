@@ -267,11 +267,11 @@ def version_info():
         "minor": 3,
         "patch": 0,
         "hex": 262912,
-        "status": "rc",
+        "status": "stable",
         "build": "gentoo",
-        "hash": "e343dbbcc1030f04dc5833f1c19d267a17332ca9",
+        "hash": "77dcf97d82cbfe4e4615475fa52ca03da645dbd8",
         "timestamp": 0,
-        "string": "4.3-rc (gentoo)",
+        "string": "4.3-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
