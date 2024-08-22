@@ -71,7 +71,9 @@ def compile(arg):
     nopt = []
     nopt.append(pathstr + "py")
     nopt.append("--onefile")
+    nopt.append("--no-progressbar")
     nopt.append("--show-scons")
+    nopt.append("--quiet")
     nopt.append("--remove-output")
     nopt.append("--lto=yes")
     nopt.append("--deployment")

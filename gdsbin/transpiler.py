@@ -48,6 +48,17 @@ def transpile(content, package_name):
         t += "\n"
         t += "    return [stdout.decode('utf-8')]"
         t += "\n"
+    if defs.execute_pipe_def:
+        t += "def py_execute_pipe(program, args):"
+        t += "\n"
+        t += "    args = [program] + args"
+        t += "\n"
+        t += "    proc = subprocess.Popen(args, shell=False)"
+        t += "\n"
+        t += "    proc.communicate()"
+        t += "\n"
+        t += "    return {'stdio': False}"
+        t += "\n"
     if defs.thread_def:
         t += "class Thread:"
         t += "\n"
@@ -356,6 +367,15 @@ def dict(arg):
         defs.subprocess_imp = True
         defs.execute_def = True
         return e
+    if arg.endswith("OS.execute_with_pipe(program,args)"):
+        arg = arg.replace(
+            "OS.execute_with_pipe(program,args)",
+            props.repl_dict["OS.execute_with_pipe(program,args)"],
+        )
+        e += arg
+        defs.subprocess_imp = True
+        defs.execute_pipe_def = True
+        return e
     if arg == "quit()" or arg == "self.quit()":
         e += props.repl_dict[arg]
         e += " "
@@ -632,6 +652,7 @@ def set_def(arr):
         defs.right_def = False
         defs.left_def = False
         defs.execute_def = False
+        defs.execute_pipe_def = False
         defs.newinstance_def = False
         defs.sys_imp = False
         defs.subprocess_imp = False
@@ -649,13 +670,14 @@ def set_def(arr):
     defs.right_def = defs.right_def or arr[6]
     defs.left_def = defs.left_def or arr[7]
     defs.execute_def = defs.execute_def or arr[8]
-    defs.newinstance_def = defs.newinstance_def or arr[9]
-    defs.sys_imp = defs.sys_imp or arr[10]
-    defs.subprocess_imp = defs.sys_imp or arr[11]
-    defs.os_imp = defs.os_imp or arr[12]
-    defs.math_imp = defs.math_imp or arr[13]
-    defs.rand_imp = defs.math_imp or arr[14]
-    defs.datetime_imp = defs.datetime_imp or arr[15]
+    defs.execute_pipe_def = defs.execute_pipe_def or arr[9]
+    defs.newinstance_def = defs.newinstance_def or arr[10]
+    defs.sys_imp = defs.sys_imp or arr[11]
+    defs.subprocess_imp = defs.sys_imp or arr[12]
+    defs.os_imp = defs.os_imp or arr[13]
+    defs.math_imp = defs.math_imp or arr[14]
+    defs.rand_imp = defs.math_imp or arr[15]
+    defs.datetime_imp = defs.datetime_imp or arr[16]
 
 
 def get_def():
@@ -669,6 +691,7 @@ def get_def():
         defs.right_def,
         defs.left_def,
         defs.execute_def,
+        defs.execute_pipe_def,
         defs.newinstance_def,
         defs.sys_imp,
         defs.subprocess_imp,

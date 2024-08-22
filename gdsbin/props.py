@@ -81,6 +81,7 @@ repl_dict = {
     "class_name": "",
     "File": "",
     "OS.execute(program,args,stdout)": "stdout = py_execute(program, args)",
+    "OS.execute_with_pipe(program,args)": "py_execute_pipe(program, args)",
     "quit()": "sys.exit()",
     "self.quit()": "sys.exit()",
     "#!/usr/bin/godot": "",

@@ -7,6 +7,7 @@ resize_def = False
 right_def = False
 left_def = False
 execute_def = False
+execute_pipe_def = False
 newinstance_def = False
 sys_imp = False
 subprocess_imp = False
