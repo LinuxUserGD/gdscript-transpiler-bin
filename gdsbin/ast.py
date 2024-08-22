@@ -177,31 +177,39 @@ def _cut_string(msg, level):
 def _eval_string(array, level):
     s = ""
     qu = '"'
+    import gdsbin.key
+
+    key = type(gdsbin.key)(gdsbin.key.__name__, gdsbin.key.__doc__)
+    key.__dict__.update(gdsbin.key.__dict__)
     token = {
-        "NUMBER SIGN": "#",
-        "EXCLAMATION MARK": "!",
-        "SLASH": "/",
-        "BACKSLASH": "\\",
-        "CLASS NAME": "class_name",
+        key.KEY_NUMBERSIGN: "#",
+        key.KEY_EXCLAM: "!",
+        key.KEY_SLASH: "/",
+        key.KEY_BACKSLASH: "\\",
+        key.KEY_MINUS: "class_name",
         "EXTENDS": "extends",
         "NUMBER SIGN 2": "##",
         "FUNCTION": "func",
-        "LEFT BRACKET": "(",
-        "RIGHT BRACKET": ")",
-        "MINUS": "-",
-        "PLUS": "+",
-        "GREATER THAN": ">",
-        "LESS THAN": "<",
-        "COLON": ":",
-        "EQUALS SIGN": "=",
-        "CURLY LEFT BRACKET": "{",
-        "CURLY RIGHT BRACKET": "}",
-        "TAB": "\t",
-        "DOT": ".",
+        key.KEY_PARENLEFT: "(",
+        key.KEY_PARENRIGHT: ")",
+        key.KEY_PLUS: "-",
+        key.KEY_ASTERISK: "+",
+        key.KEY_GREATER: ">",
+        key.KEY_LESS: "<",
+        key.KEY_COLON: ":",
+        key.KEY_EQUAL: "=",
+        key.KEY_BRACELEFT: "{",
+        key.KEY_BRACERIGHT: "}",
+        key.KEY_TAB: "\t",
+        key.KEY_PERIOD: ".",
+        key.KEY_COMMA: ",",
         "NEW": "new",
         "VARIABLE": "var",
         "CONST": "const",
-        "QUOTATION": qu,
+        "FOR": "for",
+        "IN": "in",
+        "IF": "if",
+        key.KEY_QUOTEDBL: qu,
     }
     for i in range(level, len(array)):
         s += token[array[i]] if array[i] in token else array[i]

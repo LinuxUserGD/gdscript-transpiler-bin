@@ -1,3 +1,9 @@
+import gdsbin.key
+
+key = type(gdsbin.key)(gdsbin.key.__name__, gdsbin.key.__doc__)
+key.__dict__.update(gdsbin.key.__dict__)
+
+
 def tokenize(input_string):
     delimiter = [
         "(",
@@ -27,35 +33,35 @@ def tokenize(input_string):
     ]
     qu = '"'
     token = {
-        "#": "NUMBER SIGN",
-        "!": "EXCLAMATION MARK",
-        "/": "SLASH",
-        "\\": "BACKSLASH",
+        "#": key.KEY_NUMBERSIGN,
+        "!": key.KEY_EXCLAM,
+        "/": key.KEY_SLASH,
+        "\\": key.KEY_BACKSLASH,
         "class_name": "CLASS NAME",
         "extends": "EXTENDS",
         "##": "NUMBER SIGN 2",
         "func": "FUNCTION",
-        "(": "LEFT BRACKET",
-        ")": "RIGHT BRACKET",
-        "-": "MINUS",
-        "+": "PLUS",
-        "*": "ASTERISK",
-        ">": "GREATER THAN",
-        "<": "LESS THAN",
-        ":": "COLON",
-        "=": "EQUALS SIGN",
-        "{": "CURLY LEFT BRACKET",
-        "}": "CURLY RIGHT BRACKET",
-        "\t": "TAB",
-        ".": "DOT",
-        ",": "COMMA",
+        "(": key.KEY_PARENLEFT,
+        ")": key.KEY_PARENRIGHT,
+        "-": key.KEY_MINUS,
+        "+": key.KEY_PLUS,
+        "*": key.KEY_ASTERISK,
+        ">": key.KEY_GREATER,
+        "<": key.KEY_LESS,
+        ":": key.KEY_COLON,
+        "=": key.KEY_EQUAL,
+        "{": key.KEY_BRACELEFT,
+        "}": key.KEY_BRACERIGHT,
+        "\t": key.KEY_TAB,
+        ".": key.KEY_PERIOD,
+        ",": key.KEY_COMMA,
         "new": "NEW",
         "var": "VARIABLE",
         "const": "CONST",
         "for": "FOR",
         "in": "IN",
         "if": "IF",
-        qu: "QUOTATION",
+        qu: key.KEY_QUOTEDBL,
     }
     tokens = []
     buffer = ""
