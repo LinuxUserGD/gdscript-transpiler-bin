@@ -68,44 +68,42 @@ def compile(arg):
         c -= 1
         if c != 0:
             pathstr += path_str + "."
-    nuitka = "import nuitka.__main__;"
-    nuitka += "import sys;"
-    nuitka += "x=sys.executable;"
-    nuitka += "y='"
-    nuitka += pathstr
-    nuitka += "py"
-    nuitka += "';"
-    nuitka += "z='"
-    nuitka += "--onefile"
-    nuitka += "';"
-    nuitka += "a='"
-    nuitka += "--lto=yes"
-    nuitka += "';"
-    nuitka += "b='"
-    nuitka += "--static-libpython=no"
-    nuitka += "';"
-    nuitka += "c='"
-    nuitka += "--clang"
-    nuitka += "';"
-    nuitka += "d='"
-    nuitka += "--assume-yes-for-downloads"
-    nuitka += "';"
-    nuitka += "sys.argv=[x,y,z,a,b,c,d]"
-    # AttributeError: module '__main__' has no attribute '__file__'. Did you mean: '__name__'?
-    nuitka += ";sys.modules['__main__'].__file__=sys.modules['__main__'].__name__"
-    stdout = []
+    nopt = []
+    nopt.append(pathstr + "py")
+    nopt.append("--onefile")
+    nopt.append("--show-scons")
+    nopt.append("--remove-output")
+    nopt.append("--lto=yes")
+    nopt.append("--deployment")
+    nopt.append("--static-libpython=auto")
+    nopt.append("--clang")
+    nopt.append("--assume-yes-for-downloads")
+    print("\n")
     print("Compiling " + pathstr + "py...")
+    print("Info: Running " + "'" + " ".join(nopt) + "'")
     import gdsbin.application
 
     application = type(gdsbin.application)(
         gdsbin.application.__name__, gdsbin.application.__doc__
     )
     application.__dict__.update(gdsbin.application.__dict__)
-    stdout = application.execute("python", ["-c", nuitka + ";nuitka.__main__.main()"])
-    if len(stdout) > 0:
-        for out_str in stdout[0].split("\n"):
-            if len(out_str) > 0:
-                print(out_str)
+    application.execute_pipe("python", ["-c", nopttoarg(nopt)])
+
+
+def nopttoarg(nopt):
+    opts = []
+    opts.append("import nuitka.__main__")
+    opts.append("import sys")
+    args = "sys.argv=[sys.executable,"
+    for opt in nopt:
+        args += "'%s'," % opt
+    args += "]"
+    opts.append(args)
+    # AttributeError: module '__main__' has no attribute '__file__'. Did you mean: '__name__'?
+    opts.append("sys.modules['__main__'].__file__=sys.modules['__main__'].__name__")
+    opts.append("nuitka.__main__.main()")
+    out = ";".join(opts)
+    return out
 
 
 def start_exp(arg, _package_name):

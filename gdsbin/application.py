@@ -8,13 +8,15 @@ def execute(program, args):
 
 
 def execute_pipe(program, args):
-    thread = Thread()
     pipe = info["stdio"]
-    main = (self, "_start_thread").bind(thread, pipe)
+    main = (self, "_start_thread").bind(pipe)
+    thread = Thread()
     thread.start(main)
+    thread.wait_to_finish()
+    pipe.close()
 
 
-def _start_thread(t, pipe):
+def _start_thread(pipe):
     line = ""
     while pipe.is_open() and pipe.get_error() == OK:
         c = char(pipe.get_8())
@@ -23,14 +25,6 @@ def _start_thread(t, pipe):
             line = ""
         else:
             line += c
-    line = ""
-    pipe.close()
-    exit = (self, "_exit_thread")
-    exit.call_deferred(t)
-
-
-def _exit_thread(t):
-    t.wait_to_finish()
 
 
 def py_execute(program, args):
