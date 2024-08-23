@@ -1,3 +1,13 @@
+import gdsbin.key
+
+key = type(gdsbin.key)(gdsbin.key.__name__, gdsbin.key.__doc__)
+key.__dict__.update(gdsbin.key.__dict__)
+import gdsbin.keyword
+
+keyword = type(gdsbin.keyword)(gdsbin.keyword.__name__, gdsbin.keyword.__doc__)
+keyword.__dict__.update(gdsbin.keyword.__dict__)
+
+
 def ast(startln, endln, level, root, unit, con):
     for i in range(startln, endln, 1):
         input = unit[i]
@@ -6,7 +16,7 @@ def ast(startln, endln, level, root, unit, con):
             continue
         tabcount = 0
         for ii in range(0, len(input), 1):
-            if input[ii] == "TAB":
+            if input[ii].id == key.KEY_TAB:
                 tabcount += 1
             else:
                 break
@@ -20,32 +30,32 @@ def ast(startln, endln, level, root, unit, con):
             root = type(gdsbin.root)(gdsbin.root.__name__, gdsbin.root.__doc__)
             root.__dict__.update(gdsbin.root.__dict__)
             root.elem = []
-        if input[level] == "NUMBER SIGN":
+        if input[level].id == key.KEY_NUMBERSIGN:
             _number_sign(root, conline, level)
             continue
-        if input[level] == "NUMBER SIGN 2":
+        if input[level].id == keyword.KW_NUMBERSIGN2:
             _number_sign(root, conline, level)
             continue
-        if input[level] == "CLASS NAME":
+        if input[level].id == keyword.KW_CLASSNAME:
             _classname(root, input, level)
             continue
-        if input[level] == "EXTENDS":
+        if input[level].id == keyword.KW_EXTENDS:
             _extend(root, input, level)
             continue
-        if input[level] == "FUNCTION":
+        if input[level].id == keyword.KW_FUNCTION:
             _function(i, endln, level, root, input, unit, con)
             continue
-        if input[level] == "FOR":
+        if input[level].id == keyword.KW_FOR:
             _for_in(i, endln, level, root, input, unit, con)
             continue
-        if input[level] == "IF":
+        if input[level].id == keyword.KW_IF:
             _if_cond(i, endln, level, root, input, unit, con)
             continue
-        if input[level] == "VARIABLE":
+        if input[level].id == keyword.KW_VARIABLE:
             is_const = False
             _variable(root, input, level, is_const)
             continue
-        if input[level] == "CONST":
+        if input[level].id == keyword.KW_CONST:
             is_const = True
             _variable(root, input, level, is_const)
             continue
@@ -78,7 +88,7 @@ def _classname(root, input, level):
 
     classn = type(gdsbin.classn)(gdsbin.classn.__name__, gdsbin.classn.__doc__)
     classn.__dict__.update(gdsbin.classn.__dict__)
-    classn.classn = input[level + 1]
+    classn.classn = input[level + 1].value
     root.elem.append(classn)
     # print(input)
 
@@ -88,7 +98,7 @@ def _extend(root, input, level):
 
     extend = type(gdsbin.extend)(gdsbin.extend.__name__, gdsbin.extend.__doc__)
     extend.__dict__.update(gdsbin.extend.__dict__)
-    extend.extend = input[level + 1]
+    extend.extend = input[level + 1].value
     root.elem.append(extend)
     # print(input)
 
@@ -106,13 +116,13 @@ def _arg_call(input, level):
     callnew.__dict__.update(gdsbin.callnew.__dict__)
     s = len(input)
     if level + 1 < s:
-        if input[level + 1] == "DOT":
-            callnew.name = input[level]
+        if input[level + 1].id == key.KEY_PERIOD:
+            callnew.name = input[level].value
             callnew.callnew = _new_call(input, level + 2)
         else:
             callnew.name = _eval_string(input, 0).string
     else:
-        callnew.name = input[level]
+        callnew.name = input[level].value
     return callnew
 
 
@@ -123,27 +133,32 @@ def _new_call(input, level):
     callnew.__dict__.update(gdsbin.callnew.__dict__)
     s = len(input)
     if level + 1 < s:
-        if input[level + 1] == "DOT":
-            callnew.name = input[level]
+        if input[level + 1].id == key.KEY_PERIOD:
+            callnew.name = input[level].value
             callnew.callnew = _new_call(input, level + 2)
-        elif input[level + 1] == "EQUALS SIGN":
-            callnew.name = input[level]
+        elif input[level + 1].id == key.KEY_EQUAL:
+            callnew.name = input[level].value
             callnew.equ = True
             array = []
             for i in range(level + 2, len(input)):
                 array.append(input[i])
             callnew.res = _eval(array)
-        elif input[level + 1] in ["PLUS", "MINUS", "ASTERISK", "SLASH"]:
-            callnew.name = input[level]
+        elif input[level + 1].id in [
+            key.KEY_PLUS,
+            key.KEY_MINUS,
+            key.KEY_ASTERISK,
+            key.KEY_SLASH,
+        ]:
+            callnew.name = input[level].value
             callnew.equ = True
-            callnew.op = input[level + 1]
+            callnew.op = input[level + 1].value
             array = []
             for i in range(level + 3, len(input)):
                 array.append(input[i])
             callnew.res = _eval(array)
-        elif input[level + 1] == "LEFT BRACKET" and "RIGHT BRACKET" in input:
-            end = input.index("RIGHT BRACKET", level + 2)
-            callnew.name = input[level]
+        elif input[level + 1].id == key.KEY_PARENLEFT and key.KEY_PARENRIGHT in input:
+            end = input.index(key.KEY_PARENRIGHT, level + 2)
+            callnew.name = input[level].value
             callnew.function = True
             callnew.builtin_function = _builtin_function(input[level])
             args = []
@@ -154,19 +169,19 @@ def _new_call(input, level):
         else:
             callnew.name = _eval_string(input, 0).string
     elif level + 1 == s:
-        callnew.name = input[level]
+        callnew.name = input[level].value
     return callnew
 
 
 def _eval_dictionary(_array):
-    import gdsbin.dictionary
+    import gdsbin.dictionaryname
 
-    dictionary = type(gdsbin.dictionary)(
-        gdsbin.dictionary.__name__, gdsbin.dictionary.__doc__
+    dictionaryname = type(gdsbin.dictionaryname)(
+        gdsbin.dictionaryname.__name__, gdsbin.dictionaryname.__doc__
     )
-    dictionary.__dict__.update(gdsbin.dictionary.__dict__)
-    dictionary.items = []
-    return dictionary
+    dictionaryname.__dict__.update(gdsbin.dictionaryname.__dict__)
+    dictionaryname.items = []
+    return dictionaryname
 
 
 def _cut_string(msg, level):
@@ -177,19 +192,12 @@ def _cut_string(msg, level):
 def _eval_string(array, level):
     s = ""
     qu = '"'
-    import gdsbin.key
-
-    key = type(gdsbin.key)(gdsbin.key.__name__, gdsbin.key.__doc__)
-    key.__dict__.update(gdsbin.key.__dict__)
     token = {
         key.KEY_NUMBERSIGN: "#",
         key.KEY_EXCLAM: "!",
         key.KEY_SLASH: "/",
         key.KEY_BACKSLASH: "\\",
         key.KEY_MINUS: "class_name",
-        "EXTENDS": "extends",
-        "NUMBER SIGN 2": "##",
-        "FUNCTION": "func",
         key.KEY_PARENLEFT: "(",
         key.KEY_PARENRIGHT: ")",
         key.KEY_PLUS: "-",
@@ -203,30 +211,35 @@ def _eval_string(array, level):
         key.KEY_TAB: "\t",
         key.KEY_PERIOD: ".",
         key.KEY_COMMA: ",",
-        "NEW": "new",
-        "VARIABLE": "var",
-        "CONST": "const",
-        "FOR": "for",
-        "IN": "in",
-        "IF": "if",
+        keyword.KW_EXTENDS: "extends",
+        keyword.KW_NUMBERSIGN2: "##",
+        keyword.KW_FUNCTION: "func",
+        keyword.KW_NEW: "new",
+        keyword.KW_VARIABLE: "var",
+        keyword.KW_CONST: "const",
+        keyword.KW_FOR: "for",
+        keyword.KW_IN: "in",
+        keyword.KW_IF: "if",
         key.KEY_QUOTEDBL: qu,
     }
     for i in range(level, len(array)):
-        s += token[array[i]] if array[i] in token else array[i]
-    import gdsbin.string
+        s += token[array[i].id] if array[i].id in token else array[i].value
+    import gdsbin.stringname
 
-    string = type(gdsbin.string)(gdsbin.string.__name__, gdsbin.string.__doc__)
-    string.__dict__.update(gdsbin.string.__dict__)
-    string.string = s
-    return string
+    stringname = type(gdsbin.stringname)(
+        gdsbin.stringname.__name__, gdsbin.stringname.__doc__
+    )
+    stringname.__dict__.update(gdsbin.stringname.__dict__)
+    stringname.string = s
+    return stringname
 
 
 def _eval_function_args(array):
     arr = []
     ast_arr = []
-    array.append("COMMA")
+    array.append(key.KEY_COMMA)
     for i in range(0, len(array)):
-        if array[i] == "COMMA":
+        if array[i].id == key.KEY_COMMA:
             ast_arr.append(_arg_call(arr, 0))
             arr = []
         else:
@@ -239,15 +252,15 @@ def _variable(root, input, level, is_const):
 
     variable = type(gdsbin.variable)(gdsbin.variable.__name__, gdsbin.variable.__doc__)
     variable.__dict__.update(gdsbin.variable.__dict__)
-    variable.variable = input[level + 1]
+    variable.variable = input[level + 1].value
     variable.is_const = is_const
-    if input[level + 2] == "COLON":
+    if input[level + 2].id == key.KEY_COLON:
         variable.st = True
         level += 1
-        if input[level + 2] != "EQUALS SIGN":
-            variable.type = input[level + 2]
+        if input[level + 2].id != key.KEY_EQUAL:
+            variable.type = input[level + 2].value
             level += 1
-    if input[level + 2] == "EQUALS SIGN":
+    if input[level + 2].id == key.KEY_EQUAL:
         variable.equ = True
         level += 1
         array = []
@@ -259,16 +272,16 @@ def _variable(root, input, level, is_const):
 
 
 def _builtin_function(function):
-    return function == "NEW"
+    return function.id == keyword.KW_NEW
 
 
 def _eval(array):
     s = len(array)
     variable = None
-    if array[0] == "CURLY LEFT BRACKET" and array[s - 1] == "CURLY RIGHT BRACKET":
+    if array[0].id == key.KEY_BRACELEFT and array[s - 1].id == key.KEY_BRACERIGHT:
         variable = _eval_dictionary(array)
         return variable
-    if array[0] == "QUOTATION" and array[s - 1] == "QUOTATION":
+    if array[0].id == key.KEY_QUOTEDBL and array[s - 1].id == key.KEY_QUOTEDBL:
         variable = _eval_string(array, 0)
         return variable
     variable = _new_call(array, 0)
@@ -281,8 +294,8 @@ def _for_in(startln, endln, level, root, input, unit, con):
     forloop = type(gdsbin.forloop)(gdsbin.forloop.__name__, gdsbin.forloop.__doc__)
     forloop.__dict__.update(gdsbin.forloop.__dict__)
     begin = -1
-    if "IN" in input:
-        begin = input.index("IN", level + 2)
+    if keyword.KW_IN in input:
+        begin = input.index(keyword.KW_IN, level + 2)
     end = len(input)
     f = []
     for i in range(level + 1, begin):
@@ -316,36 +329,38 @@ def _function(startln, endln, level, root, input, unit, con):
     function = type(gdsbin.function)(gdsbin.function.__name__, gdsbin.function.__doc__)
     function.__dict__.update(gdsbin.function.__dict__)
     function.args = []
-    function.function = input[level + 1]
+    function.function = input[level + 1].value
     begin = -1
-    if "LEFT BRACKET" in input:
-        begin = input.index("LEFT BRACKET", level + 2)
+    if key.KEY_PARENLEFT in input:
+        begin = input.index(key.KEY_PARENLEFT, level + 2)
     end = -1
-    if "RIGHT BRACKET" in input:
-        end = input.index("RIGHT BRACKET", begin + 1)
+    if key.KEY_PARENRIGHT in input:
+        end = input.index(key.KEY_PARENRIGHT, begin + 1)
     arrow1 = -1
-    if "MINUS" in input:
-        arrow1 = input.index("MINUS", end + 1)
+    if key.KEY_MINUS in input:
+        arrow1 = input.index(key.KEY_MINUS, end + 1)
     arrow2 = -1
-    if "GREATER THAN" in input:
-        arrow2 = input.index("GREATER THAN", arrow1 + 1)
+    if key.KEY_GREATER in input:
+        arrow2 = input.index(key.KEY_GREATER, arrow1 + 1)
     colon = -1
-    if "COLON" in input:
-        colon = input.index("COLON", end + 1)
+    if key.KEY_COLON in input:
+        colon = input.index(key.KEY_COLON, end + 1)
     if arrow1 > 0 and arrow2 > 0:
         function.ret = True
-        function.res = input[colon - 1]
+        function.res = input[colon - 1].value
     add = True
     while end - begin > 1:
         if add:
-            import gdsbin.string
+            import gdsbin.stringname
 
-            string = type(gdsbin.string)(gdsbin.string.__name__, gdsbin.string.__doc__)
-            string.__dict__.update(gdsbin.string.__dict__)
-            string.string = input[begin + 1]
-            function.args.append(string)
+            stringname = type(gdsbin.stringname)(
+                gdsbin.stringname.__name__, gdsbin.stringname.__doc__
+            )
+            stringname.__dict__.update(gdsbin.stringname.__dict__)
+            stringname.string = input[begin + 1].value
+            function.args.append(stringname)
             add = False
-        if input[begin + 1] == "COMMA":
+        if input[begin + 1].id == key.KEY_COMMA:
             add = True
         begin += 1
     function.root = ast(startln + 1, endln, level + 1, function.root, unit, con)

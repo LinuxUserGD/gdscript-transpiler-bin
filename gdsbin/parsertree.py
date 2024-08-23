@@ -1,6 +1,6 @@
 def printpt(element, level):
-    match element.t():
-        case "root":
+    match element.get_script().get_global_name():
+        case "Root":
             out = ""
             if len(element.elem) > 0:
                 for e in element.elem:
@@ -8,13 +8,13 @@ def printpt(element, level):
                         out += "	"
                     out += printpt(e, level)
             return out
-        case "comment":
+        case "Comment":
             return element.comment + "\n"
-        case "classname":
+        case "Classn":
             return "class_name " + element.classn + "\n"
-        case "extends":
+        case "Extend":
             return "extends " + element.extend + "\n"
-        case "function":
+        case "Function":
             out = ""
             out += "func " + element.function + "("
             s = len(element.args)
@@ -31,7 +31,7 @@ def printpt(element, level):
             if element.root != None:
                 out += printpt(element.root, level + 1)
             return out
-        case "variable":
+        case "Variable":
             out = "var"
             if element.is_const:
                 out = "const"
@@ -44,7 +44,7 @@ def printpt(element, level):
                 out += " = "
                 out += eval_call(element.res)
             return out + "\n"
-        case "forloop":
+        case "Forloop":
             out = "for"
             out += " " + parse_call(element.f)
             out += " " + "in"
@@ -54,7 +54,7 @@ def printpt(element, level):
             if element.root != None:
                 out += printpt(element.root, level + 1)
             return out
-        case "cond":
+        case "Ifcond":
             out = "i"
             out += "f"
             out += " " + parse_call(element.i)
@@ -63,7 +63,7 @@ def printpt(element, level):
             if element.root != None:
                 out += printpt(element.root, level + 1)
             return out
-        case "call":
+        case "Callnew":
             return parse_call(element) + "\n"
     return ""
 
@@ -71,11 +71,11 @@ def printpt(element, level):
 def eval_call(element):
     out = ""
     if element != None:
-        if element.t() == "string":
+        if element.get_script().get_global_name() == "Stringname":
             out += element.string
-        elif element.t() == "dictionary":
+        elif element.get_script().get_global_name() == "Dictionaryname":
             out += "{}"
-        elif element.t() == "call":
+        elif element.get_script().get_global_name() == "Callnew":
             if element.builtin_function:
                 out += element.name.lower()
             else:
