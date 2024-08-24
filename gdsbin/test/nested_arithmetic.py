@@ -1,3 +1,6 @@
+class_name = "Nested_arithmetic"
+
+
 def test():
     print(+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++2.718)
     print("\n")
@@ -134,3 +137,11 @@ def test():
         ^ 8
         ^ 8
     )
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

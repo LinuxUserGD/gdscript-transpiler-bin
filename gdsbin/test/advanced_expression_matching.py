@@ -1,3 +1,4 @@
+class_name = "Advanced_expression_matching"
 def foo(x):
     match x:
         case 1 + 1:
@@ -31,3 +32,8 @@ def test():
     foo([1, 2, [1, {1 : 2, 2:3}]])
     foo([1, 2, [1, {1 : 2, 2:[1,3,5, "123"], 4:2}]])
     foo([1, 2, [1, {1 : 2}]])
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

@@ -1,3 +1,6 @@
+class_name = "Arrays"
+
+
 def test():
     case  # Indexing from the beginning:
     print([1, 2, 3][0])
@@ -12,3 +15,11 @@ def test():
     print([1, 2, 3][0.8])
     print([1, 2, 3][1.0])
     print([1, 2, 3][-1.0])
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

@@ -1,3 +1,4 @@
+class_name = "Dictionary_lua_style"
 def test():
     lua_dict = {
         a = 1,
@@ -6,3 +7,8 @@ def test():
          "2"= 4, # ... or invalid identifiers.
     }
     print(lua_dict)
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

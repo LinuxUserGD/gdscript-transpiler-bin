@@ -1,3 +1,6 @@
+class_name = "For_range"
+
+
 def test():
     for i in range(5):
         print(i)
@@ -23,3 +26,11 @@ def test():
     print("\n")
     for i in "Hello_Unicôde_world!_🦄":
         print(i)
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

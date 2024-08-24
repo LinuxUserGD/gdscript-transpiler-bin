@@ -2,6 +2,8 @@
 import os
 import sys
 
+class_name = "GDScriptTranspiler"
+
 
 def _init():
     gdsbin = {}
@@ -14,3 +16,11 @@ def _init():
 
 if __name__ == "__main__":
     _init()
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

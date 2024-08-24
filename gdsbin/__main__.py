@@ -1,6 +1,8 @@
 import os
 import sys
 
+class_name = "__Main__"
+
 
 def _init():
     import gdsbin.__init__
@@ -753,3 +755,11 @@ def right(s, amount):
 
 if __name__ == "__main__":
     _init()
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

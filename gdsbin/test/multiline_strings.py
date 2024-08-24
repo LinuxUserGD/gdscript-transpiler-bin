@@ -1,3 +1,4 @@
+class_name = "Multiline_strings"
 def test():
     __ = """"
     This is a standalone string, not a multiline comment.
@@ -11,3 +12,8 @@ def test():
     long as there is only ""one ""or ''two'' of those in a row, not more.
     If you have more quotes, they need to be escaped like this: \'\'\'
     '''
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

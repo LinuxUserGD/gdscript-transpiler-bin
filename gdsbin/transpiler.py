@@ -1,3 +1,4 @@
+class_name = "Transpiler"
 import gdsbin.props
 
 props = type(gdsbin.props)(gdsbin.props.__name__, gdsbin.props.__doc__)
@@ -95,15 +96,16 @@ def transpile(content, package_name):
         t += "\n"
         t += "    _init()"
         t += "\n"
-    if defs.newinstance_def:
-        t += "def newinstance(m):"
+    if defs.classname_def:
+        t += "def get_script():"
         t += "\n"
-        t += "    i = type(m)(m.__name__, m.__doc__)"
+        t += "    class Script:"
         t += "\n"
-        t += "    i.__dict__.update(m.__dict__)"
+        t += "        def get_global_name():"
         t += "\n"
-        t += "    return i"
+        t += "            return class_name"
         t += "\n"
+        t += "    return Script"
     return t
 
 
@@ -318,16 +320,7 @@ def dict(arg):
         return e
     if arg in props.extend:
         return e
-    if arg in [
-        "-s",
-        "var",
-        "const",
-        "Node",
-        "SceneTree",
-        "extends",
-        "class_name",
-        "File",
-    ]:
+    if arg in ["-s", "var", "const", "Node", "SceneTree", "extends", "File"]:
         e += props.repl_dict[arg]
         return e
     if arg in props.gds_deps:
@@ -561,8 +554,14 @@ def translate(e, package_name):
         return ","
     if e == "":
         return ""
-    if 0 <= e.find("class_name"):
+    if e.startswith("class_name"):
+        defs.classname_def = True
+        classn = e.split(" ")[0]
         script_name = e.split(" ")[1]
+        e = e.replace(
+            classn + " " + script_name,
+            "const " + classn + " = " + '"' + script_name + '"',
+        )
         props.gds_deps.append(script_name)
     if 0 <= e.find("extends"):
         script_name = e.split(" ")[1]
@@ -653,7 +652,7 @@ def set_def(arr):
         defs.left_def = False
         defs.execute_def = False
         defs.execute_pipe_def = False
-        defs.newinstance_def = False
+        defs.classname_def = False
         defs.sys_imp = False
         defs.subprocess_imp = False
         defs.os_imp = False
@@ -671,7 +670,7 @@ def set_def(arr):
     defs.left_def = defs.left_def or arr[7]
     defs.execute_def = defs.execute_def or arr[8]
     defs.execute_pipe_def = defs.execute_pipe_def or arr[9]
-    defs.newinstance_def = defs.newinstance_def or arr[10]
+    defs.classname_def = defs.classname_def or arr[10]
     defs.sys_imp = defs.sys_imp or arr[11]
     defs.subprocess_imp = defs.sys_imp or arr[12]
     defs.os_imp = defs.os_imp or arr[13]
@@ -692,7 +691,7 @@ def get_def():
         defs.left_def,
         defs.execute_def,
         defs.execute_pipe_def,
-        defs.newinstance_def,
+        defs.classname_def,
         defs.sys_imp,
         defs.subprocess_imp,
         defs.os_imp,
@@ -708,3 +707,11 @@ def left(s, amount):
 
 def right(s, amount):
     return s[len(s) - amount :]
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

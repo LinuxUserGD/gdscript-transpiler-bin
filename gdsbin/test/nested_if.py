@@ -1,3 +1,6 @@
+class_name = "Nested_if"
+
+
 def test():
     # 20 levels of nesting (and then some).
     if true:
@@ -63,3 +66,11 @@ def test():
                                                                                                                                         print(
                                                                                                                                             "This won't be printed"
                                                                                                                                         )
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

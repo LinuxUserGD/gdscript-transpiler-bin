@@ -1,3 +1,4 @@
+class_name = "Property_setter_getter"
 case # 4.0+ replacement for `setget`:
 _backing= 0
 case property:
@@ -32,3 +33,8 @@ def test():
     self.property = 5000
     print(self.property)
     print(self._backing)
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

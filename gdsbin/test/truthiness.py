@@ -1,3 +1,6 @@
+class_name = "Truthiness"
+
+
 def test():
     # The assertions below should all evaluate to `true` for this test to pass.
     assert true
@@ -23,3 +26,11 @@ def test():
     assert Rect2i(1, 1, 0, 0)
     # A fully black color is only truthy if its alpha component is not equal to `1`.
     assert Color(0, 0, 0, 0.5)
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

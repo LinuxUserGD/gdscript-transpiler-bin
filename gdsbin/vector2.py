@@ -1,5 +1,6 @@
 import math
 
+class_name = "VECTOR2"
 x = 0
 y = 0
 
@@ -260,3 +261,11 @@ def math_is_equal_approx(a, b):
     if tolerance < CMP_EPSILON:
         tolerance = CMP_EPSILON
     return abs(a - b) < tolerance
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

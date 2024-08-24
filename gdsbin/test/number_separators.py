@@ -1,3 +1,4 @@
+class_name = "Number_separators"
 def test():
     # `_` can be used as a separator for numbers in GDScript.
     # It can be placed anywhere in the number, except at the beginning.
@@ -10,3 +11,8 @@ def test():
     __ = 123_456
     __ = 0x1234_5678
     __ = 0b1001_0101
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

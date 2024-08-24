@@ -1,3 +1,6 @@
+class_name = "Nested_match"
+
+
 def test():
     # 20 levels of nesting (and then some).
     number = 1234
@@ -116,3 +119,11 @@ def test():
                     print("Should not be printed")
         case 5678:
             print("Should not be printed either")
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

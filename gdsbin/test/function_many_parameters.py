@@ -1,3 +1,6 @@
+class_name = "Function_many_parameters"
+
+
 def example(
     arg1,
     arg2,
@@ -154,3 +157,11 @@ def test():
         46,
         47,
     )
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

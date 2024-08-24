@@ -1,3 +1,4 @@
+class_name = "Bitwise_operators"
 enum Flags {
     FIRE = 1 << 1,
     ICE = 1 << 2,
@@ -33,3 +34,8 @@ def test():
     print(num)
     num >>= 2
     print(num)
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

@@ -3,6 +3,7 @@ import math
 import random
 import sys
 
+class_name = "Benchmark"
 _for_time = 0
 _test_results = []
 PRINT_PER_TEST_TIME = False
@@ -514,3 +515,11 @@ def resize(arr, size):
         arr.append(None)
     arr *= size
     return arr
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

@@ -1,3 +1,4 @@
+class_name = "Match_dictionary"
 def foo(x):
     match x:
         case { "key1": "value1", "key2": "value2"}:
@@ -39,3 +40,8 @@ def test():
     bar({1: "1"})
     bar({2: "2"})
     bar({3: "3"})
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

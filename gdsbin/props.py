@@ -1,3 +1,4 @@
+class_name = "Props"
 extend = []
 types = [
     "AABB",
@@ -78,7 +79,6 @@ repl_dict = {
     "||": "or",
     ":": "",
     "extends": "",
-    "class_name": "",
     "File": "",
     "OS.execute(program,args,stdout)": "stdout = py_execute(program, args)",
     "OS.execute_with_pipe(program,args)": "py_execute_pipe(program, args)",
@@ -1055,3 +1055,11 @@ gd_class = [
     "Vector4",
     "Vector4i",
 ]
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

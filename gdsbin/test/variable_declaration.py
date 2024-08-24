@@ -1,3 +1,4 @@
+class_name = "Variable_declaration"
 m1 = None  # No init.
 m2 = 22  # Init.
 m3 = None  # No init, typed.
@@ -15,3 +16,11 @@ def test():
     loc7 = "77"
     prints(m1, m2, m3, m4, loc5, loc6, loc7, loc8)
     print("OK")
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

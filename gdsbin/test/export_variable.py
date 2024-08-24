@@ -1,3 +1,4 @@
+class_name = "Export_variable"
 @export example = 99
 @export_range(0, 100) example_range = 100
 @export_range(0, 100, 1) example_range_step = 101
@@ -9,3 +10,8 @@ def test():
     print(example_range_step)
     print(example_range_step_or_greater)
     print(color)
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

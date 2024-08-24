@@ -1,3 +1,6 @@
+class_name = "Arrays_dictionaries_nested_const"
+
+
 # https://github.com/godotengine/godot/issues/50285
 def test():
     _CONST_INNER_DICTIONARY = {"key": True}
@@ -41,3 +44,11 @@ def test():
     print(CONST_DICT_ACCESS)
     print(CONST_ARRAY_NESTED_ACCESS)
     print(CONST_DICT_NESTED_ACCESS)
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

@@ -1,3 +1,4 @@
+class_name = "Dollar_and_percent_get_node"
 def test():
     child = import Node
     child.name = "Child"
@@ -39,3 +40,8 @@ def test():
     print($% "Hey"/% "Howdy"== howdy)
     print(% "Hey/%Howdy"== howdy)
     print($% "Hey/%Howdy"== howdy)
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

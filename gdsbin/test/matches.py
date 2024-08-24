@@ -1,3 +1,6 @@
+class_name = "Matches"
+
+
 def test():
     i = "Hello"
     match i:
@@ -16,3 +19,11 @@ def test():
             print("This won't match")
         case _:
             print("This will match")
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

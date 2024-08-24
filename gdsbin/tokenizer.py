@@ -1,3 +1,4 @@
+class_name = "Tokenizer"
 import gdsbin.key
 
 key = type(gdsbin.key)(gdsbin.key.__name__, gdsbin.key.__doc__)
@@ -91,3 +92,11 @@ def char_to_token(buffer, token_index):
     token.id = token_index[buffer] if buffer in token_index else keyword.KW_NONE
     token.value = buffer
     return token
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

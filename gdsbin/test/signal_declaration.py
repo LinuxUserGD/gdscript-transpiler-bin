@@ -1,3 +1,4 @@
+class_name = "Signal_declaration"
 #GDTEST_OK
 # No parentheses.
 signal a
@@ -13,3 +14,8 @@ signal d(
 )
 def test():
     print( "Ok")
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

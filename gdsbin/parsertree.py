@@ -1,3 +1,6 @@
+class_name = "Parsertree"
+
+
 def printpt(element, level):
     match element.get_script().get_global_name():
         case "Root":
@@ -152,3 +155,11 @@ def parse_call(element):
             out += " /= "
         out += eval_call(element.res)
     return out
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

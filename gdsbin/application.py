@@ -1,5 +1,7 @@
 import subprocess
 
+class_name = "Application"
+
 
 def execute(program, args):
     stdout = []
@@ -52,3 +54,11 @@ class Thread:
 
     def is_alive(self):
         return True
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

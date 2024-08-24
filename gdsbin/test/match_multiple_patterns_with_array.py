@@ -1,3 +1,6 @@
+class_name = "Match_multiple_patterns_with_array"
+
+
 def foo(x):
     match x:
         case 1, [2]:
@@ -25,3 +28,11 @@ def test():
     bar([3])
     bar([4])
     bar([5])
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

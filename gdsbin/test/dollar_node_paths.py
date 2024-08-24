@@ -1,3 +1,4 @@
+class_name = "Dollar_node_paths"
 def test():
     # Create the required node structure.
     hello = import Node
@@ -14,3 +15,8 @@ def test():
     __ = $ "Hello/World"
     __ = $ "Hello/.."
     __ = $ "Hello/../Hello/World"
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

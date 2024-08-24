@@ -1,3 +1,4 @@
+class_name = "Enums"
 enum Size {
     S = -10,
     M,
@@ -11,3 +12,8 @@ def test():
     print(Size.L)
     print(Size.XL)
     print(Size.XXL)
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+    return Script

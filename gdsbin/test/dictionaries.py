@@ -1,3 +1,6 @@
+class_name = "Dictionaries"
+
+
 def test():
     # Non-string keys are valid.
     print({12: "world"}[12])
@@ -47,3 +50,11 @@ def test():
     # Both syntaxes are valid however.
     # print({ "hello": "world"}[ "hello"])
     # print({ "hello": "world"}.hello)
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

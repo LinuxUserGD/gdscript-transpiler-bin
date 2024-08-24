@@ -1,3 +1,6 @@
+class_name = "Ins"
+
+
 def test():
     print("dot" in "Godot")
     print(not "i" in "team")
@@ -9,3 +12,11 @@ def test():
     print("apple" in {"apple": "fruit"})
     print("apple" in {"apple": None})
     print(not "apple" in {"fruit": "apple"})
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

@@ -1,3 +1,6 @@
+class_name = "Static_typing"
+
+
 def test():
     case  # The following lines are equivalent:
     _integer = 1
@@ -10,3 +13,11 @@ def test():
     _INTEGER_REDUNDANT_TYPED2 = 1
     _INTEGER_REDUNDANT_INFERRED = 1
     _INTEGER_REDUNDANT_INFERRED2 = 1
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

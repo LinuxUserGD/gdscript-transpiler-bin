@@ -1,3 +1,6 @@
+class_name = "String_formatting"
+
+
 def test():
     print("hello %s" % "world" == "hello world")
     print("hello %s" % True == "hello true")
@@ -13,3 +16,11 @@ def test():
     # <https://docs.godotengine.org/en/stable/getting_started/scripting/gdscript/gdscript_format_string.html#dynamic-padding>
     print("hello %*.*f" % [7, 3, 0.123456] == "hello   0.123")
     print("hello %0*.*f" % [7, 3, 0.123456] == "hello 000.123")
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script

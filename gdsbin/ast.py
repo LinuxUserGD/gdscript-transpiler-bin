@@ -1,3 +1,4 @@
+class_name = "Ast"
 import gdsbin.key
 
 key = type(gdsbin.key)(gdsbin.key.__name__, gdsbin.key.__doc__)
@@ -370,3 +371,11 @@ def _function(startln, endln, level, root, input, unit, con):
 
 def right(s, amount):
     return s[len(s) - amount :]
+
+
+def get_script():
+    class Script:
+        def get_global_name():
+            return class_name
+
+    return Script
