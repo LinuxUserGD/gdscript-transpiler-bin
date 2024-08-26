@@ -70,8 +70,14 @@ def tokenize(input_string):
     }
     tokens = []
     buffer = ""
+    str = False
     for ch in input_string:
         if ch in delimiter:
+            if ch == '"':
+                str = False if str else True
+            elif str:
+                buffer += ch
+                continue
             if buffer != "":
                 tokens.append(char_to_token(buffer, token))
                 buffer = ""

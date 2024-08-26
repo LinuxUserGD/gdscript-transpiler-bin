@@ -120,7 +120,7 @@ def _arg_call(input, level):
         if input[level + 1].id == key.KEY_PERIOD:
             callnew.name = input[level].value
             callnew.callnew = _new_call(input, level + 2)
-        else:
+        elif len(input) > 2:
             callnew.name = _eval_string(input, 0).string
     else:
         callnew.name = input[level].value
@@ -154,11 +154,13 @@ def _new_call(input, level):
             callnew.equ = True
             callnew.op = input[level + 1].value
             array = []
-            for i in range(level + 3, len(input)):
+            for i in range(level + 2, len(input)):
                 array.append(input[i])
             callnew.res = _eval(array)
-        elif input[level + 1].id == key.KEY_PARENLEFT and key.KEY_PARENRIGHT in input:
-            end = input.index(key.KEY_PARENRIGHT, level + 2)
+        elif input[
+            level + 1
+        ].id == key.KEY_PARENLEFT and key.KEY_PARENRIGHT in _get_ids(input):
+            end = _get_ids(input).index(key.KEY_PARENRIGHT, level + 2)
             callnew.name = input[level].value
             callnew.function = True
             callnew.builtin_function = _builtin_function(input[level])
@@ -167,11 +169,18 @@ def _new_call(input, level):
                 args.append(input[i])
             if len(args) != 0:
                 callnew.args = _eval_function_args(args)
-        else:
+        elif len(input) > 2:
             callnew.name = _eval_string(input, 0).string
     elif level + 1 == s:
         callnew.name = input[level].value
     return callnew
+
+
+def _get_ids(tokens):
+    arr = []
+    for i in tokens:
+        arr.append(i.id)
+    return arr
 
 
 def _eval_dictionary(_array):
@@ -192,39 +201,8 @@ def _cut_string(msg, level):
 
 def _eval_string(array, level):
     s = ""
-    qu = '"'
-    token = {
-        key.KEY_NUMBERSIGN: "#",
-        key.KEY_EXCLAM: "!",
-        key.KEY_SLASH: "/",
-        key.KEY_BACKSLASH: "\\",
-        key.KEY_MINUS: "class_name",
-        key.KEY_PARENLEFT: "(",
-        key.KEY_PARENRIGHT: ")",
-        key.KEY_PLUS: "-",
-        key.KEY_ASTERISK: "+",
-        key.KEY_GREATER: ">",
-        key.KEY_LESS: "<",
-        key.KEY_COLON: ":",
-        key.KEY_EQUAL: "=",
-        key.KEY_BRACELEFT: "{",
-        key.KEY_BRACERIGHT: "}",
-        key.KEY_TAB: "\t",
-        key.KEY_PERIOD: ".",
-        key.KEY_COMMA: ",",
-        keyword.KW_EXTENDS: "extends",
-        keyword.KW_NUMBERSIGN2: "##",
-        keyword.KW_FUNCTION: "func",
-        keyword.KW_NEW: "new",
-        keyword.KW_VARIABLE: "var",
-        keyword.KW_CONST: "const",
-        keyword.KW_FOR: "for",
-        keyword.KW_IN: "in",
-        keyword.KW_IF: "if",
-        key.KEY_QUOTEDBL: qu,
-    }
-    for i in range(level, len(array)):
-        s += token[array[i].id] if array[i].id in token else array[i].value
+    for i in range(level, level + 3):
+        s += array[i].value
     import gdsbin.stringname
 
     stringname = type(gdsbin.stringname)(
@@ -238,7 +216,13 @@ def _eval_string(array, level):
 def _eval_function_args(array):
     arr = []
     ast_arr = []
-    array.append(key.KEY_COMMA)
+    import gdsbin.token
+
+    token = type(gdsbin.token)(gdsbin.token.__name__, gdsbin.token.__doc__)
+    token.__dict__.update(gdsbin.token.__dict__)
+    token.id = key.KEY_COMMA
+    token.value = ","
+    array.append(token)
     for i in range(0, len(array)):
         if array[i].id == key.KEY_COMMA:
             ast_arr.append(_arg_call(arr, 0))
@@ -282,9 +266,10 @@ def _eval(array):
     if array[0].id == key.KEY_BRACELEFT and array[s - 1].id == key.KEY_BRACERIGHT:
         variable = _eval_dictionary(array)
         return variable
-    if array[0].id == key.KEY_QUOTEDBL and array[s - 1].id == key.KEY_QUOTEDBL:
-        variable = _eval_string(array, 0)
-        return variable
+    if len(array) == 3:
+        if array[0].id == key.KEY_QUOTEDBL and array[2].id == key.KEY_QUOTEDBL:
+            variable = _eval_string(array, 0)
+            return variable
     variable = _new_call(array, 0)
     return variable
 
@@ -295,8 +280,8 @@ def _for_in(startln, endln, level, root, input, unit, con):
     forloop = type(gdsbin.forloop)(gdsbin.forloop.__name__, gdsbin.forloop.__doc__)
     forloop.__dict__.update(gdsbin.forloop.__dict__)
     begin = -1
-    if keyword.KW_IN in input:
-        begin = input.index(keyword.KW_IN, level + 2)
+    if keyword.KW_IN in _get_ids(input):
+        begin = _get_ids(input).index(keyword.KW_IN, level + 2)
     end = len(input)
     f = []
     for i in range(level + 1, begin):
@@ -332,20 +317,20 @@ def _function(startln, endln, level, root, input, unit, con):
     function.args = []
     function.function = input[level + 1].value
     begin = -1
-    if key.KEY_PARENLEFT in input:
-        begin = input.index(key.KEY_PARENLEFT, level + 2)
+    if key.KEY_PARENLEFT in _get_ids(input):
+        begin = _get_ids(input).index(key.KEY_PARENLEFT, level + 2)
     end = -1
-    if key.KEY_PARENRIGHT in input:
-        end = input.index(key.KEY_PARENRIGHT, begin + 1)
+    if key.KEY_PARENRIGHT in _get_ids(input):
+        end = _get_ids(input).index(key.KEY_PARENRIGHT, begin + 1)
     arrow1 = -1
-    if key.KEY_MINUS in input:
-        arrow1 = input.index(key.KEY_MINUS, end + 1)
+    if key.KEY_MINUS in _get_ids(input):
+        arrow1 = _get_ids(input).index(key.KEY_MINUS, end + 1)
     arrow2 = -1
-    if key.KEY_GREATER in input:
-        arrow2 = input.index(key.KEY_GREATER, arrow1 + 1)
+    if key.KEY_GREATER in _get_ids(input):
+        arrow2 = _get_ids(input).index(key.KEY_GREATER, arrow1 + 1)
     colon = -1
-    if key.KEY_COLON in input:
-        colon = input.index(key.KEY_COLON, end + 1)
+    if key.KEY_COLON in _get_ids(input):
+        colon = _get_ids(input).index(key.KEY_COLON, end + 1)
     if arrow1 > 0 and arrow2 > 0:
         function.ret = True
         function.res = input[colon - 1].value
