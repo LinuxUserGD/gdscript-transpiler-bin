@@ -40,6 +40,10 @@ def _init():
         if arg.startswith(path_exp_arg):
             start_exp(arg, __init__.package_name)
             return
+        path_tree_arg = "tree="
+        if arg.startswith(path_tree_arg):
+            start_tree(arg, __init__.package_name)
+            return
         compile_arg = "compile="
         if arg.startswith(compile_arg) and arg.endswith(".gd"):
             format = True
@@ -266,6 +270,84 @@ def start_exp(arg, _package_name):
     )
     parsertree.__dict__.update(gdsbin.parsertree.__dict__)
     string_res = parsertree.printpt(ast_res, 0)
+    print(string_res)
+
+
+def start_tree(arg, _package_name):
+    path_end = arg.split("=")[1]
+    path = "" + path_end
+    import gdsbin.transpiler
+
+    transpiler = type(gdsbin.transpiler)(
+        gdsbin.transpiler.__name__, gdsbin.transpiler.__doc__
+    )
+    transpiler.__dict__.update(gdsbin.transpiler.__dict__)
+    content = transpiler.read(path)
+    import gdsbin.tokenizer
+
+    tokenizer = type(gdsbin.tokenizer)(
+        gdsbin.tokenizer.__name__, gdsbin.tokenizer.__doc__
+    )
+    tokenizer.__dict__.update(gdsbin.tokenizer.__dict__)
+    con = content.split("\n")
+    unit = []
+    for line in con:
+        tokens = tokenizer.tokenize(line)
+        unit.append(tokens)
+    import gdsbin.ast
+
+    ast = type(gdsbin.ast)(gdsbin.ast.__name__, gdsbin.ast.__doc__)
+    ast.__dict__.update(gdsbin.ast.__dict__)
+    import gdsbin.root
+
+    root = type(gdsbin.root)(gdsbin.root.__name__, gdsbin.root.__doc__)
+    root.__dict__.update(gdsbin.root.__dict__)
+    ast_res = ast.ast(0, len(unit), 0, root, unit, con)
+    import gdsbin.parsertree
+
+    parsertree = type(gdsbin.parsertree)(
+        gdsbin.parsertree.__name__, gdsbin.parsertree.__doc__
+    )
+    parsertree.__dict__.update(gdsbin.parsertree.__dict__)
+    e = parsertree.printtree(ast_res, 0)
+    string_res = parsertree.printrec(e, "")
+    print(string_res)
+
+
+def token_tree(arg, _package_name):
+    path_end = arg.split("=")[1]
+    path = "" + path_end
+    import gdsbin.transpiler
+
+    transpiler = type(gdsbin.transpiler)(
+        gdsbin.transpiler.__name__, gdsbin.transpiler.__doc__
+    )
+    transpiler.__dict__.update(gdsbin.transpiler.__dict__)
+    content = transpiler.read(path)
+    import gdsbin.tokenizer
+
+    tokenizer = type(gdsbin.tokenizer)(
+        gdsbin.tokenizer.__name__, gdsbin.tokenizer.__doc__
+    )
+    tokenizer.__dict__.update(gdsbin.tokenizer.__dict__)
+    con = content.split("\n")
+    e = {}
+    for i in range(0, len(con)):
+        l = {}
+        tokens = tokenizer.tokenize(con[i])
+        for ii in range(0, len(tokens)):
+            l["Token" + str(ii)] = {
+                "id": {str(tokens[ii].id): None},
+                "value": {tokens[ii].value: None},
+            }
+        e["line " + str(i)] = l
+    import gdsbin.parsertree
+
+    parsertree = type(gdsbin.parsertree)(
+        gdsbin.parsertree.__name__, gdsbin.parsertree.__doc__
+    )
+    parsertree.__dict__.update(gdsbin.parsertree.__dict__)
+    string_res = parsertree.printrec(e, "")
     print(string_res)
 
 

@@ -1,6 +1,33 @@
 class_name = "Parsertree"
 
 
+def printtree(element, level):
+    match element.get_script().get_global_name():
+        case "Root":
+            dictionary = {}
+            if len(element.elem) > 0:
+                for i in range(0, len(element.elem)):
+                    dictionary["Root" + str(i)] = printtree(element.elem[i], level)
+            return dictionary
+        case "Comment":
+            return {"Comment": {element.comment: None}}
+        case "Classn":
+            return {"class_name": {element.classn: None}}
+        case "Extend":
+            return {"extends": {element.extend: None}}
+        case "Function":
+            return {"Function": None}
+        case "Variable":
+            return {"Variable": {element.variable: None}}
+        case "Forloop":
+            return {"Forloop": None}
+        case "Ifcond":
+            return {"Ifconf": None}
+        case "Callnew":
+            return {"Callnew": None}
+    return {"": None}
+
+
 def printpt(element, level):
     match element.get_script().get_global_name():
         case "Root":
@@ -155,6 +182,22 @@ def parse_call(element):
             out += " /= "
         out += eval_call(element.res)
     return out
+
+
+def printrec(e, ch):
+    s = ""
+    k = e.keys()
+    i = len(k) - 1
+    for item in k:
+        s += ch
+        s += "├─" if i != 0 else "└─" if ch != "" else "──"
+        s += "┐ " if e[item] != None else "  "
+        s += item
+        s += "\n"
+        if e[item] != None:
+            s += printrec(e[item], ch + ("│ " if i != 0 else "  "))
+        i -= 1
+    return s
 
 
 def get_script():
