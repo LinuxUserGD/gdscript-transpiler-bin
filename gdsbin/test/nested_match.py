@@ -44,14 +44,14 @@ def test():
                                                                             match (
                                                                                 number
                                                                             ):
-                                                                                case 1234:
+                                                                                case (
+                                                                                    1234
+                                                                                ):
                                                                                     print(
                                                                                         "10"
                                                                                     )
                                                                                     match number:
-                                                                                        case (
-                                                                                            _
-                                                                                        ):
+                                                                                        case _:
                                                                                             print(
                                                                                                 "11"
                                                                                             )
@@ -61,9 +61,7 @@ def test():
                                                                                                         "12"
                                                                                                     )
                                                                                                     match number:
-                                                                                                        case (
-                                                                                                            _
-                                                                                                        ):
+                                                                                                        case _:
                                                                                                             print(
                                                                                                                 "13"
                                                                                                             )
@@ -73,16 +71,12 @@ def test():
                                                                                                                         "14"
                                                                                                                     )
                                                                                                                     match number:
-                                                                                                                        case (
-                                                                                                                            _
-                                                                                                                        ):
+                                                                                                                        case _:
                                                                                                                             print(
                                                                                                                                 "15"
                                                                                                                             )
                                                                                                                             match number:
-                                                                                                                                case (
-                                                                                                                                    _
-                                                                                                                                ):
+                                                                                                                                case _:
                                                                                                                                     print(
                                                                                                                                         "16"
                                                                                                                                     )
@@ -92,9 +86,7 @@ def test():
                                                                                                                                                 "17"
                                                                                                                                             )
                                                                                                                                             match number:
-                                                                                                                                                case (
-                                                                                                                                                    _
-                                                                                                                                                ):
+                                                                                                                                                case _:
                                                                                                                                                     print(
                                                                                                                                                         "18"
                                                                                                                                                     )
@@ -104,9 +96,7 @@ def test():
                                                                                                                                                                 "19"
                                                                                                                                                             )
                                                                                                                                                             match number:
-                                                                                                                                                                case (
-                                                                                                                                                                    _
-                                                                                                                                                                ):
+                                                                                                                                                                case _:
                                                                                                                                                                     print(
                                                                                                                                                                         "20"
                                                                                                                                                                     )
