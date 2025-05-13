@@ -1,10 +1,14 @@
-# GDScript to Python to C Transpiler
+<h1>
+<img src="./icon.svg" width="100px" height="150px" align="left"/>
+<br/>
+GDScript to Python to C Transpiler
 
 [![Godot](Godot-v.svg)](https://downloads.tuxfamily.org/godotengine/4.0/)
 [![MIT license](mit.svg)](LICENSE.md)
 [![Python](python.svg)](https://www.python.org/)
+</h1>
 
-[![Icon](icon.svg)](icon.svg) 
+<br/>
 
 `gdscript-transpiler-bin` is a GDScript compiler (using [Nuitka](https://github.com/Nuitka/Nuitka)), minimal scripts can be transpiled to Python.
 

@@ -29,7 +29,6 @@ setup_info = dict(
     long_description_content_type='text/markdown',
     license='MIT',
     classifiers=[
-        'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX :: Linux',
