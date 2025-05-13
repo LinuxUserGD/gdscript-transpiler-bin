@@ -46,12 +46,12 @@ def test():
     print(contents[15][22][4])
     print(contents[15][22][4][0])
     print(contents[15][22][4][1])
-    # Currently fails with "invalid get index 'hello' on base Dictionary".
-    # Both syntaxes are valid however.
-    # print({ "hello": "world"}[ "hello"])
-    # print({ "hello": "world"}.hello)
 
 
+# Currently fails with "invalid get index 'hello' on base Dictionary".
+# Both syntaxes are valid however.
+# print({ "hello": "world"}[ "hello"])
+# print({ "hello": "world"}.hello)
 def get_script():
     class Script:
         def get_global_name():

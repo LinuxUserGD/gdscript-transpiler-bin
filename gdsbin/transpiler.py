@@ -500,14 +500,14 @@ def dict(arg):
             str(
                 {
                     "major": 4,
-                    "minor": 3,
-                    "patch": 0,
-                    "hex": 262912,
+                    "minor": 4,
+                    "patch": 1,
+                    "hex": 263169,
                     "status": "stable",
                     "build": "gentoo",
-                    "hash": "77dcf97d82cbfe4e4615475fa52ca03da645dbd8",
+                    "hash": "49a5bc7b616bd04689a2c89e89bda41f50241464",
                     "timestamp": 0,
-                    "string": "4.3-stable (gentoo)",
+                    "string": "4.4.1-stable (gentoo)",
                 }
             ),
         )
@@ -554,6 +554,11 @@ def translate(e, package_name):
         return ","
     if e == "":
         return ""
+    cmd = e
+    while cmd.startswith("	"):
+        cmd = right(cmd, len(cmd) - 1)
+    if cmd.startswith("#") and not cmd.startswith("#!"):
+        return e
     if e.startswith("class_name"):
         defs.classname_def = True
         classn = e.split(" ")[0]

@@ -71,9 +71,9 @@ def _number_sign(root, conline, level):
     comment.__dict__.update(gdsbin.comment.__dict__)
     comment.comment = _cut_string(conline, level)
     root.elem.append(comment)
-    # print(input)
 
 
+# print(input)
 def _number_sign_2(root, conline, level):
     import gdsbin.comment
 
@@ -81,9 +81,9 @@ def _number_sign_2(root, conline, level):
     comment.__dict__.update(gdsbin.comment.__dict__)
     comment.comment = _cut_string(conline, level)
     root.elem.append(comment)
-    # print(input)
 
 
+# print(input)
 def _classname(root, input, level):
     import gdsbin.classn
 
@@ -91,9 +91,9 @@ def _classname(root, input, level):
     classn.__dict__.update(gdsbin.classn.__dict__)
     classn.classn = input[level + 1].value
     root.elem.append(classn)
-    # print(input)
 
 
+# print(input)
 def _extend(root, input, level):
     import gdsbin.extend
 
@@ -101,15 +101,15 @@ def _extend(root, input, level):
     extend.__dict__.update(gdsbin.extend.__dict__)
     extend.extend = input[level + 1].value
     root.elem.append(extend)
-    # print(input)
 
 
+# print(input)
 def _call(root, input, level):
     callx = _new_call(input, level)
     root.elem.append(callx)
-    # print(input)
 
 
+# print(input)
 def _arg_call(input, level):
     import gdsbin.callnew
 
@@ -253,9 +253,9 @@ def _variable(root, input, level, is_const):
             array.append(input[i])
         variable.res = _eval(array)
     root.elem.append(variable)
-    # print(input)
 
 
+# print(input)
 def _builtin_function(function):
     return function.id == keyword.KW_NEW
 
@@ -351,9 +351,9 @@ def _function(startln, endln, level, root, input, unit, con):
         begin += 1
     function.root = ast(startln + 1, endln, level + 1, function.root, unit, con)
     root.elem.append(function)
-    # print(input)
 
 
+# print(input)
 def right(s, amount):
     return s[len(s) - amount :]
 

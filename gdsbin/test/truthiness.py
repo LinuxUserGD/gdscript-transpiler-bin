@@ -16,11 +16,11 @@ def test():
     assert Vector2i(-1, -1)
     assert Vector3(0, 0, 0.0001)
     assert Vector3i(0, 0, 10000)
-    # Zero position is `true` only if the 's size is non-zero.
+    # Zero position is `true` only if the Rect2's size is non-zero.
     assert Rect2(0, 0, 0, 1)
     # Zero size is `true` only if the position is non-zero.
     assert Rect2(1, 1, 0, 0)
-    # Zero position is `true` only if the 's size is non-zero.
+    # Zero position is `true` only if the Rect2's size is non-zero.
     assert Rect2i(0, 0, 0, 1)
     # Zero size is `true` only if the position is non-zero.
     assert Rect2i(1, 1, 0, 0)

@@ -30,6 +30,8 @@ def _init():
             format = True
             comp = False
             start(arg, format, comp, __init__.package_name)
+            ESCAPE = ""
+            sys.stdout.write(ESCAPE + "[2K\r")
             return
         path_binary_arg = "gen_api="
         if arg.startswith(path_binary_arg):
@@ -39,6 +41,7 @@ def _init():
         path_exp_arg = "exp="
         if arg.startswith(path_exp_arg):
             start_exp(arg, __init__.package_name)
+            print("")
             return
         path_tree_arg = "tree="
         if arg.startswith(path_tree_arg):
@@ -49,6 +52,8 @@ def _init():
             format = True
             comp = True
             start(arg, format, comp, __init__.package_name)
+            ESCAPE = ""
+            sys.stdout.write(ESCAPE + "[2K\r")
             return
         setup_arg = "setup="
         if arg.startswith(setup_arg):
@@ -81,14 +86,14 @@ def gen_api(program):
     version = version[0].split("\n")[0]
     info = {
         "major": 4,
-        "minor": 3,
-        "patch": 0,
-        "hex": 262912,
+        "minor": 4,
+        "patch": 1,
+        "hex": 263169,
         "status": "stable",
         "build": "gentoo",
-        "hash": "77dcf97d82cbfe4e4615475fa52ca03da645dbd8",
+        "hash": "49a5bc7b616bd04689a2c89e89bda41f50241464",
         "timestamp": 0,
-        "string": "4.3-stable (gentoo)",
+        "string": "4.4.1-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
@@ -214,7 +219,7 @@ def compile(arg):
         gdsbin.application.__name__, gdsbin.application.__doc__
     )
     application.__dict__.update(gdsbin.application.__dict__)
-    application.execute_pipe("python", ["-c", nopttoarg(nopt)])
+    application.execute_pipe("python3.13", ["-c", nopttoarg(nopt)])
 
 
 def nopttoarg(nopt):
@@ -418,7 +423,8 @@ def start(arg, stage2, stage3, package_name):
             index += 1
         pathstr = left(pathstr, len(pathstr) - 1)
     if stage2:
-        print("Transpiling " + pathstr + "gd...")
+        ESCAPE = ""
+        sys.stdout.write(ESCAPE + "[2K\r" + "Transpiling " + pathstr + "gd...")
     path2 = "" + pathstr + "py"
     import gdsbin.transpiler
 
@@ -436,8 +442,6 @@ def start(arg, stage2, stage3, package_name):
     for dep in transpiler.props.gds_deps:
         deps.append(dep)
     transpiler.props.gds_deps = []
-    if stage2:
-        print("Formatting " + pathstr + "py...")
     if stage2:
         import gdsbin.application
 
@@ -467,14 +471,14 @@ def start(arg, stage2, stage3, package_name):
 def version_info():
     info = {
         "major": 4,
-        "minor": 3,
-        "patch": 0,
-        "hex": 262912,
+        "minor": 4,
+        "patch": 1,
+        "hex": 263169,
         "status": "stable",
         "build": "gentoo",
-        "hash": "77dcf97d82cbfe4e4615475fa52ca03da645dbd8",
+        "hash": "49a5bc7b616bd04689a2c89e89bda41f50241464",
         "timestamp": 0,
-        "string": "4.3-stable (gentoo)",
+        "string": "4.4.1-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
@@ -486,19 +490,21 @@ def version_info():
 
     version = type(gdsbin.version)(gdsbin.version.__name__, gdsbin.version.__doc__)
     version.__dict__.update(gdsbin.version.__dict__)
-    print("GDScript Transpiler " + version.__version__ + "\n")
-    GDV = str(major) + "." + str(minor) + "." + str(patch)
+    ESCAPE = ""
+    COLOR_RESET = "[0m"
+    CYAN = "[0;36m"
+    WHITE_BOLD = "[1;37m"
     print(
-        "Compatible with Godot"
+        CYAN
+        + "GDScript Transpiler "
+        + version.__version__
+        + ESCAPE
+        + COLOR_RESET
         + "\n"
-        + GDV
-        + "."
-        + status
-        + "."
-        + build
-        + "."
-        + left(id, 9)
     )
+    GDV = str(major) + "." + str(minor) + "." + str(patch)
+    print(WHITE_BOLD + "Compatible with Godot" + ESCAPE + COLOR_RESET)
+    print(GDV + "." + status + "." + build + "." + left(id, 9))
     out = []
     import gdsbin.application
 
@@ -506,18 +512,19 @@ def version_info():
         gdsbin.application.__name__, gdsbin.application.__doc__
     )
     application.__dict__.update(gdsbin.application.__dict__)
-    print("Python")
-    out = application.execute("python", ["-c", "import sys;print(sys.version)"])
+    print(WHITE_BOLD + "Python" + ESCAPE + COLOR_RESET)
+    out = application.execute("python3.13", ["-c", "import sys;print(sys.version)"])
     print(out[0].split("\n")[0])
-    print("Nuitka")
+    print(WHITE_BOLD + "Nuitka" + ESCAPE + COLOR_RESET)
     out = application.execute(
-        "python", ["-c", "from nuitka import Version;print(Version.getNuitkaVersion())"]
+        "python3.13",
+        ["-c", "from nuitka import Version;print(Version.getNuitkaVersion())"],
     )
     print(out[0].split("\n")[0])
-    print("Ruff")
+    print(WHITE_BOLD + "Ruff" + ESCAPE + COLOR_RESET)
     out = application.execute("ruff", ["version"])
     print(out[0].split("\n")[0].split(" ")[1])
-    print("Zig")
+    print(WHITE_BOLD + "Zig" + ESCAPE + COLOR_RESET)
     out = application.execute("zig", ["version"])
     print(out[0].split("\n")[0])
 
@@ -533,19 +540,150 @@ def help():
     PARSER_DESC = "running GDScript tests (not working yet)"
     BENCH_DESC = "running benchmark to compare performance"
     GEN_API = "generate API bindings"
-    print("Usage: gds [options]")
-    print("\n")
+    ESCAPE = ""
+    COLOR_RESET = "[0m"
+    GREEN = "[0;32m"
+    CYAN = "[0;36m"
+    print(
+        "Usage: "
+        + CYAN
+        + "gds"
+        + ESCAPE
+        + COLOR_RESET
+        + " [ "
+        + GREEN
+        + "options"
+        + ESCAPE
+        + COLOR_RESET
+        + " ]"
+        + "\n"
+    )
     print("Options:")
-    print("  " + "version                           " + VER_DESC)
-    print("  " + "help                              " + HELP_DESC)
-    print("  " + "format=../path/to/file.gd         " + FMT_DESC)
-    print("  " + "compile=../path/to/file.gd        " + COMP_DESC)
-    print("  " + "exp=../path/to/file.gd            " + EXP_DESC)
-    print("  " + "setup=../path/setup.py            " + SETUP_DESC)
-    print("  " + "test=vector2                      " + VEC2_DESC)
-    print("  " + "test=parser                       " + PARSER_DESC)
-    print("  " + "benchmark                         " + BENCH_DESC)
-    print("  " + "gen_api=../path/to/godot4         " + GEN_API)
+    print(
+        "  "
+        + GREEN
+        + "version"
+        + ESCAPE
+        + COLOR_RESET
+        + "                           "
+        + VER_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "help"
+        + ESCAPE
+        + COLOR_RESET
+        + "                              "
+        + HELP_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "format"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "../path/to/file.gd"
+        + ESCAPE
+        + COLOR_RESET
+        + "         "
+        + FMT_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "compile"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "../path/to/file.gd"
+        + ESCAPE
+        + COLOR_RESET
+        + "        "
+        + COMP_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "exp"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "../path/to/file.gd"
+        + ESCAPE
+        + COLOR_RESET
+        + "            "
+        + EXP_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "setup"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "../path/setup.py"
+        + ESCAPE
+        + COLOR_RESET
+        + "            "
+        + SETUP_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "test"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "vector2"
+        + ESCAPE
+        + COLOR_RESET
+        + "                      "
+        + VEC2_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "test"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "parser"
+        + ESCAPE
+        + COLOR_RESET
+        + "                       "
+        + PARSER_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "benchmark"
+        + ESCAPE
+        + COLOR_RESET
+        + "                         "
+        + BENCH_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "gen_api"
+        + ESCAPE
+        + COLOR_RESET
+        + "="
+        + CYAN
+        + "../path/to/godot4"
+        + ESCAPE
+        + COLOR_RESET
+        + "         "
+        + GEN_API
+    )
 
 
 def run_benchmark():
@@ -558,10 +696,8 @@ def run_benchmark():
 
 def run_parser():
     gdsbin = {"test": {}}
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.advanced_expression_matching
-
-    gdsbin.test.advanced_expression_matching.test()
+    # gdsbin.test.advanced_expression_matching = Advanced_expression_matching.new()
+    # gdsbin.test.advanced_expression_matching.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.arrays
 
@@ -570,14 +706,10 @@ def run_parser():
     import gdsbin.test.arrays_dictionaries_nested_const
 
     gdsbin.test.arrays_dictionaries_nested_const.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.basic_expression_matching
-
-    gdsbin.test.basic_expression_matching.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.bitwise_operators
-
-    gdsbin.test.bitwise_operators.test()
+    # gdsbin.test.basic_expression_matching = Basic_expression_matching.new()
+    # gdsbin.test.basic_expression_matching.test()
+    # gdsbin.test.bitwise_operators = Bitwise_operators.new()
+    # gdsbin.test.bitwise_operators.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.concatenation
 
@@ -590,30 +722,18 @@ def run_parser():
     import gdsbin.test.dictionaries
 
     gdsbin.test.dictionaries.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.dictionary_lua_style
-
-    gdsbin.test.dictionary_lua_style.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.dictionary_mixed_syntax
-
-    gdsbin.test.dictionary_mixed_syntax.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.dollar_and_percent_get_node
-
-    gdsbin.test.dollar_and_percent_get_node.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.dollar_node_paths
-
-    gdsbin.test.dollar_node_paths.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.enums
-
-    gdsbin.test.enums.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.export_variable
-
-    gdsbin.test.export_variable.test()
+    # gdsbin.test.dictionary_lua_style = Dictionary_lua_style.new()
+    # gdsbin.test.dictionary_lua_style.test()
+    # gdsbin.test.dictionary_mixed_syntax = Dictionary_mixed_syntax.new()
+    # gdsbin.test.dictionary_mixed_syntax.test()
+    # gdsbin.test.dollar_and_percent_get_node = Dollar_and_percent_get_node.new()
+    # gdsbin.test.dollar_and_percent_get_node.test()
+    # gdsbin.test.dollar_node_paths = Dollar_node_paths.new()
+    # gdsbin.test.dollar_node_paths.test()
+    # gdsbin.test.enums = Enums.new()
+    # gdsbin.test.enums.test()
+    # gdsbin.test.export_variable = Export_variable.new()
+    # gdsbin.test.export_variable.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.float_notation
 
@@ -630,30 +750,20 @@ def run_parser():
     import gdsbin.test.function_many_parameters
 
     gdsbin.test.function_many_parameters.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.if_after_lambda
-
-    gdsbin.test.if_after_lambda.test()
+    # gdsbin.test.if_after_lambda = If_after_lambda.new()
+    # gdsbin.test.if_after_lambda.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.ins
 
     gdsbin.test.ins.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.lambda_callable
-
-    gdsbin.test.lambda_callable.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.lambda_capture_callable
-
-    gdsbin.test.lambda_capture_callable.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.lambda_default_parameter_capture
-
-    gdsbin.test.lambda_default_parameter_capture.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.lambda_named_callable
-
-    gdsbin.test.lambda_named_callable.test()
+    # gdsbin.test.lambda_callable = Lambda_callable.new()
+    # gdsbin.test.lambda_callable.test()
+    # gdsbin.test.lambda_capture_callable = Lambda_capture_callable.new()
+    # gdsbin.test.lambda_capture_callable.test()
+    # gdsbin.test.lambda_default_parameter_capture = Lambda_default_parameter_capture.new()
+    # gdsbin.test.lambda_default_parameter_capture.test()
+    # gdsbin.test.lambda_named_callable = Lambda_named_callable.new()
+    # gdsbin.test.lambda_named_callable.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.matches
 
@@ -662,34 +772,24 @@ def run_parser():
     import gdsbin.test.match_bind_unused
 
     gdsbin.test.match_bind_unused.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.match_dictionary
-
-    gdsbin.test.match_dictionary.test()
+    # gdsbin.test.match_dictionary = Match_dictionary.new()
+    # gdsbin.test.match_dictionary.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.match_multiple_patterns_with_array
 
     gdsbin.test.match_multiple_patterns_with_array.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.match_multiple_variable_binds_in_pattern
-
-    gdsbin.test.match_multiple_variable_binds_in_pattern.test()
+    # gdsbin.test.match_multiple_variable_binds_in_pattern = Match_multiple_variable_binds_in_pattern.new()
+    # gdsbin.test.match_multiple_variable_binds_in_pattern.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.multiline_arrays
 
     gdsbin.test.multiline_arrays.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.multiline_dictionaries
-
-    gdsbin.test.multiline_dictionaries.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.multiline_if
-
-    gdsbin.test.multiline_if.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.multiline_strings
-
-    gdsbin.test.multiline_strings.test()
+    # gdsbin.test.multiline_dictionaries = Multiline_dictionaries.new()
+    # gdsbin.test.multiline_dictionaries.test()
+    # gdsbin.test.multiline_if = Multiline_if.new()
+    # gdsbin.test.multiline_if.test()
+    # gdsbin.test.multiline_strings = Multiline_strings.new()
+    # gdsbin.test.multiline_strings.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.multiline_vector
 
@@ -714,38 +814,28 @@ def run_parser():
     import gdsbin.test.nested_if
 
     gdsbin.test.nested_if.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.nested_match
-
-    gdsbin.test.nested_match.test()
+    # gdsbin.test.nested_match = Nested_match.new()
+    # gdsbin.test.nested_match.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.nested_parentheses
 
     gdsbin.test.nested_parentheses.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.number_separators
-
-    gdsbin.test.number_separators.test()
+    # gdsbin.test.number_separators = Number_separators.new()
+    # gdsbin.test.number_separators.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.operator_assign
 
     gdsbin.test.operator_assign.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.property_setter_getter
-
-    gdsbin.test.property_setter_getter.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.semicolon_as_end_statement
-
-    gdsbin.test.semicolon_as_end_statement.test()
+    # gdsbin.test.property_setter_getter = Property_setter_getter.new()
+    # gdsbin.test.property_setter_getter.test()
+    # gdsbin.test.semicolon_as_end_statement = Semicolon_as_end_statement.new()
+    # gdsbin.test.semicolon_as_end_statement.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.semicolon_as_terminator
 
     gdsbin.test.semicolon_as_terminator.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.signal_declaration
-
-    gdsbin.test.signal_declaration.test()
+    # gdsbin.test.signal_declaration = Signal_declaration.new()
+    # gdsbin.test.signal_declaration.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.static_typing
 
