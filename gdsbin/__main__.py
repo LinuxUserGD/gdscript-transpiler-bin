@@ -698,10 +698,8 @@ def run_parser():
     gdsbin = {"test": {}}
     # gdsbin.test.advanced_expression_matching = Advanced_expression_matching.new()
     # gdsbin.test.advanced_expression_matching.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.arrays
-
-    gdsbin.test.arrays.test()
+    # gdsbin.test.arrays = Arrays.new()
+    # gdsbin.test.arrays.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.arrays_dictionaries_nested_const
 
@@ -714,14 +712,10 @@ def run_parser():
     import gdsbin.test.concatenation
 
     gdsbin.test.concatenation.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.constants
-
-    gdsbin.test.constants.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.dictionaries
-
-    gdsbin.test.dictionaries.test()
+    # gdsbin.test.constants = Constants.new()
+    # gdsbin.test.constants.test()
+    # gdsbin.test.dictionaries = Dictionaries.new()
+    # gdsbin.test.dictionaries.test()
     # gdsbin.test.dictionary_lua_style = Dictionary_lua_style.new()
     # gdsbin.test.dictionary_lua_style.test()
     # gdsbin.test.dictionary_mixed_syntax = Dictionary_mixed_syntax.new()
@@ -734,28 +728,20 @@ def run_parser():
     # gdsbin.test.enums.test()
     # gdsbin.test.export_variable = Export_variable.new()
     # gdsbin.test.export_variable.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.float_notation
-
-    gdsbin.test.float_notation.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.for_range
-
-    gdsbin.test.for_range.test()
+    # gdsbin.test.float_notation = Float_notation.new()
+    # gdsbin.test.float_notation.test()
+    # gdsbin.test.for_range = For_range.new()
+    # gdsbin.test.for_range.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.function_default_parameter_type_inference
 
     gdsbin.test.function_default_parameter_type_inference.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.function_many_parameters
-
-    gdsbin.test.function_many_parameters.test()
+    # gdsbin.test.function_many_parameters = Function_many_parameters.new()
+    # gdsbin.test.function_many_parameters.test()
     # gdsbin.test.if_after_lambda = If_after_lambda.new()
     # gdsbin.test.if_after_lambda.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.ins
-
-    gdsbin.test.ins.test()
+    # gdsbin.test.ins = Ins.new()
+    # gdsbin.test.ins.test()
     # gdsbin.test.lambda_callable = Lambda_callable.new()
     # gdsbin.test.lambda_callable.test()
     # gdsbin.test.lambda_capture_callable = Lambda_capture_callable.new()
@@ -790,10 +776,8 @@ def run_parser():
     # gdsbin.test.multiline_if.test()
     # gdsbin.test.multiline_strings = Multiline_strings.new()
     # gdsbin.test.multiline_strings.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.multiline_vector
-
-    gdsbin.test.multiline_vector.test()
+    # gdsbin.test.multiline_vector = Multiline_vector.new()
+    # gdsbin.test.multiline_vector.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.nested_arithmetic
 
@@ -802,18 +786,14 @@ def run_parser():
     import gdsbin.test.nested_array
 
     gdsbin.test.nested_array.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.nested_dictionary
-
-    gdsbin.test.nested_dictionary.test()
+    # gdsbin.test.nested_dictionary = Nested_dictionary.new()
+    # gdsbin.test.nested_dictionary.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.nested_function_calls
 
     gdsbin.test.nested_function_calls.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.nested_if
-
-    gdsbin.test.nested_if.test()
+    # gdsbin.test.nested_if = Nested_if.new()
+    # gdsbin.test.nested_if.test()
     # gdsbin.test.nested_match = Nested_match.new()
     # gdsbin.test.nested_match.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
@@ -836,14 +816,10 @@ def run_parser():
     gdsbin.test.semicolon_as_terminator.test()
     # gdsbin.test.signal_declaration = Signal_declaration.new()
     # gdsbin.test.signal_declaration.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.static_typing
-
-    gdsbin.test.static_typing.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.string_formatting
-
-    gdsbin.test.string_formatting.test()
+    # gdsbin.test.static_typing = Static_typing.new()
+    # gdsbin.test.static_typing.test()
+    # gdsbin.test.string_formatting = String_formatting.new()
+    # gdsbin.test.string_formatting.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.str_preserves_case
 
@@ -852,18 +828,14 @@ def run_parser():
     import gdsbin.test.trailing_comma_in_function_args
 
     gdsbin.test.trailing_comma_in_function_args.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.truthiness
-
-    gdsbin.test.truthiness.test()
+    # gdsbin.test.truthiness = Truthiness.new()
+    # gdsbin.test.truthiness.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.typed_arrays
 
     gdsbin.test.typed_arrays.test()
-    sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
-    import gdsbin.test.variable_declaration
-
-    gdsbin.test.variable_declaration.test()
+    # gdsbin.test.variable_declaration = Variable_declaration.new()
+    # gdsbin.test.variable_declaration.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.whiles
 
