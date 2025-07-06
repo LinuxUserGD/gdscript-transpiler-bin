@@ -1,4 +1,4 @@
-class_name FORLOOP
+class_name Forloop
 ## GDScript Transpiler Properties Class
 ##
 ## Properties for Transpiler
@@ -9,6 +9,3 @@ class_name FORLOOP
 var f
 var i
 var root
-
-func t() -> String:
-	return "forloop"

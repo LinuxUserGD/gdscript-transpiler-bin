@@ -8,4 +8,4 @@ class_name Version
 
 
 ## Version info
-const __version__: String = "0.1.5"
+const __version__: String = "0.1.6"

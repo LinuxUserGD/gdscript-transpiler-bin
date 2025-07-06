@@ -3,7 +3,7 @@ FROM codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest AS build
 WORKDIR /
 
 COPY .run.sh /
-
+ARG portage_upgrade=true
 RUN exec /.run.sh
 
 FROM scratch

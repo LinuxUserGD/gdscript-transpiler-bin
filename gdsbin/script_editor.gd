@@ -243,7 +243,7 @@ func transpile(pkg_name: String):
 func _on_run_button_2_pressed():
 	var stdout: Array = []
 	var msg = $/root/MainWindow/HSplitContainer/ok/VBoxContainer2/ScriptEditor.get_text().replace("'", "\\'").replace('"', '\\"')
-	var exit = OS.execute('python',['-c',msg],stdout,true,false)
+	var exit = OS.execute('python3.13',['-c',msg],stdout,true,false)
 	var output : String = ""
 	output_panel.set_text(output)
 	error_label.set_text(output)

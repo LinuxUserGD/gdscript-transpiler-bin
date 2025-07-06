@@ -7,6 +7,3 @@ class_name Extend
 ## Method to process input string and list of tokens
 
 var extend: String = ""
-
-func t() -> String:
-	return "extends"

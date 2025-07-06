@@ -53,6 +53,17 @@ func transpile(content: String, package_name: String) -> String:
 		t += "\n"
 		t += "    return [stdout.decode('utf-8')]"
 		t += "\n"
+	if defs.execute_pipe_def:
+		t += "def py_execute_pipe(program, args):"
+		t += "\n"
+		t += "    args = [program] + args"
+		t += "\n"
+		t += "    proc = subprocess.Popen(args, shell=False)"
+		t += "\n"
+		t += "    proc.communicate()"
+		t += "\n"
+		t += "    return {'stdio': False}"
+		t += "\n"
 	if defs.thread_def:
 		t += "class Thread:"
 		t += "\n"
@@ -89,15 +100,16 @@ func transpile(content: String, package_name: String) -> String:
 		t += "\n"
 		t += "    _init()"
 		t += "\n"
-	if defs.newinstance_def:
-		t += "def newinstance(m):"
+	if defs.classname_def:
+		t += "def get_script():"
 		t += "\n"
-		t += "    i = type(m)(m.__name__, m.__doc__)"
+		t += "    class Script:"
 		t += "\n"
-		t += "    i.__dict__.update(m.__dict__)"
+		t += "        def get_global_name():"
 		t += "\n"
-		t += "    return i"
+		t += "            return class_name"
 		t += "\n"
+		t += "    return Script"
 	return t
 
 
@@ -289,7 +301,6 @@ func dict(arg: String) -> String:
 			"Node",
 			"SceneTree",
 			"extends",
-			"class_name",
 			"File"
 		]
 	):
@@ -334,6 +345,12 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		defs.subprocess_imp = true
 		defs.execute_def = true
+		return e
+	if arg.ends_with("OS.execute_with_pipe(program,args)"):
+		arg = arg.replace("OS.execute_with_pipe(program,args)", props.repl_dict["OS.execute_with_pipe(program,args)"]);
+		e += arg
+		defs.subprocess_imp = true
+		defs.execute_pipe_def = true
 		return e
 	if arg == "quit()" or arg == "self.quit()":
 		e += props.repl_dict[arg]
@@ -503,8 +520,16 @@ func translate(e: String, package_name: String) -> String:
 		return ","
 	if e == "":
 		return ""
-	if e.contains("class_name"):
+	var cmd: String = e
+	while cmd.begins_with("	"):
+		cmd = cmd.right(cmd.length() - 1)
+	if cmd.begins_with("#") and not cmd.begins_with("#!"):
+		return e
+	if e.begins_with("class_name"):
+		defs.classname_def = true
+		var classn: String = e.split(" ")[0]
 		var script_name : String = e.split(" ")[1]
+		e = e.replace(classn + " " + script_name, "const " + classn + " = " + '"' + script_name + '"')
 		props.gds_deps.append(script_name)
 	if e.contains("extends"):
 		var script_name : String = e.split(" ")[1]
@@ -589,7 +614,8 @@ func set_def(arr: Array):
 		defs.right_def = false
 		defs.left_def = false
 		defs.execute_def = false
-		defs.newinstance_def = false
+		defs.execute_pipe_def = false
+		defs.classname_def = false
 		defs.sys_imp = false
 		defs.subprocess_imp = false
 		defs.os_imp = false
@@ -606,13 +632,14 @@ func set_def(arr: Array):
 	defs.right_def = (defs.right_def || arr[6])
 	defs.left_def = (defs.left_def || arr[7])
 	defs.execute_def = (defs.execute_def || arr[8])
-	defs.newinstance_def = (defs.newinstance_def || arr[9])
-	defs.sys_imp = (defs.sys_imp || arr[10])
-	defs.subprocess_imp = (defs.sys_imp || arr[11])
-	defs.os_imp = (defs.os_imp || arr[12])
-	defs.math_imp = (defs.math_imp || arr[13])
-	defs.rand_imp = (defs.math_imp || arr[14])
-	defs.datetime_imp = (defs.datetime_imp || arr[15])
+	defs.execute_pipe_def = (defs.execute_pipe_def || arr[9])
+	defs.classname_def = (defs.classname_def || arr[10])
+	defs.sys_imp = (defs.sys_imp || arr[11])
+	defs.subprocess_imp = (defs.sys_imp || arr[12])
+	defs.os_imp = (defs.os_imp || arr[13])
+	defs.math_imp = (defs.math_imp || arr[14])
+	defs.rand_imp = (defs.math_imp || arr[15])
+	defs.datetime_imp = (defs.datetime_imp || arr[16])
 
 func get_def() -> Array:
-	return [defs.py_imp, defs.debug, defs.verbose, defs.init_def, defs.thread_def, defs.resize_def, defs.right_def, defs.left_def, defs.execute_def, defs.newinstance_def, defs.sys_imp, defs.subprocess_imp, defs.os_imp, defs.math_imp, defs.rand_imp, defs.datetime_imp]
+	return [defs.py_imp, defs.debug, defs.verbose, defs.init_def, defs.thread_def, defs.resize_def, defs.right_def, defs.left_def, defs.execute_def, defs.execute_pipe_def, defs.classname_def, defs.sys_imp, defs.subprocess_imp, defs.os_imp, defs.math_imp, defs.rand_imp, defs.datetime_imp]

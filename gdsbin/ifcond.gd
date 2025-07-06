@@ -1,4 +1,4 @@
-class_name IFCOND
+class_name Ifcond
 ## GDScript Transpiler Properties Class
 ##
 ## Properties for Transpiler
@@ -8,6 +8,3 @@ class_name IFCOND
 
 var i
 var root
-
-func t() -> String:
-	return "cond"

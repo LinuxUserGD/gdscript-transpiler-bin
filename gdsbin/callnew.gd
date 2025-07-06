@@ -14,6 +14,3 @@ var op: String = ""
 var args: Array = []
 var builtin_function: bool = false
 var callnew: Callnew
-
-func t() -> String:
-	return "call"

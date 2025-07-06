@@ -6,6 +6,9 @@ class_name Ast
 ##
 ## Method to process input string and list of tokens
 
+var key = Key.new()
+var keyword = Keyword.new()
+
 func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 	for i in range(startln, endln, 1):
 		var input = unit[i]
@@ -14,7 +17,7 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 			continue
 		var tabcount: int = 0
 		for ii in range(0, input.size(), 1):
-			if input[ii] == "TAB":
+			if input[ii].id == key.KEY_TAB:
 				tabcount += 1
 			else:
 				break
@@ -25,32 +28,32 @@ func ast(startln: int, endln: int, level: int, root, unit: Array, con: Array):
 		if root == null:
 			root = Root.new()
 			root.elem = []
-		if input[level] == "NUMBER SIGN":
+		if input[level].id == key.KEY_NUMBERSIGN:
 			_number_sign(root, conline, level)
 			continue
-		if input[level] == "NUMBER SIGN 2":
+		if input[level].id == keyword.KW_NUMBERSIGN2:
 			_number_sign(root, conline, level)
 			continue
-		if input[level] == "CLASS NAME":
+		if input[level].id == keyword.KW_CLASSNAME:
 			_classname(root, input, level)
 			continue
-		if input[level] == "EXTENDS":
+		if input[level].id == keyword.KW_EXTENDS:
 			_extend(root, input, level)
 			continue
-		if input[level] == "FUNCTION":
+		if input[level].id == keyword.KW_FUNCTION:
 			_function(i, endln, level, root, input, unit, con)
 			continue
-		if input[level] == "FOR":
+		if input[level].id == keyword.KW_FOR:
 			_for_in(i, endln, level, root, input, unit, con)
 			continue
-		if input[level] == "IF":
+		if input[level].id == keyword.KW_IF:
 			_if_cond(i, endln, level, root, input, unit, con)
 			continue
-		if input[level] == "VARIABLE":
+		if input[level].id == keyword.KW_VARIABLE:
 			const is_const: bool = false
 			_variable(root, input, level, is_const)
 			continue
-		if input[level] == "CONST":
+		if input[level].id == keyword.KW_CONST:
 			const is_const: bool = true
 			_variable(root, input, level, is_const)
 			continue
@@ -71,13 +74,13 @@ func _number_sign_2(root, conline: String, level: int):
 
 func _classname(root, input: Array, level: int):
 	var classn = Classn.new()
-	classn.classn = input[level+1]
+	classn.classn = input[level+1].value
 	root.elem.append(classn)
 	#print(input)
 
 func _extend(root, input: Array, level: int):
 	var extend = Extend.new()
-	extend.extend = input[level+1]
+	extend.extend = input[level+1].value
 	root.elem.append(extend)
 	#print(input)
 
@@ -90,40 +93,40 @@ func _arg_call(input: Array, level: int):
 	var callnew = Callnew.new()
 	var s = input.size()
 	if level+1 < s:
-		if input[level+1] == "DOT":
-			callnew.name = input[level]
+		if input[level+1].id == key.KEY_PERIOD:
+			callnew.name = input[level].value
 			callnew.callnew = _new_call(input, level+2)
-		else:
+		elif input.size() > 2:
 			callnew.name = _eval_string(input, 0).string
 	else:
-		callnew.name = input[level]
+		callnew.name = input[level].value
 	return callnew
 
 func _new_call(input: Array, level: int):
 	var callnew = Callnew.new()
 	var s = input.size()
 	if level+1 < s:
-		if input[level+1] == "DOT":
-			callnew.name = input[level]
+		if input[level+1].id == key.KEY_PERIOD:
+			callnew.name = input[level].value
 			callnew.callnew = _new_call(input, level+2)
-		elif input[level+1] == "EQUALS SIGN":
-			callnew.name = input[level]
+		elif input[level+1].id == key.KEY_EQUAL:
+			callnew.name = input[level].value
 			callnew.equ = true
 			var array: Array = []
 			for i in range(level+2, input.size()):
 				array.append(input[i])
 			callnew.res = _eval(array)
-		elif input[level+1] in ["PLUS", "MINUS", "ASTERISK", "SLASH"]:
-			callnew.name = input[level]
+		elif input[level+1].id in [key.KEY_PLUS, key.KEY_MINUS, key.KEY_ASTERISK, key.KEY_SLASH]:
+			callnew.name = input[level].value
 			callnew.equ = true
-			callnew.op = input[level+1]
+			callnew.op = input[level+1].value
 			var array: Array = []
-			for i in range(level+3, input.size()):
+			for i in range(level+2, input.size()):
 				array.append(input[i])
 			callnew.res = _eval(array)
-		elif input[level+1] == "LEFT BRACKET" and "RIGHT BRACKET" in input:
-			var end = input.find("RIGHT BRACKET", level+2)
-			callnew.name = input[level]
+		elif input[level+1].id == key.KEY_PARENLEFT and key.KEY_PARENRIGHT in _get_ids(input):
+			var end = _get_ids(input).find(key.KEY_PARENRIGHT, level+2)
+			callnew.name = input[level].value
 			callnew.function = true
 			callnew.builtin_function = _builtin_function(input[level])
 			var args: Array = []
@@ -131,16 +134,22 @@ func _new_call(input: Array, level: int):
 				args.append(input[i])
 			if args.size() != 0:
 				callnew.args = _eval_function_args(args)
-		else:
+		elif input.size() > 2:
 			callnew.name = _eval_string(input, 0).string
 	elif level+1 == s:
-		callnew.name = input[level]
+		callnew.name = input[level].value
 	return callnew
 
+func _get_ids(tokens) -> Array:
+	var arr = []
+	for i in tokens:
+		arr.append(i.id)
+	return arr
+
 func _eval_dictionary(_array: Array):
-	var dictionary = DICTIONARY.new()
-	dictionary.items = []
-	return dictionary
+	var dictionaryname = Dictionaryname.new()
+	dictionaryname.items = []
+	return dictionaryname
 
 func _cut_string(msg: String, level: int):
 	var l = msg.length()
@@ -148,45 +157,21 @@ func _cut_string(msg: String, level: int):
 
 func _eval_string(array: Array, level: int):
 	var s: String = ""
-	const qu: String = '"'
-	const token : Dictionary = {
-		"NUMBER SIGN": "#",
-		"EXCLAMATION MARK": "!",
-		"SLASH": "/",
-		"BACKSLASH": "\\",
-		"CLASS NAME": "class_name",
-		"EXTENDS": "extends",
-		"NUMBER SIGN 2": "##",
-		"FUNCTION": "func",
-		"LEFT BRACKET": "(",
-		"RIGHT BRACKET": ")",
-		"MINUS": "-",
-		"PLUS": "+",
-		"GREATER THAN": ">",
-		"LESS THAN": "<",
-		"COLON": ":",
-		"EQUALS SIGN": "=",
-		"CURLY LEFT BRACKET": "{",
-		"CURLY RIGHT BRACKET": "}",
-		"TAB": "\t",
-		"DOT": ".",
-		"NEW": "new",
-		"VARIABLE": "var",
-		"CONST": "const",
-		"QUOTATION": qu
-	}
-	for i in range(level, array.size()):
-		s += token[array[i]] if array[i] in token else array[i]
-	var string = STRING.new()
-	string.string = s
-	return string
+	for i in range(level, level+3):
+		s += array[i].value
+	var stringname = Stringname.new()
+	stringname.string = s
+	return stringname
 
 func _eval_function_args(array: Array):
 	var arr: Array = []
 	var ast_arr: Array = []
-	array.append("COMMA")
+	var token = Token.new()
+	token.id = key.KEY_COMMA
+	token.value = ","
+	array.append(token)
 	for i in range(0, array.size()):
-		if array[i] == "COMMA":
+		if array[i].id == key.KEY_COMMA:
 			ast_arr.append(_arg_call(arr, 0))
 			arr = []
 		else:
@@ -194,16 +179,16 @@ func _eval_function_args(array: Array):
 	return ast_arr
 
 func _variable(root, input: Array, level: int, is_const: bool):
-	var variable = VARIABLE.new()
-	variable.variable = input[level+1]
+	var variable = Variable.new()
+	variable.variable = input[level+1].value
 	variable.is_const = is_const
-	if input[level+2]=="COLON":
+	if input[level+2].id == key.KEY_COLON:
 		variable.st = true
 		level += 1
-		if input[level+2]!="EQUALS SIGN":
-			variable.type = input[level+2]
+		if input[level+2].id != key.KEY_EQUAL:
+			variable.type = input[level+2].value
 			level += 1
-	if input[level+2]=="EQUALS SIGN":
+	if input[level+2].id == key.KEY_EQUAL:
 		variable.equ = true
 		level += 1
 		var array: Array = []
@@ -213,26 +198,27 @@ func _variable(root, input: Array, level: int, is_const: bool):
 	root.elem.append(variable)
 	#print(input)
 
-func _builtin_function(function: String) -> bool:
-	return (function == "NEW")
+func _builtin_function(function) -> bool:
+	return (function.id == keyword.KW_NEW)
 
 func _eval(array: Array):
 	var s: int = array.size()
 	var variable
-	if array[0] == "CURLY LEFT BRACKET" && array[s-1] == "CURLY RIGHT BRACKET":
+	if array[0].id == key.KEY_BRACELEFT && array[s-1].id == key.KEY_BRACERIGHT:
 		variable = _eval_dictionary(array)
 		return variable
-	if array[0] == "QUOTATION" && array[s-1] == "QUOTATION":
-		variable = _eval_string(array, 0)
-		return variable
+	if array.size() == 3:
+		if array[0].id == key.KEY_QUOTEDBL && array[2].id == key.KEY_QUOTEDBL:
+			variable = _eval_string(array, 0)
+			return variable
 	variable = _new_call(array, 0)
 	return variable
 
 func _for_in(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
-	var forloop = FORLOOP.new()
+	var forloop = Forloop.new()
 	var begin: int = -1
-	if "IN" in input:
-		begin = input.find("IN", level+2)
+	if keyword.KW_IN in _get_ids(input):
+		begin = _get_ids(input).find(keyword.KW_IN, level+2)
 	var end: int = input.size()
 	var f: Array = []
 	for i in range(level+1, begin):
@@ -246,7 +232,7 @@ func _for_in(startln: int, endln: int, level: int, root, input: Array, unit: Arr
 	root.elem.append(forloop)
 
 func _if_cond(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
-	var ifcond = IFCOND.new()
+	var ifcond = Ifcond.new()
 	var end: int = input.size()
 	var i: Array = []
 	for x in range(level+1, end-1):
@@ -258,33 +244,33 @@ func _if_cond(startln: int, endln: int, level: int, root, input: Array, unit: Ar
 func _function(startln: int, endln: int, level: int, root, input: Array, unit: Array, con: Array):
 	var function = Function.new()
 	function.args = []
-	function.function = input[level+1]
+	function.function = input[level+1].value
 	var begin: int = -1
-	if "LEFT BRACKET" in input:
-		begin = input.find("LEFT BRACKET", level+2)
+	if key.KEY_PARENLEFT in _get_ids(input):
+		begin = _get_ids(input).find(key.KEY_PARENLEFT, level+2)
 	var end: int = -1
-	if "RIGHT BRACKET" in input:
-		end = input.find("RIGHT BRACKET", begin+1)
+	if key.KEY_PARENRIGHT in _get_ids(input):
+		end = _get_ids(input).find(key.KEY_PARENRIGHT, begin+1)
 	var arrow1: int = -1
-	if "MINUS" in input:
-		arrow1 = input.find("MINUS", end+1)
+	if key.KEY_MINUS in _get_ids(input):
+		arrow1 = _get_ids(input).find(key.KEY_MINUS, end+1)
 	var arrow2: int = -1
-	if "GREATER THAN" in input:
-		arrow2 = input.find("GREATER THAN", arrow1+1)
+	if key.KEY_GREATER in _get_ids(input):
+		arrow2 = _get_ids(input).find(key.KEY_GREATER, arrow1+1)
 	var colon: int = -1
-	if "COLON" in input:
-		colon = input.find("COLON", end+1)
+	if key.KEY_COLON in _get_ids(input):
+		colon = _get_ids(input).find(key.KEY_COLON, end+1)
 	if (arrow1>0 and arrow2>0):
 		function.ret = true
-		function.res = input[colon-1]
+		function.res = input[colon-1].value
 	var add: bool = true
 	while (end-begin > 1):
 		if add:
-			var string = STRING.new()
-			string.string = input[begin+1]
-			function.args.append(string)
+			var stringname = Stringname.new()
+			stringname.string = input[begin+1].value
+			function.args.append(stringname)
 			add = false
-		if input[begin+1] == "COMMA":
+		if input[begin+1].id == key.KEY_COMMA:
 			add = true
 		begin += 1
 	function.root = ast(startln+1, endln, level+1, function.root, unit, con)

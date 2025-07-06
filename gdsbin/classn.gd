@@ -7,6 +7,3 @@ class_name Classn
 ## Method to process input string and list of tokens
 
 var classn: String = ""
-
-func t() -> String:
-	return "classname"

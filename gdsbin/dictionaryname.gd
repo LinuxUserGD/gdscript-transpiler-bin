@@ -1,4 +1,4 @@
-class_name STRING
+class_name Dictionaryname
 ## GDScript Transpiler Properties Class
 ##
 ## Properties for Transpiler
@@ -6,7 +6,4 @@ class_name STRING
 
 ## Method to process input string and list of tokens
 
-var string: String = ""
-
-func t() -> String:
-	return "string"
+var items: Array = []

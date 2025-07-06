@@ -1,0 +1,39 @@
+[ "${portage_upgrade}" = true ] && echo "Upgrading image..." || true && \
+[ "${portage_upgrade}" = false ] && echo "Installing image..." || true && \
+rm -rf /etc/portage/package.use/* /etc/portage/package.accept_keywords/* /etc/portage/package.mask/* && \
+echo '*/* ~amd64' > /etc/portage/package.accept_keywords/base.conf && \
+echo 'dev-lang/python **' > /etc/portage/package.accept_keywords/python.conf && \
+echo '*/* compiler-rt default-compiler-rt default-libcxx default-lld libcxx -offload openmp -polly sanitize llvm-libunwind clang' > /etc/portage/package.use/clang.conf && \
+echo '*/* full-stdlib sqlite' > /etc/portage/package.use/python.conf && \
+echo 'net-misc/curl -curl_quic_openssl -quic -http3 -httpsrr -adns' > /etc/portage/package.use/curl.conf && \
+echo 'dev-vcs/git -perl' > /etc/portage/package.use/git.conf && \
+echo 'app-alternatives/ninja -reference samurai' > /etc/portage/package.use/ninja.conf && \
+echo 'sys-devel/gcc' > /etc/portage/package.mask/gcc.conf && \
+echo 'EMERGE_DEFAULT_OPTS="--jobs 3"' >> /etc/portage/make.conf && \
+echo 'LTO_ERR="-Werror=odr -Werror=conditional-type-mismatch -Werror=pointer-type-mismatch -Werror=selector-type-mismatch -Werror=strict-aliasing -Wno-implicit-function-declaration -Wno-sizeof-pointer-memaccess"' >> /etc/portage/make.conf && \
+echo 'COMMON_FLAGS="-O3 -pipe -march=native -g0 -D_FORTIFY_SOURCE=3 -flto=thin"' >> /etc/portage/make.conf && \
+echo 'CFLAGS="${COMMON_FLAGS}"' >> /etc/portage/make.conf && \
+echo 'CXXFLAGS="${COMMON_FLAGS} ${LTO_ERR} -stdlib=libc++"' >> /etc/portage/make.conf && \
+echo 'LDFLAGS="-Wl,-O3 -Wl,--as-needed -Wl,--strip-debug -Wl,--undefined-version -Wl,--icf=safe -Wl,--threads=4 -rtlib=compiler-rt -unwindlib=libunwind -stdlib=libc++ -fuse-ld=lld"' >> /etc/portage/make.conf && \
+echo 'LD="ld.lld"' >> /etc/portage/make.conf && \
+echo 'FEATURES="-config-protect-if-modified"' >> /etc/portage/make.conf && \
+echo 'NINJA=samu' >> /etc/portage/make.conf && \
+perl -i -ne 'print if ! $x{$_}++' /etc/portage/make.conf && \
+wget --progress=dot:mega -O - https://github.com/gentoo-mirror/gentoo/archive/master.tar.gz | tar -xz && \
+mv gentoo-master /var/db/repos/gentoo && \
+echo '-5' | etc-update && \
+emerge net-misc/curl --newuse --changed-use && \
+emerge app-alternatives/ninja --newuse --changed-use && \
+emerge dev-lang/go dev-python/nuitka dev-util/patchelf dev-vcs/git --newuse --changed-use && \
+emerge -1 app-eselect/eselect-repository --newuse --changed-use && \
+eselect repository add 12101111-overlay git https://github.com/12101111/overlay.git &> /dev/null || true && \
+emerge --sync 12101111-overlay && \
+eselect repository add clang-musl git https://github.com/clang-musl-overlay/clang-musl-overlay.git &> /dev/null || true && \
+emerge --sync clang-musl && \
+emerge llvm-runtimes/libatomic-stub --newuse --changed-use && \
+emerge net-libs/nodejs --newuse --changed-use && \
+emerge sys-devel/llvm-conf --newuse --changed-use && \
+emerge --depclean && \
+[ "${portage_upgrade}" = true ] && emerge --oneshot --update --newuse --changed-use --deep --with-bdeps=y --keep-going @installed --exclude=sys-devel/gcc --exclude=net-misc/iputils || true && \
+[ "${portage_upgrade}" = true ] && emerge --depclean || true && \
+rm -r /var/db/repos/* /var/cache/distfiles/*

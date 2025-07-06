@@ -23,8 +23,10 @@ var right_def: bool = false
 var left_def: bool = false
 ## Add additional python code for execute() method to transpiled script if required
 var execute_def: bool = false
-## Add additional python code for newinstance() method to transpiled script if required
-var newinstance_def: bool = false
+## Add additional python code for execute_pipe() method to transpiled script if required
+var execute_pipe_def: bool = false
+## Add additional python code for get_global_name() method to transpiled script if required
+var classname_def: bool = false
 ## Add additional python sys import to transpiled script if required
 var sys_imp: bool = false
 ## Add additional python subprocess import to transpiled script if required

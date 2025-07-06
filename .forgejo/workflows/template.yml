@@ -11,9 +11,9 @@ concurrency:
 jobs:
   build-linux:
     permissions: write-all
-    runs-on: linux-docker
+    runs-on: codeberg-tiny-lazy
     container:
-      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
+      image: docker.io/library/node:current-alpine
     name: ${{ matrix.name }}
     outputs:
       status: ${{ steps.early.outputs.status }}
@@ -28,29 +28,27 @@ jobs:
             artifact: true
     steps:
       - name: Check-out repository
-        uses: https://codeberg.org/actions/checkout@main
+        uses: https://code.forgejo.org/actions/checkout@main
 
       - name: Run script
         id: early
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          apk add --no-cache python3 py3-pip git ruff
           rm *.import
           rm project.godot
           rm -rf addons docker gdUnit4 zig-template
           git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
-          python gdscript-transpiler-bin/bin/gds.py format=bin/gds.gd
-          python gdscript-transpiler-bin/bin/gds.py setup=setup.py
+          python3 gdscript-transpiler-bin/bin/gds.py format=bin/gds.gd
+          python3 gdscript-transpiler-bin/bin/gds.py setup=setup.py
           cp gdscript-transpiler-bin/requirements.txt .
-          rm -rf /usr/lib/python3.12/site-packages/gdsbin
-          rm -rf /usr/lib/python3.12/site-packages/gdsbin*
-          rm -rf /usr/share/doc/gdsbin*
-          pip install .  --no-cache-dir --no-deps --break-system-packages --force-reinstall
+          python3 -m pip install .  --no-cache-dir --no-deps --break-system-packages
           rm -rf gdsbin.egg-info _build
           rm pyproject.toml
           find . ! -path "./gdscript-transpiler-bin/*" -name "*.py" -type f | xargs rm --
-          python -m gdsbin format=bin/gds.gd
-          python -m gdsbin setup=setup.py
+          python3 -m gdsbin format=bin/gds.gd
+          python3 -m gdsbin setup=setup.py
           echo "Uploading files..."
           dir=$(find */ -maxdepth 0 -type d ! -name "gdscript-transpiler-bin")
           cd gdscript-transpiler-bin
@@ -66,6 +64,7 @@ jobs:
           cd ..
           echo ${PWD}
 
+
   deploy-linux:
     runs-on: linux-docker
     container:
@@ -75,22 +74,26 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: https://codeberg.org/actions/checkout@main
+        uses: https://code.forgejo.org/actions/checkout@main
+        with:
+          ref: python
 
       - name: Compile gdscript-transpiler-bin
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          rm -rf /usr/lib/python3.12/site-packages/gdsbin
-          rm -rf /usr/lib/python3.12/site-packages/gdsbin*
-          rm -rf /usr/share/doc/gdsbin*
-          python -m pip install git+https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python --no-cache-dir --no-deps --break-system-packages --force-reinstall
-          python -m gdsbin format=bin/gds.gd
-          for i in ziglang nuitka zstandard ordered_set; do cp -r /usr/lib/python3.12/site-packages/$i ~/.pyenv/versions/3.12.4/lib/python3.12/site-packages/ ; done
-          CC=/usr/lib/llvm/17/bin/clang ~/.pyenv/versions/3.12.4/bin/python -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=yes --clang --assume-yes-for-downloads --remove-output -o gds
+          llvm-conf 1
+          . /etc/profile
+          env-update
+          source /etc/portage/make.conf
+          python3 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --remove-output -o gds
           export BUTLER_API_KEY=${{ secrets.BUTLER_CREDENTIALS }}
           echo $BUTLER_API_KEY > key.txt
-          butler -i key.txt push gds linuxusergd/gdscript-transpiler-bin:linux
+          git clone https://github.com/LinuxUserGD/butler.git
+          pushd butler
+          go build
+          popd
+          ./butler/butler -i key.txt push gds linuxusergd/gdscript-transpiler-bin:linux
 
       - name: Upload main.dist
         uses: actions/upload-artifact@v3

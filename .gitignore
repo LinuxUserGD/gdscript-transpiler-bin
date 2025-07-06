@@ -9,6 +9,7 @@ data_*/
 .godot/*
 !.godot/global_script_class_cache.cfg
 export_presets.cfg
+extension_api.json
 
 # Python
 *.py
@@ -37,6 +38,9 @@ gds.build/
 archive.tar.xz
 
 # Zig
-zig-cache/
+.zig-cache/
 zig-out/
 out/
+
+docker/init/.run.sh
+docker/update/.run.sh

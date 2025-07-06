@@ -6,6 +6,3 @@ class_name Root
 
 ## Method to process input string and list of tokens
 var elem: Array = []
-
-func t() -> String:
-	return "root"

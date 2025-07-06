@@ -7,6 +7,3 @@ class_name Comment
 ## Method to process input string and list of tokens
 
 var comment: String = ""
-
-func t() -> String:
-	return "comment"

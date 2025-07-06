@@ -11,6 +11,3 @@ var args: Array = []
 var res: String = ""
 var ret: bool = false
 var root
-
-func t() -> String:
-	return "function"
