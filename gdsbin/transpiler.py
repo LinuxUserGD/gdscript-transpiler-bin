@@ -205,7 +205,7 @@ def check_format(l):
 
 
 def check_new(l):
-    NAMES: [String] = ["preload", "load"]
+    NAMES = ["preload", "load"]
     for n in NAMES:
         name = n + "(" + '"'
         search = ".gd" + '"'
