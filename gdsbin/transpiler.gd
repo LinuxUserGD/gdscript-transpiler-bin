@@ -183,7 +183,7 @@ func check_format(l: String):
 	return l
 
 func check_new(l: String):
-	const NAMES: Array[String] = ["preload", "load"]
+	const NAMES: Array = ["preload", "load"]
 	for n in NAMES:
 		var name: String = n + "(" + '"'
 		var search: String = ".gd" + '"'

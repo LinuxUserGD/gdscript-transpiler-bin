@@ -28,7 +28,7 @@ jobs:
             artifact: true
     steps:
       - name: Check-out repository
-        uses: https://code.forgejo.org/actions/checkout@main
+        uses: https://code.forgejo.org/actions/checkout@v4.3.0
 
       - name: Run script
         id: early
