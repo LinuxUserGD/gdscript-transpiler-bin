@@ -16,52 +16,52 @@ def run():
     __init__ = type(gdsbin.__init__)(gdsbin.__init__.__name__, gdsbin.__init__.__doc__)
     __init__.__dict__.update(gdsbin.__init__.__dict__)
     info("add")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, add(), 0)
     info("product")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, product(), 3988008998000)
     info("rec")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, rec(), 0)
     info("arr_test")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, arr_test(), 1500)
     info("string")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, string(), 300000)
     info("pr_untyped")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, pr_untyped(), 655360)
     info("pr_typed")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, pr_typed(), 655360)
     info("i_arr_untyped")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, i_arr_untyped(), 0)
     info("i_arr_typed")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, i_arr_typed(), 0)
     info("str_arr_untyped")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, str_arr_untyped(), 0)
     info("str_arr_typed")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, str_arr_untyped(), 0)
     info("str_arr_packed")
-    start_ms = round(datetime.datetime.utcnow().timestamp() * 1000)
+    start_ms = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     check(start_ms, str_arr_packed(), 0)
     microtests()
     return
 
 
 def start():
-    return round(datetime.datetime.utcnow().timestamp() * 1000)
+    return float(datetime.datetime.now().strftime("%s.%f")) * 1000
 
 
 def stop(_test_name, _time_before):
     ITERATIONS = 250000
-    time = round(datetime.datetime.utcnow().timestamp() * 1000) - _time_before
+    time = (float(datetime.datetime.now().strftime("%s.%f")) * 1000) - _time_before
     if len(_test_name) != 0:
         test_time = time - _for_time
 
@@ -78,7 +78,7 @@ def stop(_test_name, _time_before):
 def microtests():
     ITERATIONS = 250000
     print("-------------------")
-    _time_before = round(datetime.datetime.utcnow().timestamp() * 1000)
+    _time_before = float(datetime.datetime.now().strftime("%s.%f")) * 1000
     start()
     for i in range(0, ITERATIONS):
         pass
@@ -113,7 +113,7 @@ def microtests():
 
 
 def str_arr_packed():
-    ITERATIONS = 80_000
+    ITERATIONS = 80000
     array = []
     for i in range(0, ITERATIONS):
         # Insert elements.
@@ -128,8 +128,8 @@ def str_arr_packed():
 
 
 def str_arr_typed():
-    ITERATIONS = 80_000
-    array: [String] = []
+    ITERATIONS = 80000
+    array = []
     for i in range(0, ITERATIONS):
         # Insert elements.
         array.append("Godot " + str(i))
@@ -143,7 +143,7 @@ def str_arr_typed():
 
 
 def str_arr_untyped():
-    ITERATIONS = 80_000
+    ITERATIONS = 80000
     array = []
     for i in range(0, ITERATIONS):
         # Insert elements.
@@ -158,7 +158,7 @@ def str_arr_untyped():
 
 
 def i_arr_untyped():
-    ITERATIONS = 80_000
+    ITERATIONS = 80000
     array = []
     for i in range(0, ITERATIONS):
         # Insert elements.
@@ -173,8 +173,8 @@ def i_arr_untyped():
 
 
 def i_arr_typed():
-    ITERATIONS = 80_000
-    array: [int] = []
+    ITERATIONS = 80000
+    array = []
     for i in range(0, ITERATIONS):
         # Insert elements.
         array.append(i)
@@ -209,8 +209,8 @@ def pr_typed():
         arr.append(random.randint(0, 2147483647) % elems)
     acc = 0.0
     for e in arr:
-        e2: int = arr[e]
-        e3: int = arr[e2]
+        e2 = arr[e]
+        e3 = arr[e2]
         acc += e * e2
         acc *= e3 + e
         acc = math.sqrt(acc)
@@ -288,7 +288,7 @@ def check(start_ms, _a, b):
         not_passed()
     else:
         passed()
-        result_ms = round(datetime.datetime.utcnow().timestamp() * 1000) - start_ms
+        result_ms = (float(datetime.datetime.now().strftime("%s.%f")) * 1000) - start_ms
         print("Time to run: " + str(result_ms / 1000) + "s")
     return
 
@@ -434,7 +434,9 @@ def test_while_time():
 
     print(
         "While time (for equivalent with manual increment): "
-        + str(round(datetime.datetime.utcnow().timestamp() * 1000) - _time_before)
+        + str(
+            int(float(datetime.datetime.now().strftime("%s.%f")) * 1000) - _time_before
+        )
     )
 
 

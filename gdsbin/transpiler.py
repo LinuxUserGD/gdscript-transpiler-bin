@@ -486,7 +486,7 @@ def dict(arg):
     while 0 <= arg.find("Time.get_ticks_msec()"):
         arg = arg.replace(
             "Time.get_ticks_msec()",
-            "round(datetime.datetime.utcnow().timestamp() * 1000)",
+            "int(float(datetime.datetime.now().strftime('%s.%f')) * 1000)",
         )
         defs.datetime_imp = True
         con = True
