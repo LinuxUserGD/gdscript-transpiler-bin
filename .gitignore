@@ -13,6 +13,7 @@ extension_api.json
 
 # Python
 *.py
+*.pyc
 pyproject.toml
 
 # Nuitka

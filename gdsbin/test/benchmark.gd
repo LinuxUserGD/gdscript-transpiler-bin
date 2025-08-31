@@ -101,7 +101,7 @@ func microtests():
 	print("Done.")
 
 func str_arr_packed() -> int:
-	const ITERATIONS: int = 80_000
+	const ITERATIONS: int = 80000
 	var array: PackedStringArray = []
 	for i in range(0, ITERATIONS):
 		# Insert elements.
@@ -115,8 +115,8 @@ func str_arr_packed() -> int:
 	return array.size()
 
 func str_arr_typed() -> int:
-	const ITERATIONS: int = 80_000
-	var array: Array[String] = []
+	const ITERATIONS: int = 80000
+	var array: Array = []
 	for i in range(0, ITERATIONS):
 		# Insert elements.
 		array.push_back("Godot " + str(i))
@@ -129,7 +129,7 @@ func str_arr_typed() -> int:
 	return array.size()
 
 func str_arr_untyped() -> int:
-	const ITERATIONS = 80_000
+	const ITERATIONS = 80000
 	var array = []
 	for i in range(0, ITERATIONS):
 		# Insert elements.
@@ -143,7 +143,7 @@ func str_arr_untyped() -> int:
 	return array.size()
 
 func i_arr_untyped() -> int:
-	const ITERATIONS = 80_000
+	const ITERATIONS = 80000
 	var array = []
 	for i in range(0, ITERATIONS):
 		# Insert elements.
@@ -157,8 +157,8 @@ func i_arr_untyped() -> int:
 	return array.size()
 
 func i_arr_typed() -> int:
-	const ITERATIONS: int = 80_000
-	var array: Array[int] = []
+	const ITERATIONS: int = 80000
+	var array: Array = []
 	for i in range(0, ITERATIONS):
 		# Insert elements.
 		array.push_back(i)
@@ -191,8 +191,8 @@ func pr_typed() -> int:
 		arr.append(randi() % elems)
 	var acc : float = 0.0
 	for e in arr:
-		var e2 :int = arr[e]
-		var e3 :int = arr[e2]
+		var e2: int = arr[e]
+		var e3: int = arr[e2]
 		acc += e * e2
 		acc *= e3 + e
 		acc = sqrt(acc)

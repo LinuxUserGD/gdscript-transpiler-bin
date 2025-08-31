@@ -467,7 +467,7 @@ func dict(arg: String) -> String:
 		arg = arg.replace("_self", "self")
 		con = true
 	while arg.contains("Time.get_ticks_msec()"):
-		arg = arg.replace("Time.get_ticks_msec()", "round(datetime.datetime.utcnow().timestamp() * 1000)")
+		arg = arg.replace("Time.get_ticks_msec()", "int(float(datetime.datetime.now().strftime('%s.%f')) * 1000)")
 		defs.datetime_imp = true
 		con = true
 	while arg.contains("OS.get_cmdline_args()"):
