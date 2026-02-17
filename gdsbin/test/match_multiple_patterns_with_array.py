@@ -11,7 +11,7 @@ def foo(x):
 
 def bar(x):
     match x:
-        case [[1], [2], [3]]:
+        case [1], [2], [3]:
             print("[1], [2], [3]")
         case [4]:
             print("[4]")
