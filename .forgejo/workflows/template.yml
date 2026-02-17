@@ -74,7 +74,7 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: https://code.forgejo.org/actions/checkout@main
+        uses: https://codeberg.org/ziglang/checkout@main
         with:
           ref: python
 
