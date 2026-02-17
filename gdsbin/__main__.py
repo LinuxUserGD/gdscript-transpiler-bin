@@ -86,14 +86,14 @@ def gen_api(program):
     version = version[0].split("\n")[0]
     info = {
         "major": 4,
-        "minor": 5,
-        "patch": 1,
-        "hex": 263425,
+        "minor": 6,
+        "patch": 0,
+        "hex": 263680,
         "status": "stable",
         "build": "gentoo",
-        "hash": "f62fdbde15035c5576dad93e586201f4d41ef0cb",
+        "hash": "89cea143987d564363e15d207438530651d943ac",
         "timestamp": 0,
-        "string": "4.5.1-stable (gentoo)",
+        "string": "4.6-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
@@ -471,14 +471,14 @@ def start(arg, stage2, stage3, package_name):
 def version_info():
     info = {
         "major": 4,
-        "minor": 5,
-        "patch": 1,
-        "hex": 263425,
+        "minor": 6,
+        "patch": 0,
+        "hex": 263680,
         "status": "stable",
         "build": "gentoo",
-        "hash": "f62fdbde15035c5576dad93e586201f4d41ef0cb",
+        "hash": "89cea143987d564363e15d207438530651d943ac",
         "timestamp": 0,
-        "string": "4.5.1-stable (gentoo)",
+        "string": "4.6-stable (gentoo)",
     }
     major = info.get("major")
     minor = info.get("minor")
