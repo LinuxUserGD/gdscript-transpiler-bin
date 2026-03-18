@@ -3,11 +3,15 @@
 rm -rf /etc/portage/package.use/* /etc/portage/package.accept_keywords/* /etc/portage/package.mask/* && \
 echo '*/* ~amd64' > /etc/portage/package.accept_keywords/base.conf && \
 echo 'dev-lang/python **' > /etc/portage/package.accept_keywords/python.conf && \
+echo 'dev-games/godot **' > /etc/portage/package.accept_keywords/godot.conf && \
 echo '*/* compiler-rt default-compiler-rt default-libcxx default-lld libcxx -offload openmp -polly sanitize llvm-libunwind clang' > /etc/portage/package.use/clang.conf && \
 echo '*/* full-stdlib sqlite' > /etc/portage/package.use/python.conf && \
 echo 'net-misc/curl -curl_quic_openssl -quic -http3 -httpsrr -adns' > /etc/portage/package.use/curl.conf && \
 echo 'dev-vcs/git -perl' > /etc/portage/package.use/git.conf && \
 echo 'app-alternatives/ninja -reference samurai' > /etc/portage/package.use/ninja.conf && \
+echo "media-libs/freetype harfbuzz brotli" > /etc/portage/package.use/freetype.conf && \
+echo "media-libs/harfbuzz icu" > /etc/portage/package.use/harfbuzz.conf && \
+echo "media-libs/vulkan-loader X" > /etc/portage/package.use/vulkan.conf && \
 echo '=dev-lang/python-3.13.9999' >> /etc/portage/package.mask/python.conf && \
 echo '=dev-lang/python-3.14.9999' >> /etc/portage/package.mask/python.conf && \
 echo '=dev-lang/python-3.15.9999' >> /etc/portage/package.mask/python.conf && \
@@ -25,7 +29,7 @@ perl -i -ne 'print if ! $x{$_}++' /etc/portage/make.conf && \
 wget --progress=dot:mega -O - https://github.com/gentoo-mirror/gentoo/archive/master.tar.gz | tar -xz && \
 mv gentoo-master /var/db/repos/gentoo && \
 etc-update --automode -5 && \
-emerge net-misc/curl --update && \
+emerge net-misc/curl dev-python/pip --update && \
 emerge app-alternatives/ninja --update && \
 emerge dev-lang/go dev-python/nuitka dev-util/patchelf dev-vcs/git --update && \
 emerge app-eselect/eselect-repository --update && \
@@ -34,7 +38,7 @@ emerge --sync 12101111-overlay && \
 eselect repository add clang-musl git https://github.com/clang-musl-overlay/clang-musl-overlay.git &> /dev/null || true && \
 emerge --sync clang-musl && \
 emerge llvm-runtimes/libatomic-stub --update && \
-emerge net-libs/nodejs --update && \
+emerge dev-games/godot net-libs/nodejs dev-util/ruff --update && \
 emerge sys-devel/llvm-conf --update && \
 emerge --depclean && \
 [ "${portage_upgrade}" = true ] && emerge --oneshot --update --newuse --changed-use --deep --with-bdeps=y --keep-going @installed || true && \

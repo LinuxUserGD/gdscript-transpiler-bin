@@ -11,9 +11,9 @@ concurrency:
 jobs:
   build-linux:
     permissions: write-all
-    runs-on: codeberg-tiny-lazy
+    runs-on: linux-docker
     container:
-      image: docker.io/library/node:current-alpine
+      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
     name: ${{ matrix.name }}
     outputs:
       status: ${{ steps.early.outputs.status }}
@@ -35,23 +35,25 @@ jobs:
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          apk add --no-cache python3 py3-pip git ruff
           rm *.import
           rm project.godot
           rm -rf addons docker gdUnit4 zig-template
-          git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
-          python3 gdscript-transpiler-bin/bin/gds.py format=bin/gds.gd
-          python3 gdscript-transpiler-bin/bin/gds.py setup=setup.py
-          cp gdscript-transpiler-bin/requirements.txt .
+          godot -s bin/gds.gd --headless --no-header bin/gds.gd format=bin/gds.gd
+          godot -s bin/gds.gd --headless --no-header bin/gds.gd setup=setup.py
+          python3 bin/gds.py format=bin/gds.gd
+          python3 bin/gds.py setup=setup.py
+          touch requirements.txt
           python3 -m pip install .  --no-cache-dir --no-deps --break-system-packages
           rm -rf gdsbin.egg-info _build
           rm pyproject.toml
-          find . ! -path "./gdscript-transpiler-bin/*" -name "*.py" -type f | xargs rm --
+          find . -name "*.py" -type f | xargs rm --
           python3 -m gdsbin format=bin/gds.gd
           python3 -m gdsbin setup=setup.py
+          find . -name "*.gd" -type f | xargs rm --
+          git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
           echo "Uploading files..."
           dir=$(find */ -maxdepth 0 -type d ! -name "gdscript-transpiler-bin")
-          cd gdscript-transpiler-bin
+          pushd gdscript-transpiler-bin
           rm -rf $(ls | grep -v "requirements.txt")
           for i in $dir; do mkdir ${i} ; done
           for i in $dir; do cp -r "../${i}"*.py ${i} ; done
@@ -61,7 +63,7 @@ jobs:
           git config --global user.email "hugegameartgd@gmail.com"
           git add -A
           [ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 0; }
-          cd ..
+          popd
           echo ${PWD}
 
 
