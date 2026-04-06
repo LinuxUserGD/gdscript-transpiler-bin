@@ -501,13 +501,13 @@ def dict(arg):
                 {
                     "major": 4,
                     "minor": 6,
-                    "patch": 1,
-                    "hex": 263681,
+                    "patch": 2,
+                    "hex": 263682,
                     "status": "stable",
                     "build": "gentoo",
-                    "hash": "14d19694e0c88a3f9e82d899a0400f27a24c176e",
+                    "hash": "71f334935c000924d403448e698df4441130df18",
                     "timestamp": 0,
-                    "string": "4.6.1-stable (gentoo)",
+                    "string": "4.6.2-stable (gentoo)",
                 }
             ),
         )
