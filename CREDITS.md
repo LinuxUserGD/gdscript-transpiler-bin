@@ -1,5 +1,10 @@
-- Repository: [Godot](https://github.com/godotengine/godot)
+Repository: [Godot](https://github.com/godotengine/godot)
 
+<details>
+
+<summary>License</summary>
+
+```
 Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md).
 Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
 
@@ -20,10 +25,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
 
+</details>
 
-- Repository: [zig](https://github.com/ziglang/zig)
+Repository: [zig](https://github.com/ziglang/zig)
 
+<details>
+
+<summary>License</summary>
+
+```
 The MIT License (Expat)
 
 Copyright (c) Zig contributors
@@ -45,9 +57,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+```
 
-- Repository: [gentoo-docker-images](https://github.com/gentoo/gentoo-docker-images.git)
+</details>
 
+Repository: [gentoo-docker-images](https://github.com/gentoo/gentoo-docker-images.git)
+
+<details>
+
+<summary>License</summary>
+
+```
                     GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 
@@ -387,11 +407,17 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
+```
 
+</details>
 
+Repository: [gdunit4](https://github.com/MikeSchulze/gdUnit4/blob/master/addons/gdUnit4)
 
-- Repository: [gdunit4](https://github.com/MikeSchulze/gdUnit4/blob/master/addons/gdUnit4)
+<details>
 
+<summary>License</summary>
+
+```
 MIT License
 
 Copyright (c) 2023 Mike Schulze
@@ -413,18 +439,25 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
 
+</details>
 
-- Repository: [GDScript Online](https://github.com/gdscript-online/gdscript-online.github.io)
+Repository: [GDScript Online](https://github.com/gdscript-online/gdscript-online.github.io)
 
-Copyright © 2019-present Hugo Locurcio and contributors
-
-- Unless otherwise specified, files in this repository are licensed under the
+> Copyright © 2019-present Hugo Locurcio and contributors
+> 
+> - Unless otherwise specified, files in this repository are licensed under the
   MIT license, see [LICENSE.md](LICENSE.md) for more information.
-- The [JetBrains Mono](https://www.jetbrains.com/lp/mono/) font is licensed under
+> - The [JetBrains Mono](https://www.jetbrains.com/lp/mono/) font is licensed under
   the SIL OFL 1.1, see
   [fonts/LICENSE.JetBrainsMono.txt](fonts/LICENSE.JetBrainsMono.txt) for more information.
 
+<details>
+  
+<summary>License</summary>
+
+```
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -442,9 +475,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
 
-- Repository: [Nuitka](https://github.com/Nuitka/Nuitka)
+</details>
 
+Repository: [Nuitka](https://github.com/Nuitka/Nuitka)
+
+<details>
+  
+<summary>License</summary>
+
+```
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
@@ -1106,7 +1147,15 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
+```
 
+</details>
+
+<details>
+  
+<summary>Nuitka Runtime Library Exception</summary>
+
+```
 Nuitka Runtime Library Exception
 
 Version 1.0
@@ -1164,9 +1213,17 @@ Runtime Library.
 This exception is intended to allow the creation of closed-source Python
 applications that use Nuitka, but it does prevent the creation of closed-source
 Nuitka itself except by the source code owner.
+```
 
-- Repository: [ruff](https://github.com/astral-sh/ruff)
+</details>
 
+Repository: [ruff](https://github.com/astral-sh/ruff)
+
+<details>
+  
+<summary>License</summary>
+
+```
 MIT License
 
 Copyright (c) 2022 Charles Marsh
@@ -2540,9 +2597,16 @@ are:
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
   """
+```
+</details>
 
-- Repository: [cpython](https://github.com/python/cpython)
+Repository: [cpython](https://github.com/python/cpython)
 
+<details>
+  
+<summary>License</summary>
+
+```
 A. HISTORY OF THE SOFTWARE
 ==========================
 
@@ -2822,3 +2886,5 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+```
+</details>
