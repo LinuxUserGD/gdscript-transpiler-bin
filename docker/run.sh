@@ -15,6 +15,7 @@ echo "media-libs/vulkan-loader X" > /etc/portage/package.use/vulkan.conf && \
 echo '=dev-lang/python-3.13.9999' >> /etc/portage/package.mask/python.conf && \
 echo '=dev-lang/python-3.14.9999' >> /etc/portage/package.mask/python.conf && \
 echo '=dev-lang/python-3.15.9999' >> /etc/portage/package.mask/python.conf && \
+echo '=dev-util/patchelf-0.18.0' >> /etc/portage/package.mask/patchelf.conf && \
 echo 'sys-devel/gcc' > /etc/portage/package.mask/gcc.conf && \
 echo 'EMERGE_DEFAULT_OPTS="--jobs 4"' >> /etc/portage/make.conf && \
 echo 'LTO_ERR="-Werror=odr -Werror=conditional-type-mismatch -Werror=pointer-type-mismatch -Werror=selector-type-mismatch -Werror=strict-aliasing -Wno-implicit-function-declaration -Wno-sizeof-pointer-memaccess"' >> /etc/portage/make.conf && \
