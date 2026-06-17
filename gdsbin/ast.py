@@ -355,7 +355,10 @@ def _function(startln, endln, level, root, input, unit, con):
 
 # print(input)
 def right(s, amount):
-    return s[len(s) - amount :]
+    if amount < 0:
+        return s[-amount:]
+    else:
+        return s[len(s) - amount :]
 
 
 def get_script():

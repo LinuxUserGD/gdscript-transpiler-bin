@@ -9,54 +9,82 @@ def _init():
 
     __init__ = type(gdsbin.__init__)(gdsbin.__init__.__name__, gdsbin.__init__.__doc__)
     __init__.__dict__.update(gdsbin.__init__.__dict__)
-    for arg in sys.argv:
-        if arg == "version":
+    args = sys.argv
+    files = []
+    flags_l = []
+    flags_u = []
+    start_i = 0
+    if len(args) > 1 and args[0] == "-s" and args[1].endswith(".gd"):
+        start_i = 2
+    for i in range(start_i, len(args)):
+        if args[i].startswith("--"):
+            arg = right(args[i], -2)
+            flags_l.append(arg)
+            continue
+        if args[i].startswith("-"):
+            arg = right(args[i], -1)
+            flags_u.append(arg)
+            continue
+        if not args[i].endswith(".py"):
+            files.append(args[i])
+        continue
+    for flag in flags_u:
+        if flag == "V":
             version_info()
             return
-        if arg == "help":
-            help()
-            return
-        if arg == "test=vector2":
-            run_vector2()
-            return
-        if arg == "benchmark":
+        if flag == "B":
             run_benchmark()
             return
-        if arg == "test=parser":
+        print("Unknown argument: -" + flag)
+        help()
+        return
+    for flag in flags_l:
+        if flag == "test=vector2":
+            run_vector2()
+            return
+        if flag == "test=parser":
             run_parser()
             return
-        path_format_arg = "format="
-        if arg.startswith(path_format_arg) and arg.endswith(".gd"):
+        if flag == "format":
             format = True
             comp = False
-            start(arg, format, comp, __init__.package_name)
+            arg = files[0]
+            formatter = "ruff"
+            if "ruff" in flags_l:
+                formatter = "ruff"
+            elif "black" in flags_l:
+                formatter = "black"
+            start(arg, formatter, format, comp, __init__.package_name)
             ESCAPE = ""
             sys.stdout.write(ESCAPE + "[2K\r")
             return
-        path_binary_arg = "gen_api="
-        if arg.startswith(path_binary_arg):
-            arg = arg.replace(path_binary_arg, "")
+        if flag == "gen_api":
+            arg = files[0]
             gen_api(arg)
             return
-        path_exp_arg = "exp="
-        if arg.startswith(path_exp_arg):
+        if flag == "exp":
+            arg = files[0]
             start_exp(arg, __init__.package_name)
             print("")
             return
-        path_tree_arg = "tree="
-        if arg.startswith(path_tree_arg):
+        if flag == "tree":
+            arg = files[0]
             start_tree(arg, __init__.package_name)
             return
-        compile_arg = "compile="
-        if arg.startswith(compile_arg) and arg.endswith(".gd"):
+        if flag == "compile":
             format = True
             comp = True
-            start(arg, format, comp, __init__.package_name)
+            arg = files[0]
+            formatter = "ruff"
+            if "ruff" in flags_l:
+                formatter = "ruff"
+            elif "black" in flags_l:
+                formatter = "black"
+            start(arg, formatter, format, comp, __init__.package_name)
             ESCAPE = ""
             sys.stdout.write(ESCAPE + "[2K\r")
             return
-        setup_arg = "setup="
-        if arg.startswith(setup_arg):
+        if flag == "setup":
             setup(
                 __init__.setuptools_min_ver,
                 __init__.package_name,
@@ -71,6 +99,9 @@ def _init():
                 __init__.proj_license,
             )
             return
+        print("Unknown argument: --" + flag)
+        help()
+        return
     help()
     return
 
@@ -239,8 +270,7 @@ def nopttoarg(nopt):
 
 
 def start_exp(arg, _package_name):
-    path_end = arg.split("=")[1]
-    path = "" + path_end
+    path = "" + arg
     import gdsbin.transpiler
 
     transpiler = type(gdsbin.transpiler)(
@@ -279,8 +309,7 @@ def start_exp(arg, _package_name):
 
 
 def start_tree(arg, _package_name):
-    path_end = arg.split("=")[1]
-    path = "" + path_end
+    path = "" + arg
     import gdsbin.transpiler
 
     transpiler = type(gdsbin.transpiler)(
@@ -393,10 +422,9 @@ def setup(
     )
 
 
-def start(arg, stage2, stage3, package_name):
-    path_end = arg.split("=")[1]
-    path = "" + path_end
-    args = path_end.split(".")
+def start(arg, formatter, stage2, stage3, package_name):
+    path = "" + arg
+    args = arg.split(".")
     c = len(args)
     pathstr = ""
     for path_str in args:
@@ -449,7 +477,10 @@ def start(arg, stage2, stage3, package_name):
             gdsbin.application.__name__, gdsbin.application.__doc__
         )
         application.__dict__.update(gdsbin.application.__dict__)
-        application.execute("ruff", ["format", pathstr + "py"])
+        if formatter == "ruff":
+            application.execute("ruff", ["format", pathstr + "py"])
+        elif formatter == "black":
+            application.execute("black", [pathstr + "py"])
     for dep in deps:
         if dep != deps[0]:
             path_arr = pathstr.split("/")
@@ -462,7 +493,7 @@ def start(arg, stage2, stage3, package_name):
             result_str = left(result_str, len(result_str) - 1)
             result_str += "gd"
             comp = False
-            transpiler.set_def(start("dep=" + result_str, stage2, comp, package_name))
+            transpiler.set_def(start(result_str, formatter, stage2, comp, package_name))
     if stage3:
         compile(arg)
     return transpiler.get_def()
@@ -531,7 +562,6 @@ def version_info():
 
 def help():
     VER_DESC = "show program's version number and exit"
-    HELP_DESC = "show this help message and exit"
     FMT_DESC = "transpile and format GDScript files recursively"
     COMP_DESC = "compile GDScript file to binary using Clang/Nuitka"
     EXP_DESC = "experimental option to tokenize GDScript file"
@@ -562,126 +592,117 @@ def help():
     print(
         "  "
         + GREEN
-        + "version"
+        + "-V"
         + ESCAPE
         + COLOR_RESET
-        + "                           "
+        + "                                "
         + VER_DESC
     )
     print(
         "  "
         + GREEN
-        + "help"
+        + "--format"
         + ESCAPE
         + COLOR_RESET
-        + "                              "
-        + HELP_DESC
-    )
-    print(
-        "  "
-        + GREEN
-        + "format"
-        + ESCAPE
-        + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "../path/to/file.gd"
         + ESCAPE
         + COLOR_RESET
-        + "         "
+        + "       "
         + FMT_DESC
     )
     print(
         "  "
         + GREEN
-        + "compile"
+        + "--compile"
         + ESCAPE
         + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "../path/to/file.gd"
         + ESCAPE
         + COLOR_RESET
-        + "        "
+        + "      "
         + COMP_DESC
     )
     print(
         "  "
         + GREEN
-        + "exp"
+        + "--exp"
         + ESCAPE
         + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "../path/to/file.gd"
         + ESCAPE
         + COLOR_RESET
-        + "            "
+        + "          "
         + EXP_DESC
     )
     print(
         "  "
         + GREEN
-        + "setup"
+        + "--setup"
         + ESCAPE
         + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "../path/setup.py"
         + ESCAPE
         + COLOR_RESET
-        + "            "
+        + "          "
         + SETUP_DESC
     )
     print(
         "  "
         + GREEN
-        + "test"
+        + "--test"
         + ESCAPE
         + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "vector2"
         + ESCAPE
         + COLOR_RESET
-        + "                      "
+        + "                    "
         + VEC2_DESC
     )
     print(
         "  "
         + GREEN
-        + "test"
+        + "--test"
         + ESCAPE
         + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "parser"
         + ESCAPE
         + COLOR_RESET
-        + "                       "
+        + "                     "
         + PARSER_DESC
     )
     print(
         "  "
         + GREEN
-        + "benchmark"
+        + "-B"
         + ESCAPE
         + COLOR_RESET
-        + "                         "
+        + "                                "
         + BENCH_DESC
     )
     print(
         "  "
         + GREEN
-        + "gen_api"
+        + "--gen_api"
         + ESCAPE
         + COLOR_RESET
-        + "="
+        + " "
         + CYAN
         + "../path/to/godot4"
         + ESCAPE
         + COLOR_RESET
-        + "         "
+        + "       "
         + GEN_API
     )
 
@@ -894,7 +915,10 @@ def left(s, amount):
 
 
 def right(s, amount):
-    return s[len(s) - amount :]
+    if amount < 0:
+        return s[-amount:]
+    else:
+        return s[len(s) - amount :]
 
 
 if __name__ == "__main__":

@@ -36,7 +36,14 @@ def transpile(content, package_name):
     if defs.right_def:
         t += "def right(s, amount):"
         t += "\n"
-        t += "    return s[len(s)-amount:]"
+        t += "    i"
+        t += "f amount < 0:"
+        t += "\n"
+        t += "        return s[-amount:]"
+        t += "\n"
+        t += "    else:"
+        t += "\n"
+        t += "        return s[len(s)-amount:]"
         t += "\n"
     if defs.execute_def:
         t += "def py_execute(program, args):"
@@ -711,7 +718,10 @@ def left(s, amount):
 
 
 def right(s, amount):
-    return s[len(s) - amount :]
+    if amount < 0:
+        return s[-amount:]
+    else:
+        return s[len(s) - amount :]
 
 
 def get_script():

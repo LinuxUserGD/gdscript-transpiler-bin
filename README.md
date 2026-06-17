@@ -33,13 +33,9 @@ git submodule update --init --remote --progress
 
 ### Godot Engine command line (stage0)
 
-- `./godot4 -s bin/gds.gd --headless help`
+- `./godot4 -s bin/gds.gd --headless --format bin/gds.gd` (for generating Python project)
 
-- `./godot4 -s bin/gds.gd --headless run=bin/gds.gd` (for running GDScript directly using x-python)
-
-- `./godot4 -s bin/gds.gd --headless format=bin/gds.gd` (for generating Python project)
-
-- `./godot4 -s bin/gds.gd --headless compile=bin/gds.gd` (for compiling GDScript to binary using Clang and Nuitka)
+- `./godot4 -s bin/gds.gd --headless --compile bin/gds.gd` (for compiling GDScript to binary using Clang and Nuitka)
 
 ### Python environment (stage1)
 Installing python gds
@@ -49,13 +45,9 @@ python -m pip install gdsbin
 python -m pip install git+https://codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git@python
 ```
 
-- `python -m gdsbin help`
+- `python -m gdsbin --format bin/gds.gd`
 
-- `python -m gdsbin run=bin/gds.gd`
-
-- `python -m gdsbin format=bin/gds.gd`
-
-- `python -m gdsbin compile=bin/gds.gd`
+- `python -m gdsbin --compile bin/gds.gd`
 
 ### Nuitka compiled binary (stage2)
 Installing gds binary (available at [itch.io](https://linuxusergd.itch.io/gdscript-transpiler-bin))
@@ -67,11 +59,9 @@ chmod +x gds
 
 - `./gds[.exe] help`
 
-- `./gds[.exe] run=bin/gds.gd`
+- `./gds[.exe] --format bin/gds.gd`
 
-- `./gds[.exe] format=bin/gds.gd`
-
-- `./gds[.exe] compile=bin/gds.gd`
+- `./gds[.exe] --compile bin/gds.gd`
 
 ## Benchmark
 
