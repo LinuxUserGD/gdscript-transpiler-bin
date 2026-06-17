@@ -38,17 +38,17 @@ jobs:
           rm *.import
           rm project.godot
           rm -rf addons docker gdUnit4 zig-template
-          godot -s bin/gds.gd --headless --no-header bin/gds.gd format=bin/gds.gd
-          godot -s bin/gds.gd --headless --no-header bin/gds.gd setup=setup.py
-          python3 bin/gds.py format=bin/gds.gd
-          python3 bin/gds.py setup=setup.py
+          godot -s bin/gds.gd --headless --no-header bin/gds.gd --format bin/gds.gd
+          godot -s bin/gds.gd --headless --no-header bin/gds.gd --setup
+          python3 bin/gds.py --format bin/gds.gd
+          python3 bin/gds.py --setup
           touch requirements.txt
           python3 -m pip install .  --no-cache-dir --no-deps --break-system-packages
           rm -rf gdsbin.egg-info _build
           rm pyproject.toml
           find . -name "*.py" -type f | xargs rm --
-          python3 -m gdsbin format=bin/gds.gd
-          python3 -m gdsbin setup=setup.py
+          python3 -m gdsbin --format bin/gds.gd
+          python3 -m gdsbin --setup
           find . -name "*.gd" -type f | xargs rm --
           git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
           echo "Uploading files..."

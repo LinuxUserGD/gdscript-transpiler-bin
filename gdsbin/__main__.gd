@@ -11,58 +11,91 @@ class_name __Main__
 func _ready() -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	var __init__ = preload("__init__.gd").new()
-	for arg in OS.get_cmdline_args():
-		if arg == "version":
+	var args: Array = OS.get_cmdline_args()
+	var files: Array = []
+	var flags_l: Array = []
+	var flags_u: Array = []
+	var start_i: int = 0
+	if len(args) > 1 and args[0] == "-s" and args[1].ends_with(".gd"):
+		start_i = 2
+	for i in range(start_i, len(args)):
+		if args[i].begins_with("--"):
+			var arg: String = args[i].right(-2)
+			flags_l.append(arg)
+			continue
+		if args[i].begins_with("-"):
+			var arg: String = args[i].right(-1)
+			flags_u.append(arg)
+			continue
+		if not args[i].ends_with(".py"):
+			files.append(args[i])
+		continue
+	for flag in flags_u:
+		if flag == "V":
 			version_info()
 			return
-		if arg == "help":
-			help()
-			return
-		if arg == "test=vector2":
-			run_vector2()
-			return
-		if arg == "benchmark":
+		if flag == "B":
 			run_benchmark()
 			return
-		if arg == "test=parser":
+		print("Unknown argument: -" + flag)
+		help()
+		return
+	for flag in flags_l:
+		if flag == "test=vector2":
+			run_vector2()
+			return
+		if flag == "test=parser":
 			run_parser()
 			return
-		var path_format_arg: String = "format="
-		if arg.begins_with(path_format_arg) and arg.ends_with(".gd"):
+		if flag == "format":
 			const format: bool = true
 			const comp: bool = false
-			start(arg, format, comp, __init__.package_name)
+			var arg = files[0]
+			var formatter: String = "ruff"
+			if "ruff" in flags_l:
+				formatter = "ruff"
+			elif "black" in flags_l:
+				formatter = "black"
+			start(arg, formatter, format, comp, __init__.package_name)
 			const ESCAPE: String = ''
 			printraw(ESCAPE + "[2K\r")
 			return
-		var path_binary_arg: String = "gen_api="
-		if arg.begins_with(path_binary_arg):
-			arg = arg.replace(path_binary_arg, "")
+		if flag == "gen_api":
+			var arg = files[0]
 			gen_api(arg)
 			return
-		var path_exp_arg: String = "exp="
-		if arg.begins_with(path_exp_arg):
+		if flag == "exp":
+			var arg = files[0]
 			start_exp(arg, __init__.package_name)
 			print("")
 			return
-		var path_tree_arg: String = "tree="
-		if arg.begins_with(path_tree_arg):
+		if flag == "tree":
+			var arg = files[0]
 			start_tree(arg, __init__.package_name)
 			return
-		var compile_arg = "compile="
-		if arg.begins_with(compile_arg) and arg.ends_with(".gd"):
+		if flag == "compile":
 			const format: bool = true
 			const comp: bool = true
-			start(arg, format, comp, __init__.package_name)
+			var arg = files[0]
+			var formatter: String = "ruff"
+			if "ruff" in flags_l:
+				formatter = "ruff"
+			elif "black" in flags_l:
+				formatter = "black"
+			start(arg, formatter, format, comp, __init__.package_name)
 			const ESCAPE: String = ''
 			printraw(ESCAPE + "[2K\r")
 			return
-		var setup_arg: String = "setup="
-		if arg.begins_with(setup_arg):
+		if flag == "setup":
 			setup(__init__.setuptools_min_ver, __init__.package_name, __init__.author, __init__.author_email, __init__.project_url, __init__.download_url, __init__.documentation_url, __init__.source_url, __init__.tracker_url, __init__.description, __init__.proj_license)
 			return
+		print("Unknown argument: --" + flag)
+		help()
+		return
 	help()
 	return
+
+
 
 ## Function for generating GDScript files from extension api
 func gen_api(program: String) -> void:
@@ -196,8 +229,7 @@ func nopttoarg(nopt: Array) -> String:
 
 ## Tokenize script (by path)
 func start_exp(arg: String, _package_name: String) -> void:
-	var path_end: String = arg.split("=")[1]
-	var path: String = "res://" + path_end
+	var path: String = "res://" + arg
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
 	var tokenizer = Tokenizer.new()
@@ -215,8 +247,7 @@ func start_exp(arg: String, _package_name: String) -> void:
 
 ## Tokenize script (by path)
 func start_tree(arg: String, _package_name: String) -> void:
-	var path_end: String = arg.split("=")[1]
-	var path: String = "res://" + path_end
+	var path: String = "res://" + arg
 	var transpiler = Transpiler.new()
 	var content: String = transpiler.read(path)
 	var tokenizer = Tokenizer.new()
@@ -262,10 +293,9 @@ func setup(setuptools_min_ver: int, package_name: String, author: String, author
 
 
 ## Function for transpiling script (by path)
-func start(arg: String, stage2: bool, stage3: bool, package_name: String) -> Array:
-	var path_end: String = arg.split("=")[1]
-	var path: String = "res://" + path_end
-	var args = path_end.split(".")
+func start(arg: String, formatter: String, stage2: bool, stage3: bool, package_name: String) -> Array:
+	var path: String = "res://" + arg
+	var args = arg.split(".")
 	var c: int = args.size()
 	var pathstr: String = ""
 	for path_str in args:
@@ -308,7 +338,10 @@ func start(arg: String, stage2: bool, stage3: bool, package_name: String) -> Arr
 	transpiler.props.gds_deps.clear()
 	if stage2:
 		var application = Application.new()
-		application.execute('ruff',['format',pathstr+"py"])
+		if formatter == "ruff":
+			application.execute('ruff',['format',pathstr+"py"])
+		elif formatter == "black":
+			application.execute('black',[pathstr+"py"])
 	for dep in deps:
 		if dep != deps[0]:
 			var path_arr : Array = pathstr.split("/")
@@ -321,7 +354,7 @@ func start(arg: String, stage2: bool, stage3: bool, package_name: String) -> Arr
 			result_str = result_str.left(result_str.length()-1)
 			result_str += "gd"
 			const comp = false
-			transpiler.set_def(start("dep=" + result_str, stage2, comp, package_name))
+			transpiler.set_def(start(result_str, formatter, stage2, comp, package_name))
 	if stage3:
 		compile(arg)
 	return transpiler.get_def()
@@ -364,7 +397,6 @@ func version_info() -> void:
 ## Help function which prints all possible commands
 func help() -> void:
 	const VER_DESC: String = "show program's version number and exit"
-	const HELP_DESC: String = "show this help message and exit"
 	const FMT_DESC: String = "transpile and format GDScript files recursively"
 	const COMP_DESC: String = "compile GDScript file to binary using Clang/Nuitka"
 	const EXP_DESC: String = "experimental option to tokenize GDScript file"
@@ -379,16 +411,15 @@ func help() -> void:
 	const CYAN: String = "[0;36m";
 	print("Usage: " + CYAN + "gds" + ESCAPE + COLOR_RESET + " [ " + GREEN + "options" + ESCAPE + COLOR_RESET + " ]" + "\n")
 	print("Options:")
-	print("  " + GREEN + "version" + ESCAPE + COLOR_RESET + "                           " + VER_DESC)
-	print("  " + GREEN + "help" + ESCAPE + COLOR_RESET + "                              " + HELP_DESC)
-	print("  " + GREEN + "format" + ESCAPE + COLOR_RESET + "=" + CYAN + "../path/to/file.gd" + ESCAPE + COLOR_RESET + "         " + FMT_DESC)
-	print("  " + GREEN + "compile" + ESCAPE + COLOR_RESET + "=" + CYAN + "../path/to/file.gd" + ESCAPE + COLOR_RESET + "        " + COMP_DESC)
-	print("  " + GREEN + "exp" + ESCAPE + COLOR_RESET + "=" + CYAN + "../path/to/file.gd" + ESCAPE + COLOR_RESET + "            " + EXP_DESC)
-	print("  " + GREEN + "setup" + ESCAPE + COLOR_RESET + "=" + CYAN + "../path/setup.py" + ESCAPE + COLOR_RESET + "            " + SETUP_DESC)
-	print("  " + GREEN + "test" + ESCAPE + COLOR_RESET + "=" + CYAN + "vector2" + ESCAPE + COLOR_RESET + "                      " + VEC2_DESC)
-	print("  " + GREEN + "test" + ESCAPE + COLOR_RESET + "=" + CYAN + "parser" + ESCAPE + COLOR_RESET + "                       " + PARSER_DESC)
-	print("  " + GREEN + "benchmark" + ESCAPE + COLOR_RESET + "                         " + BENCH_DESC)
-	print("  " + GREEN + "gen_api" + ESCAPE + COLOR_RESET + "=" + CYAN + "../path/to/godot4" + ESCAPE + COLOR_RESET + "         " + GEN_API)
+	print("  " + GREEN + "-V" + ESCAPE + COLOR_RESET + "                                " + VER_DESC)
+	print("  " + GREEN + "--format" + ESCAPE + COLOR_RESET + " " + CYAN + "../path/to/file.gd" + ESCAPE + COLOR_RESET + "       " + FMT_DESC)
+	print("  " + GREEN + "--compile" + ESCAPE + COLOR_RESET + " " + CYAN + "../path/to/file.gd" + ESCAPE + COLOR_RESET + "      " + COMP_DESC)
+	print("  " + GREEN + "--exp" + ESCAPE + COLOR_RESET + " " + CYAN + "../path/to/file.gd" + ESCAPE + COLOR_RESET + "          " + EXP_DESC)
+	print("  " + GREEN + "--setup" + ESCAPE + COLOR_RESET + " " + CYAN + "../path/setup.py" + ESCAPE + COLOR_RESET + "          " + SETUP_DESC)
+	print("  " + GREEN + "--test" + ESCAPE + COLOR_RESET + " " + CYAN + "vector2" + ESCAPE + COLOR_RESET + "                    " + VEC2_DESC)
+	print("  " + GREEN + "--test" + ESCAPE + COLOR_RESET + " " + CYAN + "parser" + ESCAPE + COLOR_RESET + "                     " + PARSER_DESC)
+	print("  " + GREEN + "-B" + ESCAPE + COLOR_RESET + "                                " + BENCH_DESC)
+	print("  " + GREEN + "--gen_api" + ESCAPE + COLOR_RESET + " " + CYAN + "../path/to/godot4" + ESCAPE + COLOR_RESET + "       " + GEN_API)
 ## Testing benchmark
 func run_benchmark() -> void:
 	var gdsbin: Dictionary = {"test": {}}

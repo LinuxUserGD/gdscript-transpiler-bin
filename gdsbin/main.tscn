@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bb4hpvw0tq6yt"]
+[gd_scene format=3 uid="uid://bb4hpvw0tq6yt"]
 
 [ext_resource type="Theme" uid="uid://bwuol0nxm8rsj" path="res://gdsbin/resources/theme.tres" id="1_b4qlw"]
 [ext_resource type="Script" uid="uid://c56mduespamfh" path="res://gdsbin/main_window.gd" id="2_cf6o8"]
@@ -16,7 +16,7 @@ number_color = Color(1, 0.666667, 0.137255, 1)
 symbol_color = Color(1, 1, 1, 1)
 function_color = Color(0.27451, 0.47451, 0.65098, 1)
 
-[node name="MainWindow" type="Control"]
+[node name="MainWindow" type="Control" unique_id=1472611851]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,19 +26,18 @@ grow_vertical = 2
 theme = ExtResource("1_b4qlw")
 script = ExtResource("2_cf6o8")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
+[node name="HSplitContainer" type="HSplitContainer" parent="." unique_id=1739808895]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offset = 640
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer" unique_id=1051938478]
 layout_mode = 2
 
-[node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/VBoxContainer"]
+[node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/VBoxContainer" unique_id=29369943]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_b4qlw")
@@ -53,7 +52,7 @@ highlight_current_line = true
 draw_tabs = true
 script = ExtResource("3_d7aim")
 
-[node name="RunButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor"]
+[node name="RunButton" type="Button" parent="HSplitContainer/VBoxContainer/ScriptEditor" unique_id=662526498]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -66,14 +65,13 @@ text = "Run"
 script = ExtResource("5_d1ogv")
 metadata/_edit_layout_mode = 1
 
-[node name="ok" type="HSplitContainer" parent="HSplitContainer"]
-layout_mode = 2
-split_offset = 640
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="HSplitContainer/ok"]
+[node name="ok" type="HSplitContainer" parent="HSplitContainer" unique_id=1519262485]
 layout_mode = 2
 
-[node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/ok/VBoxContainer2"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="HSplitContainer/ok" unique_id=2080293738]
+layout_mode = 2
+
+[node name="ScriptEditor" type="TextEdit" parent="HSplitContainer/ok/VBoxContainer2" unique_id=1930732754]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("1_b4qlw")
@@ -85,7 +83,7 @@ highlight_current_line = true
 draw_tabs = true
 script = ExtResource("3_d7aim")
 
-[node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor"]
+[node name="RunButton2" type="Button" parent="HSplitContainer/ok/VBoxContainer2/ScriptEditor" unique_id=192728834]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -98,23 +96,23 @@ text = "Run"
 script = ExtResource("5_d1ogv")
 metadata/_edit_layout_mode = 1
 
-[node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok"]
+[node name="OutputPanel" type="PanelContainer" parent="HSplitContainer/ok" unique_id=2133413609]
 layout_mode = 2
 
-[node name="ErrorLabel" type="Label" parent="HSplitContainer/ok/OutputPanel"]
+[node name="ErrorLabel" type="Label" parent="HSplitContainer/ok/OutputPanel" unique_id=493288989]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_colors/font_color = Color(0.772549, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_hv1ml")
 clip_text = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer/ok/OutputPanel"]
+[node name="RichTextLabel" type="RichTextLabel" parent="HSplitContainer/ok/OutputPanel" unique_id=588265313]
 layout_mode = 2
 focus_mode = 2
 scroll_following = true
 selection_enabled = true
 
-[node name="EngineVersion" type="Label" parent="."]
+[node name="EngineVersion" type="Label" parent="." unique_id=1352838751]
 modulate = Color(1, 1, 1, 0.501961)
 layout_mode = 1
 anchors_preset = 1

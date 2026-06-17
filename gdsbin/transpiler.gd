@@ -40,7 +40,14 @@ func transpile(content: String, package_name: String) -> String:
 	if defs.right_def:
 		t += "def right(s, amount):"
 		t += "\n"
-		t += "    return s[len(s)-amount:]"
+		t += "    i"
+		t += "f amount < 0:"
+		t += "\n"
+		t += "        return s[-amount:]"
+		t += "\n"
+		t += "    else:"
+		t += "\n"
+		t += "        return s[len(s)-amount:]"
 		t += "\n"
 	if defs.execute_def:
 		t += "def py_execute(program, args):"

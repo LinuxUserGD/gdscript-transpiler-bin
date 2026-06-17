@@ -30,17 +30,16 @@ perl -i -ne 'print if ! $x{$_}++' /etc/portage/make.conf && \
 wget --progress=dot:mega -O - https://github.com/gentoo-mirror/gentoo/archive/master.tar.gz | tar -xz && \
 mv gentoo-master /var/db/repos/gentoo && \
 etc-update --automode -5 && \
+emerge --oneshot --update --newuse --changed-use --deep --with-bdeps=y --keep-going @installed --backtrack=10000 || true && \
 emerge net-misc/curl dev-python/pip --update && \
 emerge app-alternatives/ninja --update && \
 emerge dev-lang/go dev-python/nuitka dev-util/patchelf dev-vcs/git --update && \
 emerge app-eselect/eselect-repository --update && \
 eselect repository add 12101111-overlay git https://github.com/12101111/overlay.git &> /dev/null || true && \
 emerge --sync 12101111-overlay && \
-eselect repository add clang-musl git https://github.com/clang-musl-overlay/clang-musl-overlay.git &> /dev/null || true && \
-emerge --sync clang-musl && \
 emerge llvm-runtimes/libatomic-stub --update && \
 emerge dev-games/godot net-libs/nodejs dev-util/ruff --update && \
-emerge sys-devel/llvm-conf --update && \
+emerge llvm-core/llvm-conf --update && \
 emerge --depclean && \
 [ "${portage_upgrade}" = true ] && emerge --oneshot --update --newuse --changed-use --deep --with-bdeps=y --keep-going @installed || true && \
 [ "${portage_upgrade}" = true ] && emerge --depclean || true && \
