@@ -10,7 +10,6 @@ concurrency:
 
 jobs:
   build-linux:
-    permissions: write-all
     runs-on: linux-docker
     container:
       image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
