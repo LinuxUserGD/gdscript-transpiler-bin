@@ -507,14 +507,14 @@ def dict(arg):
             str(
                 {
                     "major": 4,
-                    "minor": 6,
-                    "patch": 3,
-                    "hex": 263683,
+                    "minor": 7,
+                    "patch": 1,
+                    "hex": 263937,
                     "status": "stable",
                     "build": "gentoo",
-                    "hash": "7d41c59c457bd5a245092b4e7eb2d833e3b3f8c3",
+                    "hash": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
                     "timestamp": 0,
-                    "string": "4.6.3-stable (gentoo)",
+                    "string": "4.7.1-stable (gentoo)",
                 }
             ),
         )
