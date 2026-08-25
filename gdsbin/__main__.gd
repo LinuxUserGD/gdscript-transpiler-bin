@@ -382,17 +382,30 @@ func version_info() -> void:
 	var application = Application.new()
 	print(WHITE_BOLD + "Python" + ESCAPE + COLOR_RESET)
 	out = application.execute("python3.13", ['-c','import sys;print(sys.version)'])
-	print(out[0].split("\n")[0])
+	if (out[0].split("\n")[0] != ""):
+		print(out[0].split("\n")[0])
+	else:
+		print("[not installed]")
 	print(WHITE_BOLD + "Nuitka" + ESCAPE + COLOR_RESET)
 	out = application.execute("python3.13", ['-c',"from nuitka import Version;print(Version.getNuitkaVersion())"])
-	print(out[0].split("\n")[0])
+	if (out[0].split("\n")[0] != ""):
+		print(out[0].split("\n")[0])
+	else:
+		print("[not installed]")
 	print(WHITE_BOLD + "Ruff" + ESCAPE + COLOR_RESET)
 	out = application.execute('ruff',['version'])
-	print(out[0].split("\n")[0].split(" ")[1])
+	var resout = out[0].split("\n")[0].split(" ")
+	var resout_s = resout.size()
+	if resout_s > 1:
+		print(out[0].split("\n")[0].split(" ")[1])
+	else:
+		print("[not installed]")
 	print(WHITE_BOLD + "Zig" + ESCAPE + COLOR_RESET)
 	out = application.execute('zig',['version'])
-	print(out[0].split("\n")[0])
-
+	if (out[0].split("\n")[0] != ""):
+		print(out[0].split("\n")[0])
+	else:
+		print("[not installed]")
 
 ## Help function which prints all possible commands
 func help() -> void:
