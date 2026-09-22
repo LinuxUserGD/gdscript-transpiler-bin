@@ -545,9 +545,11 @@ func translate(e: String, package_name: String) -> String:
 		e = e.replace(classn + " " + script_name, "const " + classn + " = " + '"' + script_name + '"')
 		props.gds_deps.append(script_name)
 	if e.contains("extends"):
-		var script_name : String = e.split(" ")[1]
-		if script_name not in props.types:
-			props.extend.append(script_name)
+		var ids: Array = e.split(" ")
+		if ids.size() > 1:
+			var script_name : String = e.split(" ")[1]
+			if script_name not in props.types:
+				props.extend.append(script_name)
 	var var_test: String = e
 	while var_test.begins_with("	"):
 		var_test = var_test.replace("	", "")
