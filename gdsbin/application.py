@@ -36,7 +36,10 @@ def _start_thread(pipe):
 
 def py_execute(program, args):
     args = [program] + args
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except FileNotFoundError:
+        return [""]
     stdout, stderr = proc.communicate()
     return [stdout.decode("utf-8")]
 

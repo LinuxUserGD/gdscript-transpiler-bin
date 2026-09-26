@@ -50,7 +50,13 @@ def transpile(content, package_name):
         t += "\n"
         t += "    args = [program] + args"
         t += "\n"
-        t += "    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)"
+        t += "    try:"
+        t += "\n"
+        t += "        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)"
+        t += "\n"
+        t += "    except FileNotFoundError:"
+        t += "\n"
+        t += "        return ['']"
         t += "\n"
         t += "    stdout, stderr = proc.communicate()"
         t += "\n"
@@ -576,9 +582,11 @@ def translate(e, package_name):
         )
         props.gds_deps.append(script_name)
     if 0 <= e.find("extends"):
-        script_name = e.split(" ")[1]
-        if script_name not in props.types:
-            props.extend.append(script_name)
+        ids = e.split(" ")
+        if len(ids) > 1:
+            script_name = e.split(" ")[1]
+            if script_name not in props.types:
+                props.extend.append(script_name)
     var_test = e
     while var_test.startswith("	"):
         var_test = var_test.replace("	", "")
