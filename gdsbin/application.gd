@@ -6,7 +6,13 @@ class_name Application
 
 func execute(program: String, args: Array) -> Array:
 	var stdout: Array = []
-	OS.execute(program,args,stdout)
+	var win: bool = (OS.get_name() == "Windows")
+	if win:
+		args = ["/C", program] + args
+		program = "CMD.exe"
+		OS.execute(program,args,stdout)
+	else:
+		OS.execute(program,args,stdout)
 	return stdout
 
 func execute_pipe(program: String, args: Array) -> void:

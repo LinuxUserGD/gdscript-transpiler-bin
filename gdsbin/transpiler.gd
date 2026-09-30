@@ -483,6 +483,9 @@ func dict(arg: String) -> String:
 		arg = arg.replace("Time.get_ticks_msec()", "int(float(datetime.datetime.now().strftime('%s.%f')) * 1000)")
 		defs.datetime_imp = true
 		con = true
+	while arg.contains("OS.get_name()"):
+		arg = arg.replace("OS.get_name()", "'Linux'")
+		con = true
 	while arg.contains("OS.get_cmdline_args()"):
 		arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
 		defs.sys_imp = true

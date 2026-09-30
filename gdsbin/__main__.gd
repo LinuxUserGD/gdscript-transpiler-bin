@@ -210,7 +210,7 @@ func compile(arg: String) -> void:
 	print("Compiling " + pathstr + "py...")
 	print("Info: Running " + "'" + " ".join(nopt) + "'")
 	var application = Application.new()
-	application.execute_pipe("python3.13", ['-c',nopttoarg(nopt)])
+	application.execute_pipe("python", ['-c',nopttoarg(nopt)])
 
 func nopttoarg(nopt: Array) -> String:
 	var opts: Array = []
@@ -381,13 +381,13 @@ func version_info() -> void:
 	var out: Array = []
 	var application = Application.new()
 	print(WHITE_BOLD + "Python" + ESCAPE + COLOR_RESET)
-	out = application.execute("python3.13", ['-c','import sys;print(sys.version)'])
+	out = application.execute("python", ['-c','import sys;print(sys.version)'])
 	if (out[0].split("\n")[0] != ""):
 		print(out[0].split("\n")[0])
 	else:
 		print("[not installed]")
 	print(WHITE_BOLD + "Nuitka" + ESCAPE + COLOR_RESET)
-	out = application.execute("python3.13", ['-c',"from nuitka import Version;print(Version.getNuitkaVersion())"])
+	out = application.execute("python", ['-c',"from nuitka import Version;print(Version.getNuitkaVersion())"])
 	if (out[0].split("\n")[0] != ""):
 		print(out[0].split("\n")[0])
 	else:
