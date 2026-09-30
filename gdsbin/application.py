@@ -5,7 +5,13 @@ class_name = "Application"
 
 def execute(program, args):
     stdout = []
-    stdout = py_execute(program, args)
+    win = "Linux" == "Windows"
+    if win:
+        args = ["/C", program] + args
+        program = "CMD.exe"
+        stdout = py_execute(program, args)
+    else:
+        stdout = py_execute(program, args)
     return stdout
 
 

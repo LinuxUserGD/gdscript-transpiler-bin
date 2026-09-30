@@ -503,6 +503,9 @@ def dict(arg):
         )
         defs.datetime_imp = True
         con = True
+    while 0 <= arg.find("OS.get_name()"):
+        arg = arg.replace("OS.get_name()", "'Linux'")
+        con = True
     while 0 <= arg.find("OS.get_cmdline_args()"):
         arg = arg.replace("OS.get_cmdline_args()", "sys.argv")
         defs.sys_imp = True

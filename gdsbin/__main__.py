@@ -250,7 +250,7 @@ def compile(arg):
         gdsbin.application.__name__, gdsbin.application.__doc__
     )
     application.__dict__.update(gdsbin.application.__dict__)
-    application.execute_pipe("python3.13", ["-c", nopttoarg(nopt)])
+    application.execute_pipe("python", ["-c", nopttoarg(nopt)])
 
 
 def nopttoarg(nopt):
@@ -544,15 +544,14 @@ def version_info():
     )
     application.__dict__.update(gdsbin.application.__dict__)
     print(WHITE_BOLD + "Python" + ESCAPE + COLOR_RESET)
-    out = application.execute("python3.13", ["-c", "import sys;print(sys.version)"])
+    out = application.execute("python", ["-c", "import sys;print(sys.version)"])
     if out[0].split("\n")[0] != "":
         print(out[0].split("\n")[0])
     else:
         print("[not installed]")
     print(WHITE_BOLD + "Nuitka" + ESCAPE + COLOR_RESET)
     out = application.execute(
-        "python3.13",
-        ["-c", "from nuitka import Version;print(Version.getNuitkaVersion())"],
+        "python", ["-c", "from nuitka import Version;print(Version.getNuitkaVersion())"]
     )
     if out[0].split("\n")[0] != "":
         print(out[0].split("\n")[0])
