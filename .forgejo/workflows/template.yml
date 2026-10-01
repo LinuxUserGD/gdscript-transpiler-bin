@@ -12,7 +12,7 @@ jobs:
   build-linux:
     runs-on: linux-docker
     container:
-      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
+      image: docker.io/node:current-alpine
     name: ${{ matrix.name }}
     outputs:
       status: ${{ steps.early.outputs.status }}
@@ -37,8 +37,19 @@ jobs:
           rm *.import
           rm project.godot
           rm -rf addons docker gdUnit4 zig-template
-          godot -s bin/gds.gd --headless --no-header bin/gds.gd --format bin/gds.gd
-          godot -s bin/gds.gd --headless --no-header bin/gds.gd --setup
+
+          wget https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip
+          unzip Godot_v4.7.2-stable_win64.exe.zip
+
+          apk add wine python3 py3-pip git ruff
+
+          export WINEDEBUG=-all
+
+          wine Godot_v4.7.2-stable_win64.exe -s bin/gds.gd --headless --no-header bin/gds.gd --format bin/gds.gd
+          wine Godot_v4.7.2-stable_win64.exe -s bin/gds.gd --headless --no-header bin/gds.gd --setup
+
+          rm Godot_v4.7.2-stable_win64.exe Godot_v4.7.2-stable_win64_console.exe Godot_v4.7.2-stable_win64.exe.zip
+
           python3 bin/gds.py --format bin/gds.gd
           python3 bin/gds.py --setup
           touch requirements.txt
@@ -52,7 +63,7 @@ jobs:
           git clone https://oauth:${{ secrets.GITHUB_TOKEN }}@codeberg.org/LinuxUserGD/gdscript-transpiler-bin.git -b python
           echo "Uploading files..."
           dir=$(find */ -maxdepth 0 -type d ! -name "gdscript-transpiler-bin")
-          pushd gdscript-transpiler-bin
+          cd gdscript-transpiler-bin
           rm -rf $(ls | grep -v "requirements.txt")
           for i in $dir; do mkdir ${i} ; done
           for i in $dir; do cp -r "../${i}"*.py ${i} ; done
@@ -62,14 +73,14 @@ jobs:
           git config --global user.email "hugegameartgd@gmail.com"
           git add -A
           [ -n "$(git diff-index HEAD)" ] && { echo "New update"; git commit -m "update python files" && git push origin python; } || { echo "Files identical"; exit 0; }
-          popd
+          cd -
           echo ${PWD}
 
 
   deploy-linux:
     runs-on: linux-docker
     container:
-      image: codeberg.org/linuxusergd/gdsbin-amd64-musl-llvm:latest
+      image: docker.io/node:current-alpine
     name: Deploy (Alpine Linux x86_64)
     needs: build-linux
 
@@ -83,17 +94,17 @@ jobs:
         env:
           CUSTOMTOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          llvm-conf 1
-          . /etc/profile
-          env-update
-          source /etc/portage/make.conf
-          python3 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --clang --assume-yes-for-downloads --remove-output -o gds
+          apk add python3 python3-dev py3-pip go zig git
+          apk add patchelf=0.17.0-r0 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.17/community
+
+          python3 -m pip install Nuitka[onefile] zstandard --no-cache-dir --break-system-packages
+          python3 -m nuitka bin/gds.py --onefile --lto=yes --static-libpython=no --zig --assume-yes-for-downloads --remove-output -o gds
           export BUTLER_API_KEY=${{ secrets.BUTLER_CREDENTIALS }}
           echo $BUTLER_API_KEY > key.txt
           git clone https://github.com/LinuxUserGD/butler.git
-          pushd butler
+          cd butler
           go build
-          popd
+          cd -
           ./butler/butler -i key.txt push gds linuxusergd/gdscript-transpiler-bin:linux
 
       - name: Upload main.dist
