@@ -517,13 +517,13 @@ def dict(arg):
                 {
                     "major": 4,
                     "minor": 7,
-                    "patch": 1,
-                    "hex": 263937,
+                    "patch": 2,
+                    "hex": 263938,
                     "status": "stable",
-                    "build": "gentoo",
-                    "hash": "a13da4feb8d8aefc283c3763d33a2f170a18d541",
+                    "build": "official",
+                    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
                     "timestamp": 0,
-                    "string": "4.7.1-stable (gentoo)",
+                    "string": "4.7.2-stable (official)",
                 }
             ),
         )
