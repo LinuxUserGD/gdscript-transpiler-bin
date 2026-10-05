@@ -334,7 +334,7 @@ func dict(arg: String) -> String:
 		e += props.repl_dict[arg]
 		e += " "
 		return e
-	if arg == "_ready()" or arg == "_init()":
+	if arg == "_ready()" or arg == "_init()" or arg == "_ready():" or arg == "_init():":
 		e += props.repl_dict[arg]
 		e += " "
 		defs.init_def = true
