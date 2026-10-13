@@ -22,6 +22,8 @@ def transpile(content, package_name):
         t = "import os" + "\n" + t
     if defs.rand_imp:
         t = "import random" + "\n" + t
+    if defs.re_imp:
+        t = "import re" + "\n" + t
     if defs.math_imp:
         t = "import math" + "\n" + t
     if defs.datetime_imp:
@@ -472,6 +474,13 @@ def dict(arg):
         arg = arg.replace("randi()", "random.randint(0, 2147483647)")
         defs.rand_imp = True
         con = True
+    while 0 <= arg.find("RegEx.create_from_string("):
+        arg = arg.replace("RegEx.create_from_string(", "re.compile(")
+        defs.re_imp = True
+        con = True
+    while 0 <= arg.find(".get_end()"):
+        arg = arg.replace(".get_end()", ".end()")
+        con = True
     while 0 <= arg.find(".push_back("):
         arg = arg.replace(".push_back(", ".append(")
         con = True
@@ -681,6 +690,7 @@ def set_def(arr):
         defs.os_imp = False
         defs.math_imp = False
         defs.rand_imp = False
+        defs.re_imp = False
         defs.datetime_imp = False
         return
     defs.py_imp = defs.py_imp or arr[0]
@@ -695,11 +705,12 @@ def set_def(arr):
     defs.execute_pipe_def = defs.execute_pipe_def or arr[9]
     defs.classname_def = defs.classname_def or arr[10]
     defs.sys_imp = defs.sys_imp or arr[11]
-    defs.subprocess_imp = defs.sys_imp or arr[12]
+    defs.subprocess_imp = defs.subprocess_imp or arr[12]
     defs.os_imp = defs.os_imp or arr[13]
     defs.math_imp = defs.math_imp or arr[14]
-    defs.rand_imp = defs.math_imp or arr[15]
-    defs.datetime_imp = defs.datetime_imp or arr[16]
+    defs.rand_imp = defs.rand_imp or arr[15]
+    defs.re_imp = defs.re_imp or arr[16]
+    defs.datetime_imp = defs.datetime_imp or arr[17]
 
 
 def get_def():
@@ -720,6 +731,7 @@ def get_def():
         defs.os_imp,
         defs.math_imp,
         defs.rand_imp,
+        defs.re_imp,
         defs.datetime_imp,
     ]
 

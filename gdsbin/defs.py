@@ -15,6 +15,7 @@ subprocess_imp = False
 os_imp = False
 math_imp = False
 rand_imp = False
+re_imp = False
 datetime_imp = False
 
 
