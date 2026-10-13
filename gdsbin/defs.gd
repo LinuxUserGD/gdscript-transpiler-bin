@@ -37,5 +37,7 @@ var os_imp: bool = false
 var math_imp: bool = false
 ## Add additional python random import to transpiled script if required
 var rand_imp: bool = false
+## Add additional python regex import to transpiled script if required
+var re_imp: bool = false
 ## Add additional python datetime import to transpiled script if required
 var datetime_imp: bool = false

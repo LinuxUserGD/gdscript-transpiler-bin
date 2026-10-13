@@ -433,6 +433,7 @@ func help() -> void:
 	print("  " + GREEN + "--test" + ESCAPE + COLOR_RESET + " " + CYAN + "parser" + ESCAPE + COLOR_RESET + "                     " + PARSER_DESC)
 	print("  " + GREEN + "-B" + ESCAPE + COLOR_RESET + "                                " + BENCH_DESC)
 	print("  " + GREEN + "--gen_api" + ESCAPE + COLOR_RESET + " " + CYAN + "../path/to/godot4" + ESCAPE + COLOR_RESET + "       " + GEN_API)
+
 ## Testing benchmark
 func run_benchmark() -> void:
 	var gdsbin: Dictionary = {"test": {}}

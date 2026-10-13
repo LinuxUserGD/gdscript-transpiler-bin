@@ -26,6 +26,8 @@ func transpile(content: String, package_name: String) -> String:
 		t = "import os" + "\n" + t
 	if defs.rand_imp:
 		t = "import random" + "\n" + t
+	if defs.re_imp:
+		t = "import re" + "\n" + t
 	if defs.math_imp:
 		t = "import math" + "\n" + t
 	if defs.datetime_imp:
@@ -455,6 +457,13 @@ func dict(arg: String) -> String:
 		arg = arg.replace("randi()", "random.randint(0, 2147483647)")
 		defs.rand_imp = true
 		con = true
+	while arg.contains("RegEx.create_from_string("):
+		arg = arg.replace("RegEx.create_from_string(", "re.compile(")
+		defs.re_imp = true
+		con = true
+	while arg.contains(".get_end()"):
+		arg = arg.replace(".get_end()", ".end()")
+		con = true
 	while arg.contains(".push_back("):
 		arg = arg.replace(".push_back(", ".append(")
 		con = true
@@ -639,6 +648,7 @@ func set_def(arr: Array):
 		defs.os_imp = false
 		defs.math_imp = false
 		defs.rand_imp = false
+		defs.re_imp = false
 		defs.datetime_imp = false
 		return
 	defs.py_imp = (defs.py_imp || arr[0])
@@ -653,11 +663,12 @@ func set_def(arr: Array):
 	defs.execute_pipe_def = (defs.execute_pipe_def || arr[9])
 	defs.classname_def = (defs.classname_def || arr[10])
 	defs.sys_imp = (defs.sys_imp || arr[11])
-	defs.subprocess_imp = (defs.sys_imp || arr[12])
+	defs.subprocess_imp = (defs.subprocess_imp || arr[12])
 	defs.os_imp = (defs.os_imp || arr[13])
 	defs.math_imp = (defs.math_imp || arr[14])
-	defs.rand_imp = (defs.math_imp || arr[15])
-	defs.datetime_imp = (defs.datetime_imp || arr[16])
+	defs.rand_imp = (defs.rand_imp || arr[15])
+	defs.re_imp = (defs.re_imp || arr[16])
+	defs.datetime_imp = (defs.datetime_imp || arr[17])
 
 func get_def() -> Array:
-	return [defs.py_imp, defs.debug, defs.verbose, defs.init_def, defs.thread_def, defs.resize_def, defs.right_def, defs.left_def, defs.execute_def, defs.execute_pipe_def, defs.classname_def, defs.sys_imp, defs.subprocess_imp, defs.os_imp, defs.math_imp, defs.rand_imp, defs.datetime_imp]
+	return [defs.py_imp, defs.debug, defs.verbose, defs.init_def, defs.thread_def, defs.resize_def, defs.right_def, defs.left_def, defs.execute_def, defs.execute_pipe_def, defs.classname_def, defs.sys_imp, defs.subprocess_imp, defs.os_imp, defs.math_imp, defs.rand_imp, defs.re_imp, defs.datetime_imp]
