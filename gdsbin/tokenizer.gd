@@ -65,7 +65,7 @@ func tokenize(input_string: String) -> Array:
 
 ## Convert each character to token
 func char_to_token(buffer: String, token_index: Dictionary):
-	var token = Token.new()
-	token.id = token_index[buffer] if buffer in token_index else keyword.KW_NONE
-	token.value = buffer
-	return token
+	var tokenn = Tokenn.new()
+	tokenn.id = token_index[buffer] if buffer in token_index else keyword.KW_NONE
+	tokenn.value = buffer
+	return tokenn

@@ -467,6 +467,9 @@ func dict(arg: String) -> String:
 	while arg.contains(".push_back("):
 		arg = arg.replace(".push_back(", ".append(")
 		con = true
+	while arg.contains(".pop_back()"):
+		arg = arg.replace(".pop_back()", ".pop()")
+		con = true
 	while arg.contains(".pop_front()"):
 		arg = arg.replace(".pop_front()", ".pop(0)")
 		con = true

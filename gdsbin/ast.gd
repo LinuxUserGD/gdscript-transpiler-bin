@@ -166,10 +166,10 @@ func _eval_string(array: Array, level: int):
 func _eval_function_args(array: Array):
 	var arr: Array = []
 	var ast_arr: Array = []
-	var token = Token.new()
-	token.id = key.KEY_COMMA
-	token.value = ","
-	array.append(token)
+	var tokenn = Tokenn.new()
+	tokenn.id = key.KEY_COMMA
+	tokenn.value = ","
+	array.append(tokenn)
 	for i in range(0, array.size()):
 		if array[i].id == key.KEY_COMMA:
 			ast_arr.append(_arg_call(arr, 0))
