@@ -1,4 +1,4 @@
-class_name = "Token"
+class_name = "Tokenn"
 id = 0
 value = ""
 

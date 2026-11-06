@@ -484,6 +484,9 @@ def dict(arg):
     while 0 <= arg.find(".push_back("):
         arg = arg.replace(".push_back(", ".append(")
         con = True
+    while 0 <= arg.find(".pop_back()"):
+        arg = arg.replace(".pop_back()", ".pop()")
+        con = True
     while 0 <= arg.find(".pop_front()"):
         arg = arg.replace(".pop_front()", ".pop(0)")
         con = True

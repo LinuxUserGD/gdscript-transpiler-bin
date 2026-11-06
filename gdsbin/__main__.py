@@ -67,6 +67,11 @@ def _init():
             start_exp(arg, __init__.package_name)
             print("")
             return
+        if flag == "tok":
+            arg = files[0]
+            start_tok(arg, __init__.package_name)
+            print("")
+            return
         if flag == "tree":
             arg = files[0]
             start_tree(arg, __init__.package_name)
@@ -306,6 +311,24 @@ def start_exp(arg, _package_name):
     parsertree.__dict__.update(gdsbin.parsertree.__dict__)
     string_res = parsertree.printpt(ast_res, 0)
     print(string_res)
+
+
+def start_tok(arg, _package_name):
+    path = "" + arg
+    import gdsbin.transpiler
+
+    transpiler = type(gdsbin.transpiler)(
+        gdsbin.transpiler.__name__, gdsbin.transpiler.__doc__
+    )
+    transpiler.__dict__.update(gdsbin.transpiler.__dict__)
+    content = transpiler.read(path)
+    import gdsbin.lexer
+
+    lexer = type(gdsbin.lexer)(gdsbin.lexer.__name__, gdsbin.lexer.__doc__)
+    lexer.__dict__.update(gdsbin.lexer.__dict__)
+    tokens = lexer.tokenize(content)
+    for token in tokens:
+        print(lexer.to_output(token))
 
 
 def start_tree(arg, _package_name):
@@ -578,6 +601,8 @@ def help():
     FMT_DESC = "transpile and format GDScript files recursively"
     COMP_DESC = "compile GDScript file to binary using Clang/Nuitka"
     EXP_DESC = "experimental option to tokenize GDScript file"
+    TOK_DESC = "experimental option to tokenize GDScript file"
+    TREE_DESC = "experimental option to tokenize GDScript file"
     SETUP_DESC = "generate a setup.py and pyproject.toml file to install Python project"
     VEC2_DESC = "testing Vector2 implementation"
     PARSER_DESC = "running GDScript tests (not working yet)"
@@ -656,6 +681,34 @@ def help():
     print(
         "  "
         + GREEN
+        + "--tok"
+        + ESCAPE
+        + COLOR_RESET
+        + " "
+        + CYAN
+        + "../path/to/file.gd"
+        + ESCAPE
+        + COLOR_RESET
+        + "          "
+        + TOK_DESC
+    )
+    print(
+        "  "
+        + GREEN
+        + "--tree"
+        + ESCAPE
+        + COLOR_RESET
+        + " "
+        + CYAN
+        + "../path/to/file.gd"
+        + ESCAPE
+        + COLOR_RESET
+        + "         "
+        + TREE_DESC
+    )
+    print(
+        "  "
+        + GREEN
         + "--setup"
         + ESCAPE
         + COLOR_RESET
@@ -730,60 +783,18 @@ def run_benchmark():
 
 def run_parser():
     gdsbin = {"test": {}}
-    # gdsbin.test.advanced_expression_matching = Advanced_expression_matching.new()
-    # gdsbin.test.advanced_expression_matching.test()
-    # gdsbin.test.arrays = Arrays.new()
-    # gdsbin.test.arrays.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.arrays_dictionaries_nested_const
 
     gdsbin.test.arrays_dictionaries_nested_const.test()
-    # gdsbin.test.basic_expression_matching = Basic_expression_matching.new()
-    # gdsbin.test.basic_expression_matching.test()
-    # gdsbin.test.bitwise_operators = Bitwise_operators.new()
-    # gdsbin.test.bitwise_operators.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.concatenation
 
     gdsbin.test.concatenation.test()
-    # gdsbin.test.constants = Constants.new()
-    # gdsbin.test.constants.test()
-    # gdsbin.test.dictionaries = Dictionaries.new()
-    # gdsbin.test.dictionaries.test()
-    # gdsbin.test.dictionary_lua_style = Dictionary_lua_style.new()
-    # gdsbin.test.dictionary_lua_style.test()
-    # gdsbin.test.dictionary_mixed_syntax = Dictionary_mixed_syntax.new()
-    # gdsbin.test.dictionary_mixed_syntax.test()
-    # gdsbin.test.dollar_and_percent_get_node = Dollar_and_percent_get_node.new()
-    # gdsbin.test.dollar_and_percent_get_node.test()
-    # gdsbin.test.dollar_node_paths = Dollar_node_paths.new()
-    # gdsbin.test.dollar_node_paths.test()
-    # gdsbin.test.enums = Enums.new()
-    # gdsbin.test.enums.test()
-    # gdsbin.test.export_variable = Export_variable.new()
-    # gdsbin.test.export_variable.test()
-    # gdsbin.test.float_notation = Float_notation.new()
-    # gdsbin.test.float_notation.test()
-    # gdsbin.test.for_range = For_range.new()
-    # gdsbin.test.for_range.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.function_default_parameter_type_inference
 
     gdsbin.test.function_default_parameter_type_inference.test()
-    # gdsbin.test.function_many_parameters = Function_many_parameters.new()
-    # gdsbin.test.function_many_parameters.test()
-    # gdsbin.test.if_after_lambda = If_after_lambda.new()
-    # gdsbin.test.if_after_lambda.test()
-    # gdsbin.test.ins = Ins.new()
-    # gdsbin.test.ins.test()
-    # gdsbin.test.lambda_callable = Lambda_callable.new()
-    # gdsbin.test.lambda_callable.test()
-    # gdsbin.test.lambda_capture_callable = Lambda_capture_callable.new()
-    # gdsbin.test.lambda_capture_callable.test()
-    # gdsbin.test.lambda_default_parameter_capture = Lambda_default_parameter_capture.new()
-    # gdsbin.test.lambda_default_parameter_capture.test()
-    # gdsbin.test.lambda_named_callable = Lambda_named_callable.new()
-    # gdsbin.test.lambda_named_callable.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.matches
 
@@ -792,26 +803,14 @@ def run_parser():
     import gdsbin.test.match_bind_unused
 
     gdsbin.test.match_bind_unused.test()
-    # gdsbin.test.match_dictionary = Match_dictionary.new()
-    # gdsbin.test.match_dictionary.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.match_multiple_patterns_with_array
 
     gdsbin.test.match_multiple_patterns_with_array.test()
-    # gdsbin.test.match_multiple_variable_binds_in_pattern = Match_multiple_variable_binds_in_pattern.new()
-    # gdsbin.test.match_multiple_variable_binds_in_pattern.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.multiline_arrays
 
     gdsbin.test.multiline_arrays.test()
-    # gdsbin.test.multiline_dictionaries = Multiline_dictionaries.new()
-    # gdsbin.test.multiline_dictionaries.test()
-    # gdsbin.test.multiline_if = Multiline_if.new()
-    # gdsbin.test.multiline_if.test()
-    # gdsbin.test.multiline_strings = Multiline_strings.new()
-    # gdsbin.test.multiline_strings.test()
-    # gdsbin.test.multiline_vector = Multiline_vector.new()
-    # gdsbin.test.multiline_vector.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.nested_arithmetic
 
@@ -820,40 +819,22 @@ def run_parser():
     import gdsbin.test.nested_array
 
     gdsbin.test.nested_array.test()
-    # gdsbin.test.nested_dictionary = Nested_dictionary.new()
-    # gdsbin.test.nested_dictionary.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.nested_function_calls
 
     gdsbin.test.nested_function_calls.test()
-    # gdsbin.test.nested_if = Nested_if.new()
-    # gdsbin.test.nested_if.test()
-    # gdsbin.test.nested_match = Nested_match.new()
-    # gdsbin.test.nested_match.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.nested_parentheses
 
     gdsbin.test.nested_parentheses.test()
-    # gdsbin.test.number_separators = Number_separators.new()
-    # gdsbin.test.number_separators.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.operator_assign
 
     gdsbin.test.operator_assign.test()
-    # gdsbin.test.property_setter_getter = Property_setter_getter.new()
-    # gdsbin.test.property_setter_getter.test()
-    # gdsbin.test.semicolon_as_end_statement = Semicolon_as_end_statement.new()
-    # gdsbin.test.semicolon_as_end_statement.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.semicolon_as_terminator
 
     gdsbin.test.semicolon_as_terminator.test()
-    # gdsbin.test.signal_declaration = Signal_declaration.new()
-    # gdsbin.test.signal_declaration.test()
-    # gdsbin.test.static_typing = Static_typing.new()
-    # gdsbin.test.static_typing.test()
-    # gdsbin.test.string_formatting = String_formatting.new()
-    # gdsbin.test.string_formatting.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.str_preserves_case
 
@@ -862,14 +843,10 @@ def run_parser():
     import gdsbin.test.trailing_comma_in_function_args
 
     gdsbin.test.trailing_comma_in_function_args.test()
-    # gdsbin.test.truthiness = Truthiness.new()
-    # gdsbin.test.truthiness.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.typed_arrays
 
     gdsbin.test.typed_arrays.test()
-    # gdsbin.test.variable_declaration = Variable_declaration.new()
-    # gdsbin.test.variable_declaration.test()
     sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(__file__), "..")))
     import gdsbin.test.whiles
 

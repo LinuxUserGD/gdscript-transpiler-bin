@@ -91,13 +91,13 @@ def tokenize(input_string):
 
 
 def char_to_token(buffer, token_index):
-    import gdsbin.token
+    import gdsbin.tokenn
 
-    token = type(gdsbin.token)(gdsbin.token.__name__, gdsbin.token.__doc__)
-    token.__dict__.update(gdsbin.token.__dict__)
-    token.id = token_index[buffer] if buffer in token_index else keyword.KW_NONE
-    token.value = buffer
-    return token
+    tokenn = type(gdsbin.tokenn)(gdsbin.tokenn.__name__, gdsbin.tokenn.__doc__)
+    tokenn.__dict__.update(gdsbin.tokenn.__dict__)
+    tokenn.id = token_index[buffer] if buffer in token_index else keyword.KW_NONE
+    tokenn.value = buffer
+    return tokenn
 
 
 def get_script():

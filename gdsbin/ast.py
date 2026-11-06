@@ -216,13 +216,13 @@ def _eval_string(array, level):
 def _eval_function_args(array):
     arr = []
     ast_arr = []
-    import gdsbin.token
+    import gdsbin.tokenn
 
-    token = type(gdsbin.token)(gdsbin.token.__name__, gdsbin.token.__doc__)
-    token.__dict__.update(gdsbin.token.__dict__)
-    token.id = key.KEY_COMMA
-    token.value = ","
-    array.append(token)
+    tokenn = type(gdsbin.tokenn)(gdsbin.tokenn.__name__, gdsbin.tokenn.__doc__)
+    tokenn.__dict__.update(gdsbin.tokenn.__dict__)
+    tokenn.id = key.KEY_COMMA
+    tokenn.value = ","
+    array.append(tokenn)
     for i in range(0, len(array)):
         if array[i].id == key.KEY_COMMA:
             ast_arr.append(_arg_call(arr, 0))
