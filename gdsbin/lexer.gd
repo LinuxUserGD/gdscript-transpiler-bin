@@ -86,6 +86,8 @@ func _push(tokenprops, _i: int, t: int, v: String, line: int = -1, col: int = -1
 		"tc_value": v,
 		"tc_line": l,
 		"tc_col": c,
+		"tc_extra": "",
+		"tc_prefix": "",
 	}
 	tokenclass["tc_type"] = t
 	tokenclass["tc_value"] = v
@@ -183,7 +185,8 @@ func tokenize(src: String, first_line: int = 1):
 				tokenprops = arr[1]
 			continue
 		if c == '"' or c == '\'':
-			var arr: Array = _lex_string(tokenprops, _i, _src, _n, false)
+			var bool_false: bool = false
+			var arr: Array = _lex_string(tokenprops, _i, _src, _n, bool_false)
 			_i = arr[0]
 			tokenprops = arr[1]
 			continue
@@ -366,7 +369,7 @@ func _lex_string(tokenprops, _i: int, _src: String, _n: int, is_fstring: bool, p
 	while _i < _n:
 		var c: String = _src[_i]
 		if c == "\\":
-			if _i + 1 < _n and _src.unicode_at(_i + 1) == 10:
+			if _i + 1 < _n and ord(_src[_i + 1]) == 10:
 				tokenprops["_line"] += 1
 				_i += 2
 				tokenprops["_line_start"] = _i
@@ -399,8 +402,8 @@ func _lex_string(tokenprops, _i: int, _src: String, _n: int, is_fstring: bool, p
 	var body: String = substring(_src, body_start, _i - body_start)
 	_i += 3 if triple else 1
 	var tok = _push(tokenprops, _i, _T["FSTRING"] if is_fstring else _T["STRING"], body, line, col)
-	tok.extra = quote if not triple else quote.repeat(3)
-	tok.prefix = prefix
+	tok["tc_extra"] = quote if not triple else quote.repeat(3)
+	tok["tc_prefix"] = prefix
 	return [_i, tokenprops]
 
 
@@ -514,16 +517,16 @@ func _prev_ends_expr(tokenprops) -> bool:
 	var mytokens = tokenprops["tokens"]
 	for i in range(mytokens.size() - 1, -1, -1):
 		var t = mytokens[i]
-		if t.type == _T["COMMENT"]:
+		if t["tc_type"] == _T["COMMENT"]:
 			continue
-		if t.type == _T["IDENT"] or t.type == _T["NUMBER"] or t.type == _T["STRING"] or t.type == _T["FSTRING"] or t.type == _T["NODEPATH"]:
+		if t["tc_type"] == _T["IDENT"] or t["tc_type"] == _T["NUMBER"] or t["tc_type"] == _T["STRING"] or t["tc_type"] == _T["FSTRING"] or t["tc_type"] == _T["NODEPATH"]:
 			return true
-		elif t.type == _T["KEYWORD"]:
-			if t.value in CONTEXTUAL_KEYWORDS:
+		elif t["tc_type"] == _T["KEYWORD"]:
+			if t["tc_value"] in CONTEXTUAL_KEYWORDS:
 				return _contextual_is_name(tokenprops, i)
-			return (t.value in ["self", "super", "true", "false", "null"] or GATE_ONLY.has(t.value))
-		elif t.type == _T["OP"]:
-			return t.value in [")", "]", "}"]
+			return (t["tc_value"] in ["self", "super", "true", "false", "null"] or GATE_ONLY.has(t["tc_value"]))
+		elif t["tc_type"] == _T["OP"]:
+			return t["tc_value"] in [")", "]", "}"]
 		else:
 			return false
 	return false
@@ -532,17 +535,17 @@ func _prev_ends_expr(tokenprops) -> bool:
 func _contextual_is_name(tokenprops, i: int) -> bool:
 	var t = tokenprops["tokens"][i]
 	var j: int = i - 1
-	while j >= 0 and tokenprops["tokens"][j].type == _T["COMMENT"]:
+	while j >= 0 and tokenprops["tokens"][j]["tc_type"] == _T["COMMENT"]:
 		j -= 1
 	var prev = tokenprops["tokens"][j] if j >= 0 else null
-	if prev != null and prev.type == _T["OP"] and prev.value == ".":
+	if prev != null and prev["tc_type"] == _T["OP"] and prev["tc_value"] == ".":
 		return true
-	if t.value == "match":
-		return prev != null and not (prev.type in [_T["NEWLINE"], _T["INDENT"], _T["DEDENT"]] or (prev.type == _T["OP"] and prev.value == ";"))
-	elif t.value == "when":
+	if t["tc_value"] == "match":
+		return prev != null and not (prev["tc_type"] in [_T["NEWLINE"], _T["INDENT"], _T["DEDENT"]] or (prev["tc_type"] == _T["OP"] and prev["tc_value"] == ";"))
+	elif t["tc_value"] == "when":
 		if prev == null:
 			return true
-		var after_pattern: bool = prev.type in [_T["IDENT"], _T["NUMBER"], _T["STRING"], _T["NODEPATH"]] or (prev.type == _T["OP"] and prev.value in [")", "]", "}"]) or (prev.type == _T["KEYWORD"] and prev.value in ["true", "false", "null"])
+		var after_pattern: bool = prev["tc_type"] in [_T["IDENT"], _T["NUMBER"], _T["STRING"], _T["NODEPATH"]] or (prev["tc_type"] == _T["OP"] and prev["tc_value"] in [")", "]", "}"]) or (prev["tc_type"] == _T["KEYWORD"] and prev["tc_value"] in ["true", "false", "null"])
 		return not after_pattern
 	return true
 
