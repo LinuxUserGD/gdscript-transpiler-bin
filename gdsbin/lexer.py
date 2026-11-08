@@ -178,6 +178,8 @@ def _push(tokenprops, _i, t, v, line=-1, col=-1):
         "tc_value": v,
         "tc_line": l,
         "tc_col": c,
+        "tc_extra": "",
+        "tc_prefix": "",
     }
     tokenclass["tc_type"] = t
     tokenclass["tc_value"] = v
@@ -269,7 +271,8 @@ def tokenize(src, first_line=1):
                 tokenprops = arr[1]
             continue
         if c == '"' or c == "'":
-            arr = _lex_string(tokenprops, _i, _src, _n, false)
+            _false = False
+            arr = _lex_string(tokenprops, _i, _src, _n, _false)
             _i = arr[0]
             tokenprops = arr[1]
             continue
@@ -477,7 +480,7 @@ def _lex_string(tokenprops, _i, _src, _n, is_fstring, prefix=""):
     while _i < _n:
         c = _src[_i]
         if c == "\\":
-            if _i + 1 < _n and _src.unicode_at(_i + 1) == 10:
+            if _i + 1 < _n and ord(_src[_i + 1]) == 10:
                 tokenprops["_line"] += 1
                 _i += 2
                 tokenprops["_line_start"] = _i
@@ -512,8 +515,8 @@ def _lex_string(tokenprops, _i, _src, _n, is_fstring, prefix=""):
     tok = _push(
         tokenprops, _i, _T["FSTRING"] if is_fstring else _T["STRING"], body, line, col
     )
-    tok.extra = quote if not triple else quote.repeat(3)
-    tok.prefix = prefix
+    tok["tc_extra"] = quote if not triple else quote.repeat(3)
+    tok["tc_prefix"] = prefix
     return [_i, tokenprops]
 
 
@@ -636,28 +639,28 @@ def _prev_ends_expr(tokenprops):
     mytokens = tokenprops["tokens"]
     for i in range(len(mytokens) - 1, -1, -1):
         t = mytokens[i]
-        if t.type == _T["COMMENT"]:
+        if t["tc_type"] == _T["COMMENT"]:
             continue
         if (
-            t.type == _T["IDENT"]
-            or t.type == _T["NUMBER"]
-            or t.type == _T["STRING"]
-            or t.type == _T["FSTRING"]
-            or t.type == _T["NODEPATH"]
+            t["tc_type"] == _T["IDENT"]
+            or t["tc_type"] == _T["NUMBER"]
+            or t["tc_type"] == _T["STRING"]
+            or t["tc_type"] == _T["FSTRING"]
+            or t["tc_type"] == _T["NODEPATH"]
         ):
             return True
-        elif t.type == _T["KEYWORD"]:
-            if t.value in CONTEXTUAL_KEYWORDS:
+        elif t["tc_type"] == _T["KEYWORD"]:
+            if t["tc_value"] in CONTEXTUAL_KEYWORDS:
                 return _contextual_is_name(tokenprops, i)
-            return t.value in [
+            return t["tc_value"] in [
                 "self",
                 "super",
                 "true",
                 "false",
                 "null",
-            ] or GATE_ONLY.has(t.value)
-        elif t.type == _T["OP"]:
-            return t.value in [")", "]", "}"]
+            ] or GATE_ONLY.has(t["tc_value"])
+        elif t["tc_type"] == _T["OP"]:
+            return t["tc_value"] in [")", "]", "}"]
         else:
             return False
     return False
@@ -666,23 +669,26 @@ def _prev_ends_expr(tokenprops):
 def _contextual_is_name(tokenprops, i):
     t = tokenprops["tokens"][i]
     j = i - 1
-    while j >= 0 and tokenprops["tokens"][j].type == _T["COMMENT"]:
+    while j >= 0 and tokenprops["tokens"][j]["tc_type"] == _T["COMMENT"]:
         j -= 1
     prev = tokenprops["tokens"][j] if j >= 0 else None
-    if prev != None and prev.type == _T["OP"] and prev.value == ".":
+    if prev != None and prev["tc_type"] == _T["OP"] and prev["tc_value"] == ".":
         return True
-    if t.value == "match":
+    if t["tc_value"] == "match":
         return prev != None and not (
-            prev.type in [_T["NEWLINE"], _T["INDENT"], _T["DEDENT"]]
-            or (prev.type == _T["OP"] and prev.value == ";")
+            prev["tc_type"] in [_T["NEWLINE"], _T["INDENT"], _T["DEDENT"]]
+            or (prev["tc_type"] == _T["OP"] and prev["tc_value"] == ";")
         )
-    elif t.value == "when":
+    elif t["tc_value"] == "when":
         if prev == None:
             return True
         after_pattern = (
-            prev.type in [_T["IDENT"], _T["NUMBER"], _T["STRING"], _T["NODEPATH"]]
-            or (prev.type == _T["OP"] and prev.value in [")", "]", "}"])
-            or (prev.type == _T["KEYWORD"] and prev.value in ["true", "false", "null"])
+            prev["tc_type"] in [_T["IDENT"], _T["NUMBER"], _T["STRING"], _T["NODEPATH"]]
+            or (prev["tc_type"] == _T["OP"] and prev["tc_value"] in [")", "]", "}"])
+            or (
+                prev["tc_type"] == _T["KEYWORD"]
+                and prev["tc_value"] in ["true", "false", "null"]
+            )
         )
         return not after_pattern
     return True
